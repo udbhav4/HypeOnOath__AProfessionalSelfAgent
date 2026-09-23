@@ -1,0 +1,49 @@
+{
+  "CV_Udbhav.pdf": {
+    "cleaned": true,
+    "converted_output": "CV_Udbhav.md",
+    "destination_category": "document",
+    "hash": "9d1fb2580b32fbce2bf29241f88157b5cb73f116c0db9bac5895c93e51515fc2",
+    "structured_output": "CV_Udbhav.docling.json",
+    "tagged": true
+  },
+  "CV_Udbhav2.pdf": {
+    "cleaned": true,
+    "converted_output": "CV_Udbhav2.md",
+    "destination_category": "document",
+    "hash": "a805345d21eb5e1c549a7e76f87beef33a3a69ad38d53769f45764af7481dc26",
+    "structured_output": "CV_Udbhav2.docling.json",
+    "tagged": true
+  },
+  "Cover_Letter_Udbhav.pdf": {
+    "cleaned": true,
+    "converted_output": "Cover_Letter_Udbhav.md",
+    "destination_category": "document",
+    "hash": "9130d8023e525c0fe55a8d9b0e2475d307cfbcc7c5442079863e55e73162f78f",
+    "structured_output": "Cover_Letter_Udbhav.docling.json",
+    "tagged": true
+  },
+  "README.md": {
+    "cleaned": true,
+    "converted_output": null,
+    "destination_category": "document",
+    "hash": "50b015c6bdb949bfc057a076cb91eedbd54a171853b4f944924406e86221a099",
+    "structured_output": null,
+    "tagged": true
+  },
+  "agent.ts": {
+    "converted_output": null,
+    "destination_category": "code",
+    "hash": "c3f128be1101fff3de0a15f3f7967ab54392945e5d21bf1b5aa1d0ec3c2228a7",
+    "structured_output": null,
+    "tagged": true
+  },
+  "system-design-rag-chatbot.md": {
+    "cleaned": true,
+    "converted_output": null,
+    "destination_category": "document",
+    "hash": "ec6f917240b281ac5a38e03ae0aafb008aac5968eb7cc7e9860ffcc4ba0de26d",
+    "structured_output": null,
+    "tagged": true
+  }
+}

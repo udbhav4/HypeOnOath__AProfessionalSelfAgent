@@ -1,0 +1,9 @@
+{"timestamp": "2026-09-22T12:22:45.665942+00:00", "file": "agent.ts", "action": "routed", "destination": "code/agent.ts", "reason": "extension '.ts' matched code list"}
+{"timestamp": "2026-09-22T12:22:45.674391+00:00", "file": "Cover_Letter_Udbhav.pdf", "action": "routed", "destination": "documents/Cover_Letter_Udbhav.pdf", "reason": "extension '.pdf' matched document list"}
+{"timestamp": "2026-09-22T12:22:45.696349+00:00", "file": "CV_Udbhav.pdf", "action": "routed", "destination": "documents/CV_Udbhav.pdf", "reason": "extension '.pdf' matched document list"}
+{"timestamp": "2026-09-22T12:22:45.705114+00:00", "file": "CV_Udbhav2.pdf", "action": "routed", "destination": "documents/CV_Udbhav2.pdf", "reason": "extension '.pdf' matched document list"}
+{"timestamp": "2026-09-22T12:22:45.721599+00:00", "file": "README.md", "action": "routed", "destination": "documents/README.md", "reason": "extension '.md' matched document list"}
+{"timestamp": "2026-09-22T12:22:45.732545+00:00", "file": "system-design-rag-chatbot.md", "action": "routed", "destination": "documents/system-design-rag-chatbot.md", "reason": "extension '.md' matched document list"}
+{"timestamp": "2026-09-22T12:26:06.225513+00:00", "file": "Cover_Letter_Udbhav.pdf", "action": "deleted", "destination": null, "reason": "source file removed from corpus/raw/; outputs cleaned up"}
+{"timestamp": "2026-09-22T12:26:39.552565+00:00", "file": "Cover_Letter_Udbhav.pdf", "action": "routed", "destination": "documents/Cover_Letter_Udbhav.pdf", "reason": "extension '.pdf' matched document list"}
+{"timestamp": "2026-09-22T12:28:26.963243+00:00", "file": "CV_Udbhav.pdf", "action": "routed", "destination": "documents/CV_Udbhav.pdf", "reason": "extension '.pdf' matched document list"}
