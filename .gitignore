@@ -1,0 +1,4 @@
+plans/
+.claude/
+__pycache__/
+*.pyc
