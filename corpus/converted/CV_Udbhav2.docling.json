@@ -1,0 +1,1842 @@
+{
+  "schema_name": "DoclingDocument",
+  "version": "1.10.0",
+  "name": "CV_Udbhav2",
+  "origin": {
+    "mimetype": "application/pdf",
+    "binary_hash": 17606651972964965414,
+    "filename": "CV_Udbhav2.pdf"
+  },
+  "furniture": {
+    "self_ref": "#/furniture",
+    "children": [],
+    "content_layer": "furniture",
+    "name": "_root_",
+    "label": "unspecified"
+  },
+  "body": {
+    "self_ref": "#/body",
+    "children": [
+      {
+        "$ref": "#/texts/0"
+      },
+      {
+        "$ref": "#/texts/1"
+      },
+      {
+        "$ref": "#/texts/2"
+      },
+      {
+        "$ref": "#/texts/3"
+      },
+      {
+        "$ref": "#/texts/4"
+      },
+      {
+        "$ref": "#/texts/5"
+      },
+      {
+        "$ref": "#/texts/6"
+      },
+      {
+        "$ref": "#/groups/0"
+      },
+      {
+        "$ref": "#/texts/10"
+      },
+      {
+        "$ref": "#/texts/11"
+      },
+      {
+        "$ref": "#/texts/12"
+      },
+      {
+        "$ref": "#/groups/1"
+      },
+      {
+        "$ref": "#/texts/17"
+      },
+      {
+        "$ref": "#/texts/18"
+      },
+      {
+        "$ref": "#/texts/19"
+      },
+      {
+        "$ref": "#/groups/2"
+      },
+      {
+        "$ref": "#/texts/24"
+      },
+      {
+        "$ref": "#/texts/25"
+      },
+      {
+        "$ref": "#/groups/3"
+      },
+      {
+        "$ref": "#/texts/29"
+      },
+      {
+        "$ref": "#/texts/30"
+      },
+      {
+        "$ref": "#/texts/31"
+      },
+      {
+        "$ref": "#/tables/0"
+      },
+      {
+        "$ref": "#/texts/32"
+      },
+      {
+        "$ref": "#/groups/4"
+      },
+      {
+        "$ref": "#/texts/38"
+      },
+      {
+        "$ref": "#/texts/39"
+      },
+      {
+        "$ref": "#/groups/5"
+      },
+      {
+        "$ref": "#/texts/42"
+      },
+      {
+        "$ref": "#/groups/6"
+      },
+      {
+        "$ref": "#/texts/44"
+      },
+      {
+        "$ref": "#/groups/7"
+      }
+    ],
+    "content_layer": "body",
+    "name": "_root_",
+    "label": "unspecified"
+  },
+  "groups": [
+    {
+      "self_ref": "#/groups/0",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/7"
+        },
+        {
+          "$ref": "#/texts/8"
+        },
+        {
+          "$ref": "#/texts/9"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/1",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/13"
+        },
+        {
+          "$ref": "#/texts/14"
+        },
+        {
+          "$ref": "#/texts/15"
+        },
+        {
+          "$ref": "#/texts/16"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/2",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/20"
+        },
+        {
+          "$ref": "#/texts/21"
+        },
+        {
+          "$ref": "#/texts/22"
+        },
+        {
+          "$ref": "#/texts/23"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/3",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/26"
+        },
+        {
+          "$ref": "#/texts/27"
+        },
+        {
+          "$ref": "#/texts/28"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/4",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/33"
+        },
+        {
+          "$ref": "#/texts/34"
+        },
+        {
+          "$ref": "#/texts/35"
+        },
+        {
+          "$ref": "#/texts/36"
+        },
+        {
+          "$ref": "#/texts/37"
+        }
+      ],
+      "content_layer": "body",
+      "name": "group",
+      "label": "key_value_area"
+    },
+    {
+      "self_ref": "#/groups/5",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/40"
+        },
+        {
+          "$ref": "#/texts/41"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/6",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/43"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/7",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/45"
+        },
+        {
+          "$ref": "#/texts/46"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    }
+  ],
+  "texts": [
+    {
+      "self_ref": "#/texts/0",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 755.4822671999999,
+            "r": 111.57718783999998,
+            "b": 744.9884267481267,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            8
+          ]
+        }
+      ],
+      "orig": "ABOUT ME",
+      "text": "ABOUT ME",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/1",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 736.7836426,
+            "r": 559.2800724299994,
+            "b": 688.3631792965417,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            391
+          ]
+        }
+      ],
+      "orig": "M.Sc. AI & ML student at TUDarmstadt with 3.5 years of professional experience in Business Analytics across FinTech and Travel industries. Currently focussed on hands-on implementation of modern agentic AI systems , especially the SLMs, with reduction in hallucination . Experience across the ML stack - from data analysis & preprocessing, to probabilistic model training, to on-device LLMs.",
+      "text": "M.Sc. AI & ML student at TUDarmstadt with 3.5 years of professional experience in Business Analytics across FinTech and Travel industries. Currently focussed on hands-on implementation of modern agentic AI systems , especially the SLMs, with reduction in hallucination . Experience across the ML stack - from data analysis & preprocessing, to probabilistic model training, to on-device LLMs."
+    },
+    {
+      "self_ref": "#/texts/2",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 672.2452671999998,
+            "r": 174.59185151999995,
+            "b": 661.7514267481266,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            15
+          ]
+        }
+      ],
+      "orig": "WORK EXPERIENCE",
+      "text": "WORK EXPERIENCE",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/3",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 654.7672672,
+            "r": 379.3975782399999,
+            "b": 644.2734267481268,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            54
+          ]
+        }
+      ],
+      "orig": "Assistant Manager - Planning & Growth (Data Analytics)",
+      "text": "Assistant Manager - Planning & Growth (Data Analytics)"
+    },
+    {
+      "self_ref": "#/texts/4",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 431.7374438399999,
+            "t": 654.7314016,
+            "r": 543.5855129600001,
+            "b": 644.2834525786744,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            19
+          ]
+        }
+      ],
+      "orig": "May 2024 - Aug 2025",
+      "text": "May 2024 - Aug 2025"
+    },
+    {
+      "self_ref": "#/texts/5",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 641.7804016,
+            "r": 219.69403903999995,
+            "b": 631.3324525786744,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            36
+          ]
+        }
+      ],
+      "orig": "Cleartrip Private Limited (Flipkart)",
+      "text": "Cleartrip Private Limited (Flipkart)"
+    },
+    {
+      "self_ref": "#/texts/6",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 457.47101183999996,
+            "t": 641.7804016,
+            "r": 542.6852864,
+            "b": 631.3324525786744,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            16
+          ]
+        }
+      ],
+      "orig": "Bangalore, India",
+      "text": "Bangalore, India"
+    },
+    {
+      "self_ref": "#/texts/7",
+      "parent": {
+        "$ref": "#/groups/0"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 626.6486426,
+            "r": 429.6790476099996,
+            "b": 578.2271792965417,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            260
+          ]
+        }
+      ],
+      "orig": "\u00b7 Led a team of two and scheduled analytical systems like a Market Dispersion Analysis to help the Business Development teams identify targeted action items, leading to competitive pricing, enhanced hotel-end discounts, and better loyalty offers for customers.",
+      "text": "Led a team of two and scheduled analytical systems like a Market Dispersion Analysis to help the Business Development teams identify targeted action items, leading to competitive pricing, enhanced hotel-end discounts, and better loyalty offers for customers.",
+      "enumerated": false,
+      "marker": "\u00b7"
+    },
+    {
+      "self_ref": "#/texts/8",
+      "parent": {
+        "$ref": "#/groups/0"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 572.8496425999999,
+            "r": 429.6735930599995,
+            "b": 550.3230307429393,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            137
+          ]
+        }
+      ],
+      "orig": "\u00b7 Analytically optimized convenience fee and coupon discounts, resulting in a Contribution Margin (CM) growth from below -6% to over -3%.",
+      "text": "Analytically optimized convenience fee and coupon discounts, resulting in a Contribution Margin (CM) growth from below -6% to over -3%.",
+      "enumerated": false,
+      "marker": "\u00b7"
+    },
+    {
+      "self_ref": "#/texts/9",
+      "parent": {
+        "$ref": "#/groups/0"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 544.9546425999998,
+            "r": 429.6768657899998,
+            "b": 522.4270307429392,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            139
+          ]
+        }
+      ],
+      "orig": "\u00b7 Generated business analyses to drive growth in hotel bookings, resulting in a 50% increase in bookings compared to last year same season.",
+      "text": "Generated business analyses to drive growth in hotel bookings, resulting in a 50% increase in bookings compared to last year same season.",
+      "enumerated": false,
+      "marker": "\u00b7"
+    },
+    {
+      "self_ref": "#/texts/10",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 510.3052671999998,
+            "r": 177.83290624,
+            "b": 499.81142674812656,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            23
+          ]
+        }
+      ],
+      "orig": "Senior Business Analyst",
+      "text": "Senior Business Analyst",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/11",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 430.92449024,
+            "t": 510.26940159999975,
+            "r": 543.5879040000001,
+            "b": 499.8214525786741,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            20
+          ]
+        }
+      ],
+      "orig": "July 2022 - May 2024",
+      "text": "July 2022 - May 2024"
+    },
+    {
+      "self_ref": "#/texts/12",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 497.31740159999976,
+            "r": 290.24047872000006,
+            "b": 486.8694525786741,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            47
+          ]
+        },
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 456.5014451200001,
+            "t": 497.31740159999976,
+            "r": 542.6816998400002,
+            "b": 486.8694525786741,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            48,
+            63
+          ]
+        }
+      ],
+      "orig": "Freecharge Payment Technologies Private Limited Gurugram, India",
+      "text": "Freecharge Payment Technologies Private Limited Gurugram, India"
+    },
+    {
+      "self_ref": "#/texts/13",
+      "parent": {
+        "$ref": "#/groups/1"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 481.5796425999997,
+            "r": 429.67686578999985,
+            "b": 459.0530307429392,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            124
+          ]
+        }
+      ],
+      "orig": "\u00b7 Built a Machine Learning model to predict likely loan defaulters at 90% accuracy and reduced the EMI default rate by 30% .",
+      "text": "Built a Machine Learning model to predict likely loan defaulters at 90% accuracy and reduced the EMI default rate by 30% .",
+      "enumerated": false,
+      "marker": "\u00b7"
+    },
+    {
+      "self_ref": "#/texts/14",
+      "parent": {
+        "$ref": "#/groups/1"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 453.6846425999997,
+            "r": 429.67032032999975,
+            "b": 431.1570307429392,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            116
+          ]
+        }
+      ],
+      "orig": "\u00b7 Drove merchant GMV growth through data analysis, resulting in a 60% increase compared to the prior years' average.",
+      "text": "Drove merchant GMV growth through data analysis, resulting in a 60% increase compared to the prior years' average.",
+      "enumerated": false,
+      "marker": "\u00b7"
+    },
+    {
+      "self_ref": "#/texts/15",
+      "parent": {
+        "$ref": "#/groups/1"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 425.7559152999997,
+            "r": 429.6746839699996,
+            "b": 403.26203074293915,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            136
+          ]
+        }
+      ],
+      "orig": "\u00b7 Data analysis for Merchant Cash in Advance (MCA) loan collection, leading to a 10% increase in the percentage of due amount collected.",
+      "text": "Data analysis for Merchant Cash in Advance (MCA) loan collection, leading to a 10% increase in the percentage of due amount collected.",
+      "enumerated": false,
+      "marker": "\u00b7"
+    },
+    {
+      "self_ref": "#/texts/16",
+      "parent": {
+        "$ref": "#/groups/1"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 397.8936425999996,
+            "r": 429.67468396999976,
+            "b": 375.37517929654143,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            126
+          ]
+        }
+      ],
+      "orig": "\u00b7 Received the FC Warrior award for exceptional performance in the time period of November, 2022 to March, 2023 at Freecharge.",
+      "text": "Received the FC Warrior award for exceptional performance in the time period of November, 2022 to March, 2023 at Freecharge.",
+      "enumerated": false,
+      "marker": "\u00b7"
+    },
+    {
+      "self_ref": "#/texts/17",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 361.74826719999965,
+            "r": 107.26255615999999,
+            "b": 351.25442674812643,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            8
+          ]
+        }
+      ],
+      "orig": "PROJECTS",
+      "text": "PROJECTS",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/18",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 342.2782672,
+            "r": 455.7327257599999,
+            "b": 331.7844267481268,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            72
+          ]
+        }
+      ],
+      "orig": "Gliimr - On-device Personal Health Intelligence App | (Solo, End-to-End)",
+      "text": "Gliimr - On-device Personal Health Intelligence App | (Solo, End-to-End)",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/19",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 493.83394815999986,
+            "t": 342.2424016,
+            "r": 543.5795353599999,
+            "b": 331.79445257867434,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            8
+          ]
+        }
+      ],
+      "orig": "May 2026",
+      "text": "May 2026"
+    },
+    {
+      "self_ref": "#/texts/20",
+      "parent": {
+        "$ref": "#/groups/2"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 326.4796425999999,
+            "r": 429.6714112399998,
+            "b": 291.0010307429394,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            215
+          ]
+        }
+      ],
+      "orig": "\u00b7 Architected an on-device , React-native app that combines LLMs with a Dynamic Bayesian Network (DBN) resulting in a Causal Inference and Explainable AI (XAI) framework, which structurally prevents hallucinations .",
+      "text": "Architected an on-device , React-native app that combines LLMs with a Dynamic Bayesian Network (DBN) resulting in a Causal Inference and Explainable AI (XAI) framework, which structurally prevents hallucinations .",
+      "enumerated": false,
+      "marker": "\u00b7"
+    },
+    {
+      "self_ref": "#/texts/21",
+      "parent": {
+        "$ref": "#/groups/2"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 285.63264259999994,
+            "r": 429.67468397,
+            "b": 250.16317929654167,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            177
+          ]
+        }
+      ],
+      "orig": "\u00b7 Engineered a staged probabilistic-neural agentic pipeline , with a sequential NLU pipeline with confidence-gating , a DBN, and multiple ReAct agents for sequential generation.",
+      "text": "Engineered a staged probabilistic-neural agentic pipeline , with a sequential NLU pipeline with confidence-gating , a DBN, and multiple ReAct agents for sequential generation.",
+      "enumerated": false,
+      "marker": "\u00b7"
+    },
+    {
+      "self_ref": "#/texts/22",
+      "parent": {
+        "$ref": "#/groups/2"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 244.78564259999996,
+            "r": 429.68122942999986,
+            "b": 222.2681792965417,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            120
+          ]
+        }
+      ],
+      "orig": "\u00b7 Implemented a custom in-process MCP tool dispatcher , that handles a possible format mismatch by the generative model.",
+      "text": "Implemented a custom in-process MCP tool dispatcher , that handles a possible format mismatch by the generative model.",
+      "enumerated": false,
+      "marker": "\u00b7"
+    },
+    {
+      "self_ref": "#/texts/23",
+      "parent": {
+        "$ref": "#/groups/2"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 216.89064259999998,
+            "r": 429.68122942999963,
+            "b": 181.4211792965417,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            179
+          ]
+        }
+      ],
+      "orig": "\u00b7 Built a hybrid persistence layer using sqlite-vec for semantic memory retrieval with recency-weighted cosine similarity , and SQLite for structured DBN state - zero data egress.",
+      "text": "Built a hybrid persistence layer using sqlite-vec for semantic memory retrieval with recency-weighted cosine similarity , and SQLite for structured DBN state - zero data egress.",
+      "enumerated": false,
+      "marker": "\u00b7"
+    },
+    {
+      "self_ref": "#/texts/24",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 167.43326719999993,
+            "r": 224.19756288,
+            "b": 156.93942674812683,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            30
+          ]
+        }
+      ],
+      "orig": "Diabetic Retinopathy Detection",
+      "text": "Diabetic Retinopathy Detection",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/25",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 494.31335168,
+            "t": 167.39740159999997,
+            "r": 543.58312192,
+            "b": 156.94945257867437,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            9
+          ]
+        }
+      ],
+      "orig": "July 2025",
+      "text": "July 2025"
+    },
+    {
+      "self_ref": "#/texts/26",
+      "parent": {
+        "$ref": "#/groups/3"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 151.6346426,
+            "r": 429.6801385199999,
+            "b": 116.16517929654185,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            173
+          ]
+        }
+      ],
+      "orig": "\u00b7 Automated classification of Diabetic Retinopathy using a hybrid CNN-DNN architecture achieving 97% accuracy and 3% False Negative Rate , prioritizing clinical sensitivity.",
+      "text": "Automated classification of Diabetic Retinopathy using a hybrid CNN-DNN architecture achieving 97% accuracy and 3% False Negative Rate , prioritizing clinical sensitivity.",
+      "enumerated": false,
+      "marker": "\u00b7"
+    },
+    {
+      "self_ref": "#/texts/27",
+      "parent": {
+        "$ref": "#/groups/3"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 110.78764260000003,
+            "r": 429.6801385199995,
+            "b": 75.31917929654185,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            164
+          ]
+        }
+      ],
+      "orig": "\u00b7 Improved model convergence by applying CLAHE (Contrast Limited Adaptive Histogram Equalization) preprocessing to enhance local contrast in retinal microaneurysms.",
+      "text": "Improved model convergence by applying CLAHE (Contrast Limited Adaptive Histogram Equalization) preprocessing to enhance local contrast in retinal microaneurysms.",
+      "enumerated": false,
+      "marker": "\u00b7"
+    },
+    {
+      "self_ref": "#/texts/28",
+      "parent": {
+        "$ref": "#/groups/3"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 69.94164260000002,
+            "r": 429.6779566999999,
+            "b": 34.46303074293951,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            154
+          ]
+        }
+      ],
+      "orig": "\u00b7 Systematic pre-trained model selection via data augmentation and one-epoch benchmarking ; trained final model using OneCycleLR scheduling on MobileNet .",
+      "text": "Systematic pre-trained model selection via data augmentation and one-epoch benchmarking ; trained final model using OneCycleLR scheduling on MobileNet .",
+      "enumerated": false,
+      "marker": "\u00b7"
+    },
+    {
+      "self_ref": "#/texts/29",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 143.02,
+            "t": 805.6809506000001,
+            "r": 452.2514660499999,
+            "b": 783.923734270317,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            21
+          ]
+        }
+      ],
+      "orig": "Udbhav Narayan Sharma",
+      "text": "Udbhav Narayan Sharma",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/30",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 147.494,
+            "t": 781.1339153,
+            "r": 447.7789775099999,
+            "b": 771.6001792965418,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            57
+          ]
+        }
+      ],
+      "orig": "+49 1637223004 | udbhavns26@gmail.com | LinkedIn | GitHub",
+      "text": "+49 1637223004 | udbhavns26@gmail.com | LinkedIn | GitHub"
+    },
+    {
+      "self_ref": "#/texts/31",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [
+        {
+          "page_no": 2,
+          "bbox": {
+            "l": 36.0,
+            "t": 803.1322672,
+            "r": 119.19862784,
+            "b": 792.6384267481268,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            9
+          ]
+        }
+      ],
+      "orig": "EDUCATION",
+      "text": "EDUCATION",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/32",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [
+        {
+          "page_no": 2,
+          "bbox": {
+            "l": 36.0,
+            "t": 682.2662671999999,
+            "r": 169.0135552,
+            "b": 671.7724267481267,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            16
+          ]
+        }
+      ],
+      "orig": "TECHNICAL SKILLS",
+      "text": "TECHNICAL SKILLS",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/33",
+      "parent": {
+        "$ref": "#/groups/4"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 2,
+          "bbox": {
+            "l": 36.0,
+            "t": 662.9616426,
+            "r": 559.2800724299997,
+            "b": 640.4441792965417,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            122
+          ]
+        }
+      ],
+      "orig": "AI & ML : Machine Learning, Deep Learning (DNNs, Transfer Learning), Convolutional Neural Networks (CNNs), Computer Vision",
+      "text": "AI & ML : Machine Learning, Deep Learning (DNNs, Transfer Learning), Convolutional Neural Networks (CNNs), Computer Vision"
+    },
+    {
+      "self_ref": "#/texts/34",
+      "parent": {
+        "$ref": "#/groups/4"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 2,
+          "bbox": {
+            "l": 36.0,
+            "t": 637.0586426,
+            "r": 163.16301505999996,
+            "b": 627.4830307429394,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            21
+          ]
+        }
+      ],
+      "orig": "Generative AI Systems",
+      "text": "Generative AI Systems"
+    },
+    {
+      "self_ref": "#/texts/35",
+      "parent": {
+        "$ref": "#/groups/4"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 2,
+          "bbox": {
+            "l": 36.0,
+            "t": 624.1076426,
+            "r": 154.49137147000002,
+            "b": 614.5320307429394,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            18
+          ]
+        }
+      ],
+      "orig": "Programming & Data",
+      "text": "Programming & Data"
+    },
+    {
+      "self_ref": "#/texts/36",
+      "parent": {
+        "$ref": "#/groups/4"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 2,
+          "bbox": {
+            "l": 36.0,
+            "t": 611.1229152999999,
+            "r": 135.60117391000003,
+            "b": 601.5891792965417,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            20
+          ]
+        }
+      ],
+      "orig": "Time-Series Analysis",
+      "text": "Time-Series Analysis"
+    },
+    {
+      "self_ref": "#/texts/37",
+      "parent": {
+        "$ref": "#/groups/4"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 2,
+          "bbox": {
+            "l": 154.49137147000002,
+            "t": 637.0259153,
+            "r": 559.2789815199999,
+            "b": 614.5411792965417,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            147
+          ]
+        }
+      ],
+      "orig": ": Large Language Models, Agentic Frameworks (ReAct), RAG / Vector DB : SQL, Python, Pandas, NumPy, PyTorch, TensorFlow, PySpark, Thematic Analysis,",
+      "text": ": Large Language Models, Agentic Frameworks (ReAct), RAG / Vector DB : SQL, Python, Pandas, NumPy, PyTorch, TensorFlow, PySpark, Thematic Analysis,"
+    },
+    {
+      "self_ref": "#/texts/38",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [
+        {
+          "page_no": 2,
+          "bbox": {
+            "l": 36.0,
+            "t": 585.4712671999998,
+            "r": 222.34211584000002,
+            "b": 574.9774267481266,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            21
+          ]
+        }
+      ],
+      "orig": "EVENTS & ACHIEVEMENTS",
+      "text": "EVENTS & ACHIEVEMENTS",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/39",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [
+        {
+          "page_no": 2,
+          "bbox": {
+            "l": 36.0,
+            "t": 566.0012671999999,
+            "r": 384.83002111999997,
+            "b": 555.5074267481267,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            57
+          ]
+        }
+      ],
+      "orig": "Open Source Contribution to Haystack | PyCon DE 26 Sprint",
+      "text": "Open Source Contribution to Haystack | PyCon DE 26 Sprint",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/40",
+      "parent": {
+        "$ref": "#/groups/5"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [
+        {
+          "page_no": 2,
+          "bbox": {
+            "l": 45.274,
+            "t": 550.1699153,
+            "r": 429.67904760999966,
+            "b": 540.6361792965417,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            74
+          ]
+        }
+      ],
+      "orig": "Enhanced the DSPy-Haystack integration adapter using model-adaptive prompt",
+      "text": "Enhanced the DSPy-Haystack integration adapter using model-adaptive prompt",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/41",
+      "parent": {
+        "$ref": "#/groups/5"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [
+        {
+          "page_no": 2,
+          "bbox": {
+            "l": 36.0,
+            "t": 548.1037008,
+            "r": 253.63562817999994,
+            "b": 527.6851792965417,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            43
+          ]
+        }
+      ],
+      "orig": "\u00b7 templates for improved model performance.",
+      "text": "templates for improved model performance.",
+      "enumerated": false,
+      "marker": "\u00b7"
+    },
+    {
+      "self_ref": "#/texts/42",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [
+        {
+          "page_no": 2,
+          "bbox": {
+            "l": 36.0,
+            "t": 518.6782671999999,
+            "r": 379.48604672,
+            "b": 508.1844267481267,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            57
+          ]
+        }
+      ],
+      "orig": "QHack26 | Students - General ML | Q-Summit 2026, Mannheim",
+      "text": "QHack26 | Students - General ML | Q-Summit 2026, Mannheim",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/43",
+      "parent": {
+        "$ref": "#/groups/6"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [
+        {
+          "page_no": 2,
+          "bbox": {
+            "l": 36.0,
+            "t": 502.8469152999999,
+            "r": 369.0451788999998,
+            "b": 493.3131792965417,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            66
+          ]
+        }
+      ],
+      "orig": "\u00b7 Selected amongst 150 participants at QHack26 (General ML track).",
+      "text": "Selected amongst 150 participants at QHack26 (General ML track).",
+      "enumerated": false,
+      "marker": "\u00b7"
+    },
+    {
+      "self_ref": "#/texts/44",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [
+        {
+          "page_no": 2,
+          "bbox": {
+            "l": 36.0,
+            "t": 479.6862671999999,
+            "r": 122.31773951999999,
+            "b": 469.1924267481267,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            9
+          ]
+        }
+      ],
+      "orig": "LANGUAGES",
+      "text": "LANGUAGES",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/45",
+      "parent": {
+        "$ref": "#/groups/7"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [
+        {
+          "page_no": 2,
+          "bbox": {
+            "l": 36.0,
+            "t": 463.7813722,
+            "r": 111.33824460000001,
+            "b": 450.014088,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            14
+          ]
+        }
+      ],
+      "orig": "\u00b7 English - C1",
+      "text": "English - C1",
+      "enumerated": false,
+      "marker": "\u00b7"
+    },
+    {
+      "self_ref": "#/texts/46",
+      "parent": {
+        "$ref": "#/groups/7"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [
+        {
+          "page_no": 2,
+          "bbox": {
+            "l": 36.0,
+            "t": 443.8563722,
+            "r": 196.56449744000003,
+            "b": 430.089088,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            30
+          ]
+        }
+      ],
+      "orig": "\u00b7 German - A2 (B1 in Progress)",
+      "text": "German - A2 (B1 in Progress)",
+      "enumerated": false,
+      "marker": "\u00b7"
+    }
+  ],
+  "pictures": [],
+  "tables": [
+    {
+      "self_ref": "#/tables/0",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "table",
+      "prov": [
+        {
+          "page_no": 2,
+          "bbox": {
+            "l": 32.758474704768034,
+            "t": 790.8027380597166,
+            "r": 554.0855580173978,
+            "b": 694.5309577981764,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            0
+          ]
+        }
+      ],
+      "captions": [],
+      "references": [],
+      "footnotes": [],
+      "data": {
+        "table_cells": [
+          {
+            "bbox": {
+              "l": 36.0,
+              "t": 56.23573280000005,
+              "r": 298.66769919999996,
+              "b": 93.23811012276656,
+              "coord_origin": "TOPLEFT"
+            },
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 0,
+            "end_row_offset_idx": 1,
+            "start_col_offset_idx": 0,
+            "end_col_offset_idx": 1,
+            "text": "Technische Universit\u00a8 at Darmstadt MSc. in Artificial Intelligence & Machine Learning Grade: 2.1 (Current) | German scale (1.0 = Best)",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false,
+            "fillable": false
+          },
+          {
+            "bbox": {
+              "l": 433.79732479999996,
+              "t": 56.271598400000016,
+              "r": 543.5879040000002,
+              "b": 79.67154742132561,
+              "coord_origin": "TOPLEFT"
+            },
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 0,
+            "end_row_offset_idx": 1,
+            "start_col_offset_idx": 1,
+            "end_col_offset_idx": 2,
+            "text": "Oct 2025 - Present Darmstadt, Germany",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false,
+            "fillable": false
+          },
+          {
+            "bbox": {
+              "l": 36.0,
+              "t": 106.1857328000001,
+              "r": 389.1924735999999,
+              "b": 143.1881101227666,
+              "coord_origin": "TOPLEFT"
+            },
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 1,
+            "end_row_offset_idx": 2,
+            "start_col_offset_idx": 0,
+            "end_col_offset_idx": 1,
+            "text": "University of Petroleum and Energy Studies B. Tech. (Honors) in Computer Science and Engineering (Big Data) Grade: 8.41/10",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false,
+            "fillable": false
+          },
+          {
+            "bbox": {
+              "l": 431.3979161599999,
+              "t": 106.22159840000006,
+              "r": 543.5855129600001,
+              "b": 129.62154742132566,
+              "coord_origin": "TOPLEFT"
+            },
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 1,
+            "end_row_offset_idx": 2,
+            "start_col_offset_idx": 1,
+            "end_col_offset_idx": 2,
+            "text": "July 2018 - July 2022 Dehradun, India",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false,
+            "fillable": false
+          }
+        ],
+        "num_rows": 2,
+        "num_cols": 2,
+        "orientation": "rot_0",
+        "grid": [
+          [
+            {
+              "bbox": {
+                "l": 36.0,
+                "t": 56.23573280000005,
+                "r": 298.66769919999996,
+                "b": 93.23811012276656,
+                "coord_origin": "TOPLEFT"
+              },
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 0,
+              "end_row_offset_idx": 1,
+              "start_col_offset_idx": 0,
+              "end_col_offset_idx": 1,
+              "text": "Technische Universit\u00a8 at Darmstadt MSc. in Artificial Intelligence & Machine Learning Grade: 2.1 (Current) | German scale (1.0 = Best)",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false,
+              "fillable": false
+            },
+            {
+              "bbox": {
+                "l": 433.79732479999996,
+                "t": 56.271598400000016,
+                "r": 543.5879040000002,
+                "b": 79.67154742132561,
+                "coord_origin": "TOPLEFT"
+              },
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 0,
+              "end_row_offset_idx": 1,
+              "start_col_offset_idx": 1,
+              "end_col_offset_idx": 2,
+              "text": "Oct 2025 - Present Darmstadt, Germany",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false,
+              "fillable": false
+            }
+          ],
+          [
+            {
+              "bbox": {
+                "l": 36.0,
+                "t": 106.1857328000001,
+                "r": 389.1924735999999,
+                "b": 143.1881101227666,
+                "coord_origin": "TOPLEFT"
+              },
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 1,
+              "end_row_offset_idx": 2,
+              "start_col_offset_idx": 0,
+              "end_col_offset_idx": 1,
+              "text": "University of Petroleum and Energy Studies B. Tech. (Honors) in Computer Science and Engineering (Big Data) Grade: 8.41/10",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false,
+              "fillable": false
+            },
+            {
+              "bbox": {
+                "l": 431.3979161599999,
+                "t": 106.22159840000006,
+                "r": 543.5855129600001,
+                "b": 129.62154742132566,
+                "coord_origin": "TOPLEFT"
+              },
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 1,
+              "end_row_offset_idx": 2,
+              "start_col_offset_idx": 1,
+              "end_col_offset_idx": 2,
+              "text": "July 2018 - July 2022 Dehradun, India",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false,
+              "fillable": false
+            }
+          ]
+        ]
+      },
+      "annotations": []
+    }
+  ],
+  "key_value_items": [],
+  "form_items": [],
+  "pages": {
+    "1": {
+      "size": {
+        "width": 595.276,
+        "height": 841.89
+      },
+      "page_no": 1
+    },
+    "2": {
+      "size": {
+        "width": 595.276,
+        "height": 841.89
+      },
+      "page_no": 2
+    }
+  }
+}

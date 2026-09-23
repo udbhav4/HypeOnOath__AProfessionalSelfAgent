@@ -1,0 +1,5 @@
+docling
+pymupdf
+python-docx
+python-frontmatter
+pyyaml

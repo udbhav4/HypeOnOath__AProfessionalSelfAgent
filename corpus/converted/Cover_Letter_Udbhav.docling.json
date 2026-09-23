@@ -1,0 +1,403 @@
+{
+  "schema_name": "DoclingDocument",
+  "version": "1.10.0",
+  "name": "Cover_Letter_Udbhav",
+  "origin": {
+    "mimetype": "application/pdf",
+    "binary_hash": 9673263501092779919,
+    "filename": "Cover_Letter_Udbhav.pdf"
+  },
+  "furniture": {
+    "self_ref": "#/furniture",
+    "children": [],
+    "content_layer": "furniture",
+    "name": "_root_",
+    "label": "unspecified"
+  },
+  "body": {
+    "self_ref": "#/body",
+    "children": [
+      {
+        "$ref": "#/texts/0"
+      },
+      {
+        "$ref": "#/texts/1"
+      },
+      {
+        "$ref": "#/texts/2"
+      },
+      {
+        "$ref": "#/texts/3"
+      },
+      {
+        "$ref": "#/texts/4"
+      },
+      {
+        "$ref": "#/texts/5"
+      },
+      {
+        "$ref": "#/texts/6"
+      },
+      {
+        "$ref": "#/texts/7"
+      },
+      {
+        "$ref": "#/texts/8"
+      },
+      {
+        "$ref": "#/texts/9"
+      },
+      {
+        "$ref": "#/texts/10"
+      },
+      {
+        "$ref": "#/texts/11"
+      }
+    ],
+    "content_layer": "body",
+    "name": "_root_",
+    "label": "unspecified"
+  },
+  "groups": [],
+  "texts": [
+    {
+      "self_ref": "#/texts/0",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 802.4146426000001,
+            "r": 178.71066438000003,
+            "b": 792.8390307429395,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            22
+          ]
+        }
+      ],
+      "orig": "Udbhav Narayan Sharma,",
+      "text": "Udbhav Narayan Sharma,",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/1",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 789.4299153000001,
+            "r": 117.98079559,
+            "b": 766.9451792965418,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            28
+          ]
+        }
+      ],
+      "orig": "Eulerweg 1, 64347 Griesheim.",
+      "text": "Eulerweg 1, 64347 Griesheim."
+    },
+    {
+      "self_ref": "#/texts/2",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 743.6019153000001,
+            "r": 125.60189285000001,
+            "b": 708.1651792965419,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            43
+          ]
+        }
+      ],
+      "orig": "SMC Deutschland, Egelsbach, Hesse, Germany.",
+      "text": "SMC Deutschland, Egelsbach, Hesse, Germany."
+    },
+    {
+      "self_ref": "#/texts/3",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 658.6742672,
+            "r": 407.24841216000004,
+            "b": 648.1804267481268,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            61
+          ]
+        }
+      ],
+      "orig": "Application for Working student in IT & Information Services.",
+      "text": "Application for Working student in IT & Information Services.",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/4",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 638.9949153000001,
+            "r": 91.93859206999998,
+            "b": 629.4611792965419,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            10
+          ]
+        }
+      ],
+      "orig": "Dear Team,",
+      "text": "Dear Team,"
+    },
+    {
+      "self_ref": "#/texts/5",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 617.0769153000001,
+            "r": 559.2811633399997,
+            "b": 529.8250307429395,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            705
+          ]
+        }
+      ],
+      "orig": "I am reaching out for an application of a Working Student position in IT & Information Services. What drew me to this position is the fact that it requires analyzing capabilities, and good management of reports and dashbaords, all of which I have a 3.5 years professional experience in. Furthermore, having worked as a Senior Business Analyst , and then an Assistant Manager in analytics, I have had immense opportunities and exposure to interact with multiple stakeholders . I have had a constant use of tools like SQL and Python throughout my experience. Moreover, if required, I can use my knowledge of AI systems which I have attained through my MSc in AI & ML at TU Darmstadt , and advanced projects.",
+      "text": "I am reaching out for an application of a Working Student position in IT & Information Services. What drew me to this position is the fact that it requires analyzing capabilities, and good management of reports and dashbaords, all of which I have a 3.5 years professional experience in. Furthermore, having worked as a Senior Business Analyst , and then an Assistant Manager in analytics, I have had immense opportunities and exposure to interact with multiple stakeholders . I have had a constant use of tools like SQL and Python throughout my experience. Moreover, if required, I can use my knowledge of AI systems which I have attained through my MSc in AI & ML at TU Darmstadt , and advanced projects."
+    },
+    {
+      "self_ref": "#/texts/6",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 517.4499153,
+            "r": 559.2778906099995,
+            "b": 456.11117929654176,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            527
+          ]
+        }
+      ],
+      "orig": "Before starting my MSc in AI & ML at TU Darmstadt, I spent three and a half years as a business analyst in FinTech and Travel industries, most recently driving planning and growth, and pricing and margin analysis at Cleartrip. Before that, I built a loan default prediction model at Freecharge that cut EMI defaults by 30%, and drove GMV growth through continuous analysis. That stretch taught me to sit with people who understands more of business and understand their thought process so as to help them in an even better way.",
+      "text": "Before starting my MSc in AI & ML at TU Darmstadt, I spent three and a half years as a business analyst in FinTech and Travel industries, most recently driving planning and growth, and pricing and margin analysis at Cleartrip. Before that, I built a loan default prediction model at Freecharge that cut EMI defaults by 30%, and drove GMV growth through continuous analysis. That stretch taught me to sit with people who understands more of business and understand their thought process so as to help them in an even better way."
+    },
+    {
+      "self_ref": "#/texts/7",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 443.7269153,
+            "r": 559.2811633399998,
+            "b": 356.4841792965417,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            662
+          ]
+        }
+      ],
+      "orig": "During my Master's now, I have recently developed Gliimr, an on-device health app that pairs a language model with a Dynamic Bayesian Network and is harnessed in a way that prevents hallucinations by design and preserves causality. I wrote a staged pipeline where an NLU layer gates on confidence before anything moves downstream, a custom tool dispatcher that can catch format issues, and a hybrid data persistence layer. Everything runs locally, so no data leaves the device. This development journey taught me a lot of principles, methods and protocols to follow, for a full-scale working AI system, an understanding a small project would not provide me with.",
+      "text": "During my Master's now, I have recently developed Gliimr, an on-device health app that pairs a language model with a Dynamic Bayesian Network and is harnessed in a way that prevents hallucinations by design and preserves causality. I wrote a staged pipeline where an NLU layer gates on confidence before anything moves downstream, a custom tool dispatcher that can catch format issues, and a hybrid data persistence layer. Everything runs locally, so no data leaves the device. This development journey taught me a lot of principles, methods and protocols to follow, for a full-scale working AI system, an understanding a small project would not provide me with."
+    },
+    {
+      "self_ref": "#/texts/8",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 344.0999152999999,
+            "r": 559.2800724299996,
+            "b": 308.66417929654165,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            309
+          ]
+        }
+      ],
+      "orig": "I am enrolled full-time in the MSc AI & ML program at TU Darmstadt and can work at least 20 hours a week around my course schedule, starting immediately. My working language is English (C1); my German currently sits at an A2 level and is improving, and I'd rather flag that upfront than have it surface later.",
+      "text": "I am enrolled full-time in the MSc AI & ML program at TU Darmstadt and can work at least 20 hours a week around my course schedule, starting immediately. My working language is English (C1); my German currently sits at an A2 level and is improving, and I'd rather flag that upfront than have it surface later."
+    },
+    {
+      "self_ref": "#/texts/9",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 296.27991529999986,
+            "r": 559.2811633399998,
+            "b": 273.79417929654164,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            121
+          ]
+        }
+      ],
+      "orig": "I'd be glad to talk more about myself and my experiences so far in more detail. Thank you for considering my application.",
+      "text": "I'd be glad to talk more about myself and my experiences so far in more detail. Thank you for considering my application."
+    },
+    {
+      "self_ref": "#/texts/10",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 36.0,
+            "t": 257.42491529999984,
+            "r": 160.00046697000002,
+            "b": 234.9401792965416,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            36
+          ]
+        }
+      ],
+      "orig": "Kind regards, Udbhav Narayan Sharma.",
+      "text": "Kind regards, Udbhav Narayan Sharma."
+    },
+    {
+      "self_ref": "#/texts/11",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 414.23,
+            "t": 684.8229153000001,
+            "r": 559.2752117800001,
+            "b": 675.2891792965419,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            28
+          ]
+        }
+      ],
+      "orig": "Griesheim, 13 September 2026",
+      "text": "Griesheim, 13 September 2026"
+    }
+  ],
+  "pictures": [],
+  "tables": [],
+  "key_value_items": [],
+  "form_items": [],
+  "pages": {
+    "1": {
+      "size": {
+        "width": 595.276,
+        "height": 841.89
+      },
+      "page_no": 1
+    }
+  }
+}
