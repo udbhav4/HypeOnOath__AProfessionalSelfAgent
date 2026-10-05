@@ -1,0 +1,4 @@
+Project: Gliimr: A personal health intelligence app
+Description: On-device personal health intelligence app. No cloud. No hallucinations.
+Gliimr is a React Native health app that passively senses how you live, extracts meaning from what you say, and maintains a clinically grounded probabilistic model of your health - entirely on your phone, entirely in private, entirely explainable.
+Code files: ag
