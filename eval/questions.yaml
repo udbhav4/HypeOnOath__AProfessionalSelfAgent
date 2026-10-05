@@ -1,0 +1,91 @@
+# Phase 1 eval set (guideline v4, Section 8; design doc Sections 8 and 10).
+# Judged by hand: correct answer, correct citation, correct refusal.
+# Fields: question, expected_answerable (bool), notes (what a good answer /
+# the retrieval should look like). No expected-answer text: no string matching.
+
+# --- (a) single-chunk lookups ------------------------------------------------
+- question: What is the candidate currently studying, and where?
+  expected_answerable: true
+  notes: MSc AI & ML at TU Darmstadt (CV education table / about-me / cover letter).
+- question: What was the candidate's role at Cleartrip?
+  expected_answerable: true
+  notes: Assistant Manager - Planning & Growth (Data Analytics); cite a CV.
+- question: How accurate was the loan default prediction model the candidate built?
+  expected_answerable: true
+  notes: 90% accuracy, EMI default rate reduced by 30% (Freecharge).
+- question: What accuracy did the diabetic retinopathy detection project achieve?
+  expected_answerable: true
+  notes: 97% accuracy, 3% false negative rate; hybrid CNN-DNN.
+- question: Which languages does the candidate speak, and at what level?
+  expected_answerable: true
+  notes: English C1, German A2 (B1 in progress).
+- question: Where can I find the candidate's GitHub or LinkedIn profile?
+  expected_answerable: true
+  notes: Tests the re-attached "## Links" section of converted CVs.
+- question: Which award did the candidate receive at Freecharge?
+  expected_answerable: true
+  notes: FC Warrior award (Nov 2022 - Mar 2023).
+
+# --- (b) multi-chunk / multi-hop ------------------------------------------------
+- question: Why would this candidate be a good fit for an applied ML engineering role?
+  expected_answerable: true
+  notes: Multi-hop; should combine projects (Gliimr, DR detection), experience, education. Every claim cited.
+- question: How does the candidate's analytics background connect to their current AI work?
+  expected_answerable: true
+  notes: Multi-hop across CV work experience and Gliimr / cover letter.
+- question: What hours can the candidate work as a working student, and when can they start?
+  expected_answerable: true
+  notes: At least 20 hours/week, starting immediately (cover letter).
+- question: What experience does the candidate have with on-device or small language models?
+  expected_answerable: true
+  notes: Gliimr (Llama 3.2-1B, Gemma, nomic on device) from README / CV.
+
+# --- project-level (hits the project_summary chunk) -----------------------------
+- question: What is Gliimr?
+  expected_answerable: true
+  notes: Should retrieve the Gliimr project_summary chunk and cite the project description; README also relevant.
+- question: What projects has the candidate built?
+  expected_answerable: true
+  notes: Gliimr, diabetic retinopathy detection, (Haystack contribution). Project summary chunk expected in sources.
+
+# --- code questions (code path quality signal) --------------------------------
+- question: What does agent.ts do overall?
+  expected_answerable: true
+  notes: Turn orchestration for Talk (glance/reflect) and Journal flows. "Projects referenced" should list Gliimr. Cite corpus/code/agent.ts:lines.
+- question: How does the initAgent function work?
+  expected_answerable: true
+  notes: Names a specific function -> tests symbols + header. Cite exact lines.
+- question: How does the agent handle an undo request from the user?
+  expected_answerable: true
+  notes: detectUndoIntent / runUndoWork in agent.ts. If a split function is retrieved, all parts should appear in order.
+- question: How is the Gemma model output cleaned before it is shown?
+  expected_answerable: true
+  notes: cleanGemmaOutput in agent.ts.
+- question: How does the Dynamic Bayesian Network get trained in Gliimr?
+  expected_answerable: true
+  notes: README "Training" section; code fences in README should not be split.
+- question: Show me the candidate's Rust code for the payment service.
+  expected_answerable: false
+  notes: No Rust code / payment service in the corpus -> exact refusal phrase.
+
+# --- (c) deliberately unanswerable (must refuse) --------------------------------
+- question: What is the candidate's salary expectation?
+  expected_answerable: false
+  notes: Not in corpus -> exact refusal phrase "I don't have information about that in my documents".
+- question: Has the candidate worked at Google?
+  expected_answerable: false
+  notes: Must refuse, not speculate.
+- question: What is the candidate's favourite programming language?
+  expected_answerable: false
+  notes: Not stated anywhere -> refuse.
+- question: Does the candidate have a driving licence?
+  expected_answerable: false
+  notes: Not in corpus -> refuse.
+- question: What grade did the candidate get in their Deep Learning course?
+  expected_answerable: false
+  notes: No course-level grades in the corpus (only overall grades) -> refuse.
+
+# --- system-design doc (mixed prose + tables) ------------------------------------
+- question: Which vector store does the candidate's chatbot design use and why?
+  expected_answerable: true
+  notes: Chroma (ADR-5) from system-design-rag-chatbot.md; tests record-per-row table chunks.
