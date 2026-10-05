@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hypeonoath"
+version = "0.1.0"
+description = "Recruiter-facing, grounded RAG chatbot over the owner's own documents and code."
+requires-python = ">=3.14"
+# Base = what the serving side (and core) needs at runtime -- the deploy
+# installs only this (`pip install .`). Exact pins: chunk boundaries and
+# vectors depend on these versions (design doc ADR-6, ADR-13). Keep in sync
+# with hypeonoath.core.config.PINNED_VERSIONS.
+dependencies = [
+    "chromadb==1.5.9",
+    "sentence-transformers==6.1.0",
+    "transformers==5.18.0",
+    "torch==2.14.1",
+]
+
+[project.optional-dependencies]
+# Corpus preparation (hypeonoath.ingestion).
+ingestion = [
+    "docling",
+    "pymupdf",
+    "python-docx",
+    "python-frontmatter",
+    "pyyaml==6.0.3",
+]
+# Index building (hypeonoath.indexing); also needs the `ingestion` extra,
+# whose helpers it reads Phase 0 outputs with.
+indexing = [
+    "chonkie[code]==1.7.0",
+    "chonkie-core==0.10.2",
+    "tree-sitter==0.26.0",
+    "tree-sitter-language-pack==1.20.0",
+    "detect-secrets==1.5.0",
+    "nbformat==5.11.1",
+    "markdown-it-py==4.2.0",
+    "docling-core==2.99.0",
+    "pyyaml==6.0.3",
+]
+# Tests + eval script.
+dev = [
+    "pytest==9.1.1",
+    "pyyaml==6.0.3",
+]
+
+[project.scripts]
+hypeonoath-prepare = "hypeonoath.ingestion.prepare_corpus:main"
+hypeonoath-index = "hypeonoath.indexing.build_index:main"
+hypeonoath-chat = "hypeonoath.serving.chat:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "model: needs the real nomic embedding model (downloaded once to the HF cache)",
+]

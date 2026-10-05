@@ -47,10 +47,10 @@ from docling.document_converter import DocumentConverter
 from docling.exceptions import ConversionError as DoclingConversionError
 from docling_core.types.doc import DoclingDocument
 
-from . import config
-from .link_extractor import extract_links, format_links_section
-from .logging_utils import log_json_line
-from .manifest import save_manifest
+from hypeonoath.core.logging_utils import log_json_line
+from hypeonoath.ingestion import config
+from hypeonoath.ingestion.link_extractor import extract_links, format_links_section
+from hypeonoath.ingestion.manifest import save_manifest
 
 logger = logging.getLogger(__name__)
 

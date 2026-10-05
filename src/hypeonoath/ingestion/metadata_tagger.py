@@ -22,7 +22,7 @@ code-project registry, Phase 1 guideline v4 Section 3A.12). Every code entry
 in _metadata.yaml carries project_key/project_name/project_description,
 looked up from the registry. They are compulsory for code, but Phase 0 does
 not enforce that -- an unmapped file is written with nulls and Phase 1's
-project check (src/pipeline/project_registry.py) stops the indexing run,
+project check (hypeonoath/indexing/project_registry.py) stops the indexing run,
 listing every such file. Because the registry can change without any code
 file changing, refresh_code_project_fields() re-applies it to every code
 entry on every run (run_tagging otherwise only touches changed files).
@@ -40,10 +40,10 @@ from pathlib import Path
 
 import yaml
 
-from . import config, frontmatter_utils
-from .cleaner import resolve_document_target
-from .logging_utils import log_json_line
-from .manifest import save_manifest
+from hypeonoath.core.logging_utils import log_json_line
+from hypeonoath.ingestion import config, frontmatter_utils
+from hypeonoath.ingestion.cleaner import resolve_document_target
+from hypeonoath.ingestion.manifest import save_manifest
 
 
 def resolve_date(rel_path: str, raw_path: Path) -> tuple[str, str]:

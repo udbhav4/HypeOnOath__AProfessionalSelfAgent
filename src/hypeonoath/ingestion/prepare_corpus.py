@@ -2,8 +2,8 @@
 Corpus preparation entry point (roadmap Phase 0, Steps 3.1-3.6): raw files ->
 routed, converted, cleaned and tagged corpus.
 
-Run with:  python -m ingestion.prepare_corpus   (from the project root, with
-`src` on PYTHONPATH -- e.g. `python -m pip install -e .` or run from `src/`).
+Run with:  python -m hypeonoath.ingestion.prepare_corpus   (or: hypeonoath-prepare)
+from the project root, with the package installed: `pip install -e ".[ingestion]"`.
 
 Runs routing (3.2) -> conversion (3.3) -> cleaning (3.5) -> tagging (3.6) in
 sequence. Steps 3.4 (removed, see phase0-document-prep-subplan-v5.md Section
@@ -17,10 +17,10 @@ from __future__ import annotations
 import logging
 import sys
 
-from .cleaner import run_cleaning
-from .converter import run_conversion
-from .metadata_tagger import run_tagging
-from .router import run_routing
+from hypeonoath.ingestion.cleaner import run_cleaning
+from hypeonoath.ingestion.converter import run_conversion
+from hypeonoath.ingestion.metadata_tagger import run_tagging
+from hypeonoath.ingestion.router import run_routing
 
 
 def main() -> int:

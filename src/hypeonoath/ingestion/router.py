@@ -14,9 +14,9 @@ import logging
 import shutil
 from pathlib import Path
 
-from . import config
-from .logging_utils import log_json_line
-from .manifest import DiffResult, compute_hash, diff, load_manifest, save_manifest
+from hypeonoath.core.logging_utils import log_json_line
+from hypeonoath.ingestion import config
+from hypeonoath.ingestion.manifest import DiffResult, compute_hash, diff, load_manifest, save_manifest
 
 logger = logging.getLogger(__name__)
 

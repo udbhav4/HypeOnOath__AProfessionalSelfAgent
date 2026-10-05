@@ -1,4 +1,10 @@
 agent.ts:
   content_type: code
   date: 10.05.2026
-  project_name: null
+  project_description: 'On-device personal health intelligence app. No cloud. No hallucinations.
+
+    Gliimr is a React Native health app that passively senses how you live, extracts
+    meaning from what you say, and maintains a clinically grounded probabilistic model
+    of your health - entirely on your phone, entirely in private, entirely explainable.'
+  project_key: gliimr
+  project_name: 'Gliimr: A personal health intelligence app'

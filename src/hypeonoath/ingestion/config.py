@@ -7,27 +7,29 @@ than scatter them across router.py / converter.py.
 """
 from __future__ import annotations
 
-from pathlib import Path
-
 # --- Project layout ---------------------------------------------------------
-# This file lives at <project_root>/src/ingestion/config.py.
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-CORPUS_DIR = PROJECT_ROOT / "corpus"
+# Folder paths are defined once in hypeonoath.core.paths (shared with the
+# indexing and serving packages) and re-exported here, so Phase 0 code keeps
+# reading them as config.<NAME>.
+from hypeonoath.core.paths import (  # noqa: F401 -- re-exported names
+    CODE_DIR,
+    CODE_METADATA_PATH,
+    CONVERTED_DIR,
+    CORPUS_DIR,
+    DOCLING_JSON_SUFFIX,
+    DOCUMENTS_DIR,
+    LOGS_DIR,
+    MANIFEST_PATH,
+    PROJECT_ROOT,
+    QUARANTINE_DIR,
+    RAW_DIR,
+)
 
-RAW_DIR = CORPUS_DIR / "raw"              # immutable source of truth (Step 3.1)
-CODE_DIR = CORPUS_DIR / "code"            # Step 3.2 output
-DOCUMENTS_DIR = CORPUS_DIR / "documents"  # Step 3.2 output
-QUARANTINE_DIR = CORPUS_DIR / "quarantine"  # Step 3.2 output
-CONVERTED_DIR = CORPUS_DIR / "converted"  # Step 3.3 output
-
-MANIFEST_PATH = CORPUS_DIR / ".manifest.json"
-LOGS_DIR = CORPUS_DIR / ".logs"
 ROUTING_LOG_PATH = LOGS_DIR / "routing.jsonl"
 CONVERSION_LOG_PATH = LOGS_DIR / "conversion.jsonl"
 CLEANING_LOG_PATH = LOGS_DIR / "cleaning.jsonl"
 TAGGING_LOG_PATH = LOGS_DIR / "tagging.jsonl"
 
-CODE_METADATA_PATH = CODE_DIR / "_metadata.yaml"
 
 # --- Step 3.2: extension classification -------------------------------------
 # Broad starter list, per plans/phase0-document-prep-subplan-v4.md Section 4.3.
@@ -51,12 +53,10 @@ DOCUMENT_EXTENSIONS: frozenset[str] = frozenset({".pdf", ".docx", ".md", ".txt"}
 # to convert).
 CONVERTIBLE_DOCUMENT_EXTENSIONS: frozenset[str] = frozenset({".pdf", ".docx"})
 
-# Suffix for docling's persisted structured DoclingDocument (JSON), written
-# alongside each converted ".md" file with the same base name. Added per
-# plans/phase0-step-3.3-docling-structure-persistence-guideline.md so Phase 1's
-# block-level chunker can load typed blocks (headings/TextItem/TableItem)
-# directly instead of re-parsing the flattened Markdown output.
-DOCLING_JSON_SUFFIX = ".docling.json"
+# DOCLING_JSON_SUFFIX (docling's persisted structured DoclingDocument, written
+# alongside each converted ".md" file with the same base name, per
+# plans/phase0-step-3.3-docling-structure-persistence-guideline.md) is imported
+# from hypeonoath.core.paths above.
 
 # --- Step 3.6: metadata tagging ---------------------------------------------
 # Date format is fixed as DD.MM.YYYY throughout the pipeline (front-matter,
