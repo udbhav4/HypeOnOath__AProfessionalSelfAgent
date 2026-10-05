@@ -1,7 +1,8 @@
 """
-Single orchestrator entry point for Phase 0, Steps 3.1-3.6.
+Corpus preparation entry point (roadmap Phase 0, Steps 3.1-3.6): raw files ->
+routed, converted, cleaned and tagged corpus.
 
-Run with:  python -m ingestion.run_phase0   (from the project root, with
+Run with:  python -m ingestion.prepare_corpus   (from the project root, with
 `src` on PYTHONPATH -- e.g. `python -m pip install -e .` or run from `src/`).
 
 Runs routing (3.2) -> conversion (3.3) -> cleaning (3.5) -> tagging (3.6) in
@@ -26,14 +27,14 @@ def main() -> int:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     logger = logging.getLogger(__name__)
 
-    logger.info("Phase 0 pipeline starting")
+    logger.info("Corpus preparation starting")
 
     manifest, processed_rel_paths = run_routing()
     manifest = run_conversion(manifest, processed_rel_paths)
     manifest = run_cleaning(manifest, processed_rel_paths)
     manifest = run_tagging(manifest, processed_rel_paths)
 
-    logger.info("Phase 0 pipeline finished (%d file(s) processed this run)", len(processed_rel_paths))
+    logger.info("Corpus preparation finished (%d file(s) processed this run)", len(processed_rel_paths))
     return 0
 
 
