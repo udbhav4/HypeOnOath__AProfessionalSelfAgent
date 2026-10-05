@@ -5,7 +5,7 @@ Decisions recorded per plans/phase0-steps-3.1-3.3-code-implementation-guideline.
 Section 1A (confirmed with user 2026-09-15), documented here per that guideline's
 own requirement that developer decisions be written down, not left silent:
 
-- Orchestration: a single orchestrator entry point (run_phase0.py) runs
+- Orchestration: a single orchestrator entry point (prepare_corpus.py) runs
   routing then conversion in sequence. Router and converter logic stay in
   separate, independently importable modules -- the orchestrator is a thin
   composition layer, not a monolith.
