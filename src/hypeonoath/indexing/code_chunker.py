@@ -8,7 +8,8 @@ pack) does the core splitting; this wrapper closes the gaps it leaves:
   0  pinned versions (config.PINNED_VERSIONS / pyproject.toml)
   1  exclusion filter (vendored / minified / generated / huge files)
   2  safe UTF-8 decoding (non_utf8 logged, empty files skipped)
-  3  secret + personal-info scan of the raw text (warnings only)
+  3  secret scan of the raw text (report only; personal info is detected on
+     the code blocks by hypeonoath.privacy, privacy plan v3 7.1)
   4  notebooks: code cells -> code; markdown cells -> prose; outputs DROPPED
   5  explicit language from the extension map (no auto-detection)
   6  Chonkie with the embedding model's tokenizer and a token budget of

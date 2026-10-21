@@ -39,6 +39,11 @@ indexing = [
     "markdown-it-py==4.2.0",
     "docling-core==2.99.0",
     "pyyaml==6.0.3",
+    # Privacy review + redaction (hypeonoath.privacy). Never in the base
+    # (serving) install. spaCy models are not on PyPI:
+    #   pip install -r requirements-privacy-models.txt
+    "presidio-analyzer==2.2.364",
+    "spacy==3.8.16",
 ]
 # Tests + eval script.
 dev = [
@@ -50,12 +55,17 @@ dev = [
 hypeonoath-prepare = "hypeonoath.ingestion.prepare_corpus:main"
 hypeonoath-index = "hypeonoath.indexing.build_index:main"
 hypeonoath-chat = "hypeonoath.serving.chat:main"
+hypeonoath-privacy = "hypeonoath.privacy.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+"hypeonoath.privacy" = ["conf/*.yaml"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 markers = [
     "model: needs the real nomic embedding model (downloaded once to the HF cache)",
+    "privacy_model: needs presidio-analyzer + the spaCy models en_core_web_lg / de_core_news_lg",
 ]

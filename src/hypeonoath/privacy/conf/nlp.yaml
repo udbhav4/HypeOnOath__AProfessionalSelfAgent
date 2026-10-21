@@ -1,0 +1,37 @@
+# Presidio NLP engine configuration (privacy plan v3, 6.2; P-D2, P-D4, P-D5).
+# Based on presidio_analyzer/conf/default.yaml, with:
+#   * a German model next to the English one (P-D5: lg models first);
+#   * MONEY mapped and NOT ignored (P-D4: salary / stipend amounts are findings);
+#   * MISC (German model label, not mapped) ignored.
+# The model names must match hypeonoath.core.config.PRIVACY_SPACY_MODELS (tested).
+nlp_engine_name: spacy
+models:
+  - {lang_code: en, model_name: en_core_web_lg}
+  - {lang_code: de, model_name: de_core_news_lg}
+ner_model_configuration:
+  model_to_presidio_entity_mapping:
+    PER: PERSON
+    PERSON: PERSON
+    NORP: NRP
+    FAC: LOCATION
+    LOC: LOCATION
+    GPE: LOCATION
+    LOCATION: LOCATION
+    ORG: ORGANIZATION
+    ORGANIZATION: ORGANIZATION
+    DATE: DATE_TIME
+    TIME: DATE_TIME
+    MONEY: MONEY            # P-D4
+  low_confidence_score_multiplier: 0.4
+  labels_to_ignore:          # Presidio default MINUS "MONEY"
+    - ORGANIZATION
+    - CARDINAL
+    - EVENT
+    - LANGUAGE
+    - LAW
+    - ORDINAL
+    - PERCENT
+    - PRODUCT
+    - QUANTITY
+    - WORK_OF_ART
+    - MISC                   # German model label; not mapped

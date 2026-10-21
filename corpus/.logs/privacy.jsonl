@@ -1,0 +1,11 @@
+{"timestamp": "2026-10-17T14:01:48.392148+00:00", "event": "detect_routing", "blocks": {"en": 411, "code": 81}, "ner_dropped_on_code": 103, "url_dropped_on_code": 286, "routing_enabled": true}
+{"timestamp": "2026-10-18T11:53:34.309983+00:00", "event": "detect_routing", "blocks": {"en": 411, "code": 81}, "ner_dropped_on_code": 103, "url_dropped_on_code": 286, "routing_enabled": true}
+{"timestamp": "2026-10-18T15:33:54.017424+00:00", "event": "detect_routing", "blocks": {"en": 411, "code": 81}, "ner_dropped_on_code": 103, "url_dropped_on_code": 286, "routing_enabled": true}
+{"timestamp": "2026-10-18T15:37:02.590935+00:00", "event": "detect_routing", "blocks": {"en": 411, "code": 81}, "ner_dropped_on_code": 103, "url_dropped_on_code": 286, "routing_enabled": true}
+{"timestamp": "2026-10-18T15:39:43.466071+00:00", "event": "build", "redacted": {"name": 1, "applicant number": 1, "address / place": 10, "phone number": 2, "email address": 1, "link": 1, "date": 48}, "files_redacted": 13, "privacy_fp": "75fb7c957e51eb78", "fresh_dir": true, "rules": {"R1": 152, "R3": 1}, "unreviewed_values": 0, "unreviewed_files": 0, "default_secrets": 0, "restored": 0}
+{"timestamp": "2026-10-19T15:03:24.369489+00:00", "event": "detect_routing", "blocks": {"en": 411, "code": 81}, "ner_dropped_on_code": 103, "url_dropped_on_code": 286, "routing_enabled": true}
+{"timestamp": "2026-10-19T15:03:24.384954+00:00", "event": "pruned_retired", "count": 12}
+{"timestamp": "2026-10-19T15:03:24.786019+00:00", "event": "scan", "files": 14, "new_values": 1, "pending_files": 1, "deleted_files": 0}
+{"timestamp": "2026-10-19T20:43:20.255280+00:00", "event": "scan", "files": 0, "new_values": 0, "pending_files": 1, "deleted_files": 0}
+{"timestamp": "2026-10-19T20:52:36.117960+00:00", "event": "restored_from_raw", "files": ["CV_Udbhav.pdf", "CV_Udbhav2.pdf", "CV_Udbhav3.pdf", "Cover_Letter_Udbhav.pdf"]}
+{"timestamp": "2026-10-19T20:56:00.953680+00:00", "event": "build", "redacted": {}, "files_redacted": 0, "privacy_fp": "1f1296a031d64a91", "fresh_dir": true, "verify_fixed": {}, "restored": 4, "forced": false, "pending_files": 0}

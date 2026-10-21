@@ -1,0 +1,53 @@
+# Hand-written keyword recognizers (privacy plan v3, 6.2 "German context words").
+# _generate_recognizers.py appends these to the generated recognizers.yaml --
+# edit THIS file, then re-run the generator.
+#
+# Each pattern is "<keyword> [: or -] <value>". Presidio compiles patterns with
+# the `regex` module (variable-length lookbehind) and global flags
+# IGNORECASE | MULTILINE | DOTALL, so the keyword sits in a lookbehind and the
+# match -- the span the owner reviews and that gets redacted -- is the value
+# alone, never the keyword.
+- name: DateOfBirthKeywordRecognizer
+  type: custom
+  supported_entity: DATE_OF_BIRTH
+  supported_languages: [en, de]
+  patterns:
+    - name: date of birth after keyword
+      regex: '(?<=\b(?:geburtsdatum|geb\.?\s*datum|geboren\s+am|date\s+of\s+birth|birth\s*date|d\.?o\.?b\.?|born\s+on)\s*[:\-–]?\s*)(?:\d{1,2}\.\s?\d{1,2}\.\s?\d{4}|\d{1,2}/\d{1,2}/\d{4}|\d{4}-\d{1,2}-\d{1,2}|\d{1,2}\.?\s+[a-zäöü]{3,9}\.?\s+\d{4}|[a-zäöü]{3,9}\.?\s+\d{1,2}(?:st|nd|rd|th)?,?\s+\d{4})'
+      score: 0.6
+
+- name: PlaceOfBirthKeywordRecognizer
+  type: custom
+  supported_entity: PLACE_OF_BIRTH
+  supported_languages: [en, de]
+  patterns:
+    - name: place of birth after keyword
+      regex: '(?<=\b(?:geburtsort|geb\.?\s*ort|place\s+of\s+birth|birthplace)\s*[:\-–]?\s*)[^\s,;:()\-–][^\n,;:()]{1,59}?(?=\s*(?:[,;\n(]|$))'
+      score: 0.6
+
+- name: NationalityKeywordRecognizer
+  type: custom
+  supported_entity: NATIONALITY
+  supported_languages: [en, de]
+  patterns:
+    - name: nationality after keyword
+      regex: '(?<=\b(?:staatsangehörigkeit|staatsangehoerigkeit|nationalität|nationalitaet|nationality|citizenship)\s*[:\-–]?\s*)[^\s,;:()\-–][^\n,;:()]{1,39}?(?=\s*(?:[,;\n(]|$))'
+      score: 0.6
+
+- name: StudentIdKeywordRecognizer
+  type: custom
+  supported_entity: STUDENT_ID
+  supported_languages: [en, de]
+  patterns:
+    - name: student id after keyword
+      regex: '(?<=\b(?:matrikelnummer|matrikel[\-\s]?nr\.?|matr\.?[\-\s]?nr\.?|matriculation\s+(?:no\.?|number|nr\.?)|student\s+id(?:\s+(?:no\.?|number))?)\s*[:\-–]?\s*)(?=[a-z\-/]*\d)[a-z0-9][a-z0-9\-/]{3,19}\b'
+      score: 0.6
+
+- name: ApplicantIdKeywordRecognizer
+  type: custom
+  supported_entity: APPLICANT_ID
+  supported_languages: [en, de]
+  patterns:
+    - name: applicant / application number after keyword
+      regex: '(?<=\b(?:bewerbernummer|bewerber[\-\s]?nr\.?|bewerber[\-\s]?id|antragsnummer|antrags[\-\s]?nr\.?|kennnummer|kenn[\-\s]?nr\.?|applicant\s+(?:no\.?|number|id)|application\s+(?:no\.?|number|id))\s*[:\-–]?\s*)(?=[a-z\-/]*\d)[a-z0-9][a-z0-9\-/]{3,19}\b'
+      score: 0.6

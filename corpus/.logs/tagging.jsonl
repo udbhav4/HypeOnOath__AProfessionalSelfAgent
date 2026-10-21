@@ -9,3 +9,14 @@
 {"timestamp": "2026-10-01T15:06:00.453338+00:00", "file": "documents/README.md", "project_name": null, "date": "18.05.2026", "date_source": "custom_override"}
 {"timestamp": "2026-10-01T15:06:00.482397+00:00", "file": "documents/system-design-rag-chatbot.md", "project_name": null, "date": "20.09.2026", "date_source": "custom_override"}
 {"timestamp": "2026-10-01T15:06:00.496493+00:00", "file": "code/agent.ts", "status": "code_project_refreshed", "project_key": "gliimr"}
+{"timestamp": "2026-10-16T21:44:22.552813+00:00", "file": "converted/AcceptanceLetter1_Zulassung.md", "project_name": null, "date": "20.08.2025", "date_source": "mtime"}
+{"timestamp": "2026-10-16T21:44:22.556088+00:00", "file": "converted/Coursera AnalyzingBigDataWithSQL Certificate.md", "project_name": null, "date": "09.10.2026", "date_source": "mtime"}
+{"timestamp": "2026-10-16T21:44:22.558743+00:00", "file": "converted/Coursera ImprovingDeepNeuralNetworks (1).md", "project_name": null, "date": "09.10.2026", "date_source": "mtime"}
+{"timestamp": "2026-10-16T21:44:22.561423+00:00", "file": "converted/Coursera ModernBigDataAnalysisWithSQL Certificate.md", "project_name": null, "date": "04.04.2025", "date_source": "mtime"}
+{"timestamp": "2026-10-16T21:44:22.563772+00:00", "file": "converted/Coursera NeuralNetworksAndDeepLearning.md", "project_name": null, "date": "04.04.2025", "date_source": "mtime"}
+{"timestamp": "2026-10-16T21:44:22.566362+00:00", "file": "converted/Coursera StructuringMachineLearningProjects.md", "project_name": null, "date": "04.04.2025", "date_source": "mtime"}
+{"timestamp": "2026-10-16T21:44:22.581689+00:00", "file": "converted/CV_Udbhav3.md", "project_name": null, "date": "03.10.2026", "date_source": "mtime"}
+{"timestamp": "2026-10-19T20:52:13.598182+00:00", "file": "converted/CV_Udbhav.md", "project_name": "AI specific CV", "date": "20.09.2026", "date_source": "custom_override"}
+{"timestamp": "2026-10-19T20:52:25.294018+00:00", "file": "converted/CV_Udbhav2.md", "project_name": "Analytics specific CV", "date": "20.09.2026", "date_source": "custom_override"}
+{"timestamp": "2026-10-19T20:52:31.900754+00:00", "file": "converted/CV_Udbhav3.md", "project_name": null, "date": "03.10.2026", "date_source": "mtime"}
+{"timestamp": "2026-10-19T20:52:33.808638+00:00", "file": "converted/Cover_Letter_Udbhav.md", "project_name": null, "date": "18.09.2026", "date_source": "custom_override"}

@@ -1,4 +1,5 @@
-"""secret_scan.py: warning-only, type + line only, never the value (3A.13)."""
+"""secret_scan.py: secrets only (PII moved to hypeonoath.privacy, plan v3 7.2), type + line only,
+never the value (3A.13)."""
 from __future__ import annotations
 
 import json
@@ -26,45 +27,37 @@ def test_plain_code_has_no_entropy_noise():
     assert findings == []
 
 
-def test_fake_pii_types_and_lines():
-    findings = scan.scan_text((FIXTURES / "fake_pii.md").read_text(), "fake_pii.md")
-    assert {(f.line, f.finding_type) for f in findings} == {(3, "email_address"), (5, "phone_number")}
+def test_personal_info_is_no_longer_scanned_here():
+    # PII is detected, reviewed and redacted by hypeonoath.privacy now.
+    assert scan.scan_text((FIXTURES / "fake_pii.md").read_text(), "fake_pii.md") == []
+    assert not hasattr(scan, "pii_findings_in_line")
 
 
-@pytest.mark.parametrize("line, expected", [
-    ("mail me: someone@example.org", ["email_address"]),
-    ("+49 1637223004 | x@y.de", ["email_address", "phone_number"]),
-    ("Eulerweg 1, 64347 Griesheim.", ["street_address"]),
-    ("221 Baker Street, London", ["street_address"]),
-    ("IBAN DE89 3704 0044 0532 0130 00", ["id_number"]),
-    ("customer id 123456789012", ["id_number"]),
-    ("July 2018 - July 2022 Dehradun", []),          # date ranges are not phones
-    ("Grade: 8.41/10, 20.09.2026", []),
-    ("total += values[12] * 12", []),
-])
-def test_pii_patterns(line, expected):
-    assert scan.pii_findings_in_line(line) == expected
+def test_secret_matches_expose_the_value_in_memory_only():
+    lines = (FIXTURES / "fake_secret.py").read_text().split("\n")
+    assert scan._secret_matches(lines, "fake_secret.py") == [(2, "AWS Access Key", FAKE_KEY)]
+    assert scan._secret_hits(lines, "fake_secret.py") == {2: {"AWS Access Key"}}
 
 
 def test_scan_chunks_maps_lines_for_code_and_summary():
     code = Chunk("c1", "# [P] f.py > x  [lines 10-12]\nx = 1\nkey = 'AKIAIOSFODNN7EXAMPLE'\n", "corpus/code/f.py",
                  "code", line_start=10, line_end=12)
-    summary = Chunk("s1", "Project: P\nDescription: mail jane.doe@example.com\nCode files: f.py",
+    summary = Chunk("s1", "Project: P\nDescription: key 'AKIAIOSFODNN7EXAMPLE'\nCode files: f.py",
                     "corpus/code/_projects/p", "project_summary")
     found = {(f.file, f.line, f.finding_type) for f in scan.scan_chunks([code, summary])}
     assert ("corpus/code/f.py", 11, "AWS Access Key") in found
-    assert ("corpus/code/_projects/p", 2, "email_address") in found
+    assert ("corpus/code/_projects/p", 2, "AWS Access Key") in found
 
 
 def test_report_dedupes_allowlists_and_never_writes_values(tmp_path):
-    findings = scan.scan_text((FIXTURES / "fake_pii.md").read_text(), "fake_pii.md") * 2   # duplicates
-    findings += scan.scan_text((FIXTURES / "fake_secret.py").read_text(), "fake_secret.py")
+    secret = (FIXTURES / "fake_secret.py").read_text()
+    findings = scan.scan_text(secret, "fake_secret.py") * 2                                   # duplicates
+    findings += scan.scan_text(secret, "other.py")
     allowlist_path = tmp_path / "allow.yaml"
-    allowlist_path.write_text("- {file: fake_pii.md, finding_type: email_address, reason: public test email}\n")
+    allowlist_path.write_text("- {file: other.py, finding_type: AWS Access Key, reason: documented test key}\n")
     report = scan.build_report(findings, scan.load_allowlist(allowlist_path))
     assert report.allowlisted == 1
-    assert {(f.file, f.finding_type) for f in report.findings} == {("fake_pii.md", "phone_number"),
-                                                                   ("fake_secret.py", "AWS Access Key")}
+    assert {(f.file, f.finding_type) for f in report.findings} == {("fake_secret.py", "AWS Access Key")}
     out = tmp_path / "scan_warnings.jsonl"
     scan.write_report(report, out)
     raw = out.read_text(encoding="utf-8")
@@ -73,7 +66,7 @@ def test_report_dedupes_allowlists_and_never_writes_values(tmp_path):
     summary = scan.format_summary(report)
     for secret in (FAKE_KEY, FAKE_EMAIL, "23456789"):
         assert secret not in raw and secret not in summary
-    assert "1 allowlisted" in summary and "NOT stopped" in summary
+    assert "1 allowlisted" in summary and "privacy review" in summary
 
 
 def test_allowlist_line_specific(tmp_path):
@@ -83,7 +76,7 @@ def test_allowlist_line_specific(tmp_path):
 
 
 def test_empty_summary():
-    assert "no warnings" in scan.format_summary(scan.ScanReport())
+    assert "no secrets left in the index" in scan.format_summary(scan.ScanReport())
 
 
 def test_bad_allowlist_shape(tmp_path):

@@ -14,16 +14,40 @@ Step 5 -- question -> ranked context items (guideline v4, Section 6).
      higher-ranked hit -> dropped (README fence vs source file).
 Filters (project_key / content_type / language) are available via `where`
 but unused by default, so multi-hop questions see every content type.
+
+On start-up the index's `privacy_fp` (collection metadata) is compared with
+the fingerprint of the local privacy decisions; a mismatch only WARNS -- a
+host without the decisions file (Phase 2) must still serve (plan 7.4).
 """
 from __future__ import annotations
 
+import logging
 from collections.abc import Callable
 
 from hypeonoath.core import config
+from hypeonoath.core.private_values import load_private_values, privacy_fingerprint
 from hypeonoath.core.records import Chunk, RetrievedItem, sha256_hex
 from hypeonoath.core.store import get_client, restore_chunk
 
 CountTokens = Callable[[str], int]
+
+logger = logging.getLogger(__name__)
+
+STALE_PRIVACY_WARNING = "Index was built with different privacy decisions; rebuild: hypeonoath-index"
+
+
+def check_privacy_fingerprint(collection) -> bool:
+    """True when the index matches the local privacy decisions; logs a warning otherwise."""
+    index_fp = (getattr(collection, "metadata", None) or {}).get("privacy_fp", "none")
+    try:
+        local_fp = privacy_fingerprint(load_private_values())
+    except ValueError as exc:            # unreadable decisions file: serve anyway
+        logger.warning("Privacy decisions unreadable (%s); index fingerprint not checked", exc)
+        return False
+    if index_fp != local_fp:
+        logger.warning(STALE_PRIVACY_WARNING)
+        return False
+    return True
 
 
 def _code_hash(chunk: Chunk) -> str | None:
@@ -41,6 +65,7 @@ class Retriever:
                  count_tokens: CountTokens | None = None):
         if collection is None:
             collection = get_client().get_collection(config.COLLECTION_NAME)
+        check_privacy_fingerprint(collection)
         if embed_query is None or count_tokens is None:
             from hypeonoath.core import embedder
             embed_query = embed_query or embedder.embed_query

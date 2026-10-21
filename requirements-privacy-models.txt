@@ -1,0 +1,6 @@
+# spaCy models for the privacy review (hypeonoath.privacy; plan v3 6.1, P-D5).
+# Not on PyPI -- pinned wheel URLs from github.com/explosion/spacy-models releases.
+# Versions must match hypeonoath.core.config.PINNED_VERSIONS.
+#   pip install -r requirements-privacy-models.txt
+en_core_web_lg @ https://github.com/explosion/spacy-models/releases/download/en_core_web_lg-3.8.0/en_core_web_lg-3.8.0-py3-none-any.whl
+de_core_news_lg @ https://github.com/explosion/spacy-models/releases/download/de_core_news_lg-3.8.0/de_core_news_lg-3.8.0-py3-none-any.whl

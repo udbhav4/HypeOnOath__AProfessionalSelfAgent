@@ -6,3 +6,11 @@ __pycache__/
 eval/results/
 .pytest_cache/
 *.egg-info/
+# Privacy (plans/privacy-pii-redaction-plan-v3.md): exact private values -- never committed
+corpus/.privacy/
+# P-D21: raw originals with private findings -- never committed (redacted converted files may be)
+corpus/raw/AcceptanceLetter1_Zulassung.pdf
+corpus/documents/AcceptanceLetter1_Zulassung.pdf
+# Transient folders of the fresh-directory index rebuild (may hold pre-redaction text)
+index/chroma__new/
+index/chroma__old/

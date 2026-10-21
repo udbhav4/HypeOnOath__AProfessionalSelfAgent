@@ -139,8 +139,8 @@
           ]
         }
       ],
-      "orig": "SMC Deutschland, Egelsbach, Hesse, Germany.",
-      "text": "SMC Deutschland, Egelsbach, Hesse, Germany."
+      "orig": "SMC Deutschland, [REDACTED: address / place], [REDACTED: address / place], Germany.",
+      "text": "SMC Deutschland, [REDACTED: address / place], [REDACTED: address / place], Germany."
     },
     {
       "self_ref": "#/texts/3",
@@ -217,12 +217,12 @@
           },
           "charspan": [
             0,
-            705
+            702
           ]
         }
       ],
-      "orig": "I am reaching out for an application of a Working Student position in IT & Information Services. What drew me to this position is the fact that it requires analyzing capabilities, and good management of reports and dashbaords, all of which I have a 3.5 years professional experience in. Furthermore, having worked as a Senior Business Analyst , and then an Assistant Manager in analytics, I have had immense opportunities and exposure to interact with multiple stakeholders . I have had a constant use of tools like SQL and Python throughout my experience. Moreover, if required, I can use my knowledge of AI systems which I have attained through my MSc in AI & ML at TU Darmstadt , and advanced projects.",
-      "text": "I am reaching out for an application of a Working Student position in IT & Information Services. What drew me to this position is the fact that it requires analyzing capabilities, and good management of reports and dashbaords, all of which I have a 3.5 years professional experience in. Furthermore, having worked as a Senior Business Analyst , and then an Assistant Manager in analytics, I have had immense opportunities and exposure to interact with multiple stakeholders . I have had a constant use of tools like SQL and Python throughout my experience. Moreover, if required, I can use my knowledge of AI systems which I have attained through my MSc in AI & ML at TU Darmstadt , and advanced projects."
+      "orig": "I am reaching out for an application of a Working Student position in IT & Information Services. What drew me to this position is the fact that it requires analyzing capabilities, and good management of reports and dashbaords, all of which I have a 3.5 years professional experience in. Furthermore, having worked as a Senior Business Analyst, and then an Assistant Manager in analytics, I have had immense opportunities and exposure to interact with multiple stakeholders. I have had a constant use of tools like SQL and Python throughout my experience. Moreover, if required, I can use my knowledge of AI systems which I have attained through my MSc in AI & ML at TU Darmstadt, and advanced projects.",
+      "text": "I am reaching out for an application of a Working Student position in IT & Information Services. What drew me to this position is the fact that it requires analyzing capabilities, and good management of reports and dashbaords, all of which I have a 3.5 years professional experience in. Furthermore, having worked as a Senior Business Analyst, and then an Assistant Manager in analytics, I have had immense opportunities and exposure to interact with multiple stakeholders. I have had a constant use of tools like SQL and Python throughout my experience. Moreover, if required, I can use my knowledge of AI systems which I have attained through my MSc in AI & ML at TU Darmstadt, and advanced projects."
     },
     {
       "self_ref": "#/texts/6",
@@ -383,8 +383,8 @@
           ]
         }
       ],
-      "orig": "Griesheim, 13 September 2026",
-      "text": "Griesheim, 13 September 2026"
+      "orig": "Griesheim, [REDACTED: date]",
+      "text": "Griesheim, [REDACTED: date]"
     }
   ],
   "pictures": [],

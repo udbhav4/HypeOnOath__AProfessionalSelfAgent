@@ -1,4 +1,12 @@
 {
+  "AcceptanceLetter1_Zulassung.pdf": {
+    "cleaned": true,
+    "converted_output": "AcceptanceLetter1_Zulassung.md",
+    "destination_category": "document",
+    "hash": "a46eeb39da62fd1285850f1bd85a84d2ab021938e508464826a0af1d671da75c",
+    "structured_output": "AcceptanceLetter1_Zulassung.docling.json",
+    "tagged": true
+  },
   "CV_Udbhav.pdf": {
     "cleaned": true,
     "converted_output": "CV_Udbhav.md",
@@ -13,6 +21,54 @@
     "destination_category": "document",
     "hash": "a805345d21eb5e1c549a7e76f87beef33a3a69ad38d53769f45764af7481dc26",
     "structured_output": "CV_Udbhav2.docling.json",
+    "tagged": true
+  },
+  "CV_Udbhav3.pdf": {
+    "cleaned": true,
+    "converted_output": "CV_Udbhav3.md",
+    "destination_category": "document",
+    "hash": "d68da9b1d2a614aab6aa36eeb7c524e5d0c75cb9940865a73c75ee8e30899d6b",
+    "structured_output": "CV_Udbhav3.docling.json",
+    "tagged": true
+  },
+  "Coursera AnalyzingBigDataWithSQL Certificate.pdf": {
+    "cleaned": true,
+    "converted_output": "Coursera AnalyzingBigDataWithSQL Certificate.md",
+    "destination_category": "document",
+    "hash": "faa201217c46cd9cf661374f39172955608cbd6630ef94e99ef5b7693b4613ed",
+    "structured_output": "Coursera AnalyzingBigDataWithSQL Certificate.docling.json",
+    "tagged": true
+  },
+  "Coursera ImprovingDeepNeuralNetworks (1).pdf": {
+    "cleaned": true,
+    "converted_output": "Coursera ImprovingDeepNeuralNetworks (1).md",
+    "destination_category": "document",
+    "hash": "eba6eb8abc11144cf0ca99bbc9e6e3fd791227a45796020aaa32c69242f2cbfc",
+    "structured_output": "Coursera ImprovingDeepNeuralNetworks (1).docling.json",
+    "tagged": true
+  },
+  "Coursera ModernBigDataAnalysisWithSQL Certificate.pdf": {
+    "cleaned": true,
+    "converted_output": "Coursera ModernBigDataAnalysisWithSQL Certificate.md",
+    "destination_category": "document",
+    "hash": "316ea77e4d1bd8c7869812188f2f3c11818fe7be5ff0afd8abd1ee9caa8c3531",
+    "structured_output": "Coursera ModernBigDataAnalysisWithSQL Certificate.docling.json",
+    "tagged": true
+  },
+  "Coursera NeuralNetworksAndDeepLearning.pdf": {
+    "cleaned": true,
+    "converted_output": "Coursera NeuralNetworksAndDeepLearning.md",
+    "destination_category": "document",
+    "hash": "d6a5857c4e67cfa1e42583db52e757c066d597bd26fde69b50c3f5b5eda3f86f",
+    "structured_output": "Coursera NeuralNetworksAndDeepLearning.docling.json",
+    "tagged": true
+  },
+  "Coursera StructuringMachineLearningProjects.pdf": {
+    "cleaned": true,
+    "converted_output": "Coursera StructuringMachineLearningProjects.md",
+    "destination_category": "document",
+    "hash": "362d13c059db9bcce082dd6ed0ac471ed5d107c7a716df2faebbb37d96672053",
+    "structured_output": "Coursera StructuringMachineLearningProjects.docling.json",
     "tagged": true
   },
   "Cover_Letter_Udbhav.pdf": {

@@ -137,12 +137,12 @@ def test_heading_with_separator_round_trips():
 
 def test_finding_in_hard_wrapped_paragraph_reports_its_own_line(chunker, in_project):
     md = ("# A\n\nThis paragraph is hard wrapped across\nseveral physical lines of the file\n"
-          "and only here mentions fake.person@example.org as contact.\n")
+          "and only here mentions key = 'AKIAIOSFODNN7EXAMPLE' as config.\n")
     path = in_project / "doc.md"
     path.write_text(md, encoding="utf-8", newline="\n")
     doc = load_markdown_file(path)
     findings = secret_scan.scan_chunks(chunker.chunk_document(doc))
-    assert [f.line for f in findings if f.finding_type == "email_address"] == [5]
+    assert [f.line for f in findings if f.finding_type == "AWS Access Key"] == [5]
 
 
 def test_allowlist_edge_cases(tmp_path):
@@ -161,6 +161,6 @@ def test_allowlist_edge_cases(tmp_path):
 
 
 def test_crlf_text_scan_line_numbers():
-    text = "x = 1\r\ncontact = 'someone.fake@example.org'\r\ny = 2\r\n"
+    text = "x = 1\r\nkey = 'AKIAIOSFODNN7EXAMPLE'\r\ny = 2\r\n"
     findings = secret_scan.scan_text(text, "corpus/code/a.py")
-    assert [(f.line, f.finding_type) for f in findings] == [(2, "email_address")]
+    assert [(f.line, f.finding_type) for f in findings] == [(2, "AWS Access Key")]

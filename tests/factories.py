@@ -18,3 +18,13 @@ def code_chunk(**overrides):
 
 def doc_chunk():
     return Chunk("d1", "ABOUT ME\ntext", "corpus/converted/cv.md", "prose", heading_path=["ABOUT ME", "Sub"])
+
+
+def candidate(value, entity_type="PHONE_NUMBER", file="corpus/converted/cv.md", line=4, score=0.75,
+              recognizer="PhoneRecognizer", line_text=None):
+    """A privacy Candidate whose line holds the value (display offsets consistent)."""
+    from hypeonoath.privacy.detector import Candidate
+
+    line_text = line_text if line_text is not None else f"Contact: {value} today"
+    return Candidate(file, line, entity_type, recognizer, score, value, line_text, line_text.find(value),
+                     before="previous line", after="next line")

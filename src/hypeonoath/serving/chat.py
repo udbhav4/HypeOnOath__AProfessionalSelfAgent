@@ -8,7 +8,9 @@ Run from the project root:   python -m hypeonoath.serving.chat   (or: hypeonoath
 Never re-embeds the corpus: it only reads the index written by
 build_index.py. The raw `sources` list is always printed (with line
 ranges for code), so citations are visible even if the model forgets to
-cite inline.
+cite inline. Every answer passes the privacy guard (serving.guard) before
+it is printed, so a value the owner marked private never reaches the screen
+(privacy plan v3, 7.6).
 """
 from __future__ import annotations
 
@@ -17,9 +19,10 @@ import logging
 import sys
 
 from hypeonoath.core import config
+from hypeonoath.core.private_values import PrivateValue, load_private_values
 from hypeonoath.core.records import RetrievedItem
-from hypeonoath.serving import llm_client
-from hypeonoath.serving.prompt import build_prompt
+from hypeonoath.serving import guard, llm_client
+from hypeonoath.serving.prompt import PROMPT_PERSON, build_prompt
 from hypeonoath.serving.retriever import Retriever
 
 
@@ -38,6 +41,18 @@ def format_sources(items: list[RetrievedItem]) -> list[str]:
     return lines
 
 
+def load_guard_values() -> list[PrivateValue]:
+    """Private values for the answer guard; a missing / unreadable file -> guard inactive (one stderr line)."""
+    if not config.PRIVACY_DECISIONS_PATH.exists():
+        print("privacy guard: no decisions file — guard inactive", file=sys.stderr)
+        return []
+    try:
+        return load_private_values()
+    except ValueError as exc:
+        print(f"privacy guard: {exc} — guard inactive", file=sys.stderr)
+        return []
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Chat with the indexed corpus (answers with citations)")
     parser.add_argument("-k", type=int, default=config.DEFAULT_TOP_K, help="top-k chunks to retrieve")
@@ -52,6 +67,9 @@ def main(argv: list[str] | None = None) -> int:
               "Run: python -m hypeonoath.indexing.build_index", file=sys.stderr)
         return 1
 
+    private_values = load_guard_values()
+    person = PROMPT_PERSON.get(config.PROMPT_VERSION, "third")
+
     print("Ask a question (empty line or 'exit' to quit).")
     while True:
         try:
@@ -65,7 +83,9 @@ def main(argv: list[str] | None = None) -> int:
         if args.show_prompt:
             print(prompt.as_text())
         try:
-            print("\n" + llm_client.generate(prompt))
+            answer = llm_client.generate(prompt)
+            result = guard.guard_answer(answer, question, private_values, person=person)
+            print("\n" + result.text)
         except llm_client.LLMUnavailableError as exc:
             print(f"\n[LLM unavailable] {exc}")
         print("\nSources:")
