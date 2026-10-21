@@ -1,0 +1,682 @@
+{
+  "schema_name": "DoclingDocument",
+  "version": "1.10.0",
+  "name": "Coursera ModernBigDataAnalysisWithSQL Certificate",
+  "origin": {
+    "mimetype": "application/pdf",
+    "binary_hash": 12380939207261828401,
+    "filename": "Coursera ModernBigDataAnalysisWithSQL Certificate.pdf"
+  },
+  "furniture": {
+    "self_ref": "#/furniture",
+    "children": [],
+    "content_layer": "furniture",
+    "name": "_root_",
+    "label": "unspecified"
+  },
+  "body": {
+    "self_ref": "#/body",
+    "children": [
+      {
+        "$ref": "#/pictures/0"
+      },
+      {
+        "$ref": "#/pictures/1"
+      },
+      {
+        "$ref": "#/texts/2"
+      },
+      {
+        "$ref": "#/pictures/2"
+      },
+      {
+        "$ref": "#/texts/3"
+      },
+      {
+        "$ref": "#/texts/4"
+      },
+      {
+        "$ref": "#/texts/5"
+      },
+      {
+        "$ref": "#/texts/6"
+      },
+      {
+        "$ref": "#/texts/7"
+      },
+      {
+        "$ref": "#/texts/8"
+      },
+      {
+        "$ref": "#/texts/9"
+      },
+      {
+        "$ref": "#/texts/10"
+      },
+      {
+        "$ref": "#/texts/11"
+      },
+      {
+        "$ref": "#/texts/12"
+      },
+      {
+        "$ref": "#/texts/13"
+      },
+      {
+        "$ref": "#/texts/14"
+      },
+      {
+        "$ref": "#/texts/15"
+      },
+      {
+        "$ref": "#/texts/16"
+      }
+    ],
+    "content_layer": "body",
+    "name": "_root_",
+    "label": "unspecified"
+  },
+  "groups": [],
+  "texts": [
+    {
+      "self_ref": "#/texts/0",
+      "parent": {
+        "$ref": "#/pictures/0"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 70.59828694661459,
+            "t": 544.1977030436196,
+            "r": 136.05392456054688,
+            "b": 532.5076497395833,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            8
+          ]
+        }
+      ],
+      "orig": "coursera",
+      "text": "coursera"
+    },
+    {
+      "self_ref": "#/texts/1",
+      "parent": {
+        "$ref": "#/pictures/1"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 210.47076416015625,
+            "t": 547.3150482177733,
+            "r": 304.3684488932292,
+            "b": 531.728312174479,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            8
+          ]
+        }
+      ],
+      "orig": "CLOUDERA",
+      "text": "CLOUDERA",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/2",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 75.83400000000006,
+            "t": 455.6990999999999,
+            "r": 130.05719999999997,
+            "b": 440.60309999999987,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            9
+          ]
+        }
+      ],
+      "orig": "3 Courses",
+      "text": "3 Courses",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/3",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 43.559999999999945,
+            "t": 352.34959999999984,
+            "r": 134.61180000000002,
+            "b": 332.8535999999999,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            42
+          ]
+        }
+      ],
+      "orig": "Foundations for Big Data Analysis with SQL",
+      "text": "Foundations for Big Data Analysis with SQL"
+    },
+    {
+      "self_ref": "#/texts/4",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 43.559999999999945,
+            "t": 325.64959999999985,
+            "r": 148.02100000000007,
+            "b": 315.7535999999999,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            27
+          ]
+        }
+      ],
+      "orig": "Analyzing Big Data with SQL",
+      "text": "Analyzing Big Data with SQL"
+    },
+    {
+      "self_ref": "#/texts/5",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 43.56000000000006,
+            "t": 308.5495999999999,
+            "r": 155.23910000000012,
+            "b": 289.0535999999999,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            47
+          ]
+        }
+      ],
+      "orig": "Managing Big Data in Clusters and Cloud Storage",
+      "text": "Managing Big Data in Clusters and Cloud Storage"
+    },
+    {
+      "self_ref": "#/texts/6",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 197.15999999999997,
+            "t": 442.06799999999987,
+            "r": 261.18000000000006,
+            "b": 431.0439999999999,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            10
+          ]
+        }
+      ],
+      "orig": "06/22/2020",
+      "text": "06/22/2020"
+    },
+    {
+      "self_ref": "#/texts/7",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 197.15999999999997,
+            "t": 422.4367,
+            "r": 346.1068000000001,
+            "b": 400.1706999999999,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            13
+          ]
+        }
+      ],
+      "orig": "UDBHAV SHARMA",
+      "text": "UDBHAV SHARMA",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/8",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 197.15999999999997,
+            "t": 391.0679999999999,
+            "r": 539.1720000000001,
+            "b": 380.0439999999999,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            64
+          ]
+        }
+      ],
+      "orig": "has successfully completed the online, non-credit Specialization",
+      "text": "has successfully completed the online, non-credit Specialization"
+    },
+    {
+      "self_ref": "#/texts/9",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 197.15999999999997,
+            "t": 371.6049999999999,
+            "r": 516.3386000000002,
+            "b": 305.80599999999987,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            33
+          ]
+        }
+      ],
+      "orig": "Modern Big Data Analysis with SQL",
+      "text": "Modern Big Data Analysis with SQL",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/10",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 197.16000000000008,
+            "t": 296.86799999999994,
+            "r": 551.7000000000002,
+            "b": 170.6439999999999,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            549
+          ]
+        }
+      ],
+      "orig": "In this Specialization, learners acquired essential knowledge and skills for data analysis with SQL using open source distributed big data systems. Through a sequence of three courses, learners gained knowledge of the fundamental concepts behind relational databases, SQL, and big data; learned how to write and run SQL queries using query engines including Apache Hive and Apache Impala; and learned how to manage large-scale data in clusters and cloud storage using the Hadoop Distributed File System (HDFS) and Amazon Simple Storage Service (S3).",
+      "text": "In this Specialization, learners acquired essential knowledge and skills for data analysis with SQL using open source distributed big data systems. Through a sequence of three courses, learners gained knowledge of the fundamental concepts behind relational databases, SQL, and big data; learned how to write and run SQL queries using query engines including Apache Hive and Apache Impala; and learned how to manage large-scale data in clusters and cloud storage using the Hadoop Distributed File System (HDFS) and Amazon Simple Storage Service (S3)."
+    },
+    {
+      "self_ref": "#/texts/11",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 197.16000000000008,
+            "t": 44.333999999999946,
+            "r": 533.0460000000002,
+            "b": 17.221999999999866,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            394
+          ]
+        }
+      ],
+      "orig": "The online specialization named in this certificate may draw on material from courses taught on-campus, but the included courses are not equivalent to on-campus courses. Participation in this online specialization does not constitute enrollment at this university. This certificate does not confer a University grade, course credit or degree, and it does not verify the identity of the learner.",
+      "text": "The online specialization named in this certificate may draw on material from courses taught on-campus, but the included courses are not equivalent to on-campus courses. Participation in this online specialization does not constitute enrollment at this university. This certificate does not confer a University grade, course credit or degree, and it does not verify the identity of the learner."
+    },
+    {
+      "self_ref": "#/texts/12",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 568.5287272135416,
+            "t": 446.39094034830714,
+            "r": 650.7378743489584,
+            "b": 422.62115478515614,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            6
+          ]
+        }
+      ],
+      "orig": "DbyA.D",
+      "text": "DbyA.D"
+    },
+    {
+      "self_ref": "#/texts/13",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 569.064,
+            "t": 411.20099999999996,
+            "r": 628.4189999999999,
+            "b": 402.93299999999994,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            12
+          ]
+        }
+      ],
+      "orig": "Glynn Durham",
+      "text": "Glynn Durham"
+    },
+    {
+      "self_ref": "#/texts/14",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 569.064,
+            "t": 397.70099999999996,
+            "r": 634.9079999999999,
+            "b": 389.43299999999994,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            17
+          ]
+        }
+      ],
+      "orig": "Senior Instructor",
+      "text": "Senior Instructor"
+    },
+    {
+      "self_ref": "#/texts/15",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 569.064,
+            "t": 384.20099999999996,
+            "r": 606.5940000000002,
+            "b": 375.93299999999994,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            8
+          ]
+        },
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 681.9072265625,
+            "t": 442.8839213053384,
+            "r": 777.3633626302084,
+            "b": 420.67283121744777,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            9,
+            16
+          ]
+        },
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 677.814,
+            "t": 411.201,
+            "r": 750.1469999999998,
+            "b": 362.433,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            17,
+            62
+          ]
+        }
+      ],
+      "orig": "Cloudera Ze Cool Ian Cook Senior Curriculum Developer Cloudera",
+      "text": "Cloudera Ze Cool Ian Cook Senior Curriculum Developer Cloudera"
+    },
+    {
+      "self_ref": "#/texts/16",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 569.0640000000001,
+            "t": 35.150999999999954,
+            "r": 771.6090000000002,
+            "b": 16.082999999999856,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            75
+          ]
+        }
+      ],
+      "orig": "Verify this certificate at: [REDACTED: link]",
+      "text": "Verify this certificate at: [REDACTED: link]"
+    }
+  ],
+  "pictures": [
+    {
+      "self_ref": "#/pictures/0",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/0"
+        }
+      ],
+      "content_layer": "body",
+      "label": "picture",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 45.95444488525391,
+            "t": 611.9999999999999,
+            "r": 158.7657165527344,
+            "b": 475.6070098876952,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            0
+          ]
+        }
+      ],
+      "captions": [],
+      "references": [],
+      "footnotes": [],
+      "annotations": []
+    },
+    {
+      "self_ref": "#/pictures/1",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/1"
+        }
+      ],
+      "content_layer": "body",
+      "label": "picture",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 197.9776000976563,
+            "t": 596.6947164535521,
+            "r": 316.50741577148443,
+            "b": 477.5259857177733,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            0
+          ]
+        }
+      ],
+      "captions": [],
+      "references": [],
+      "footnotes": [],
+      "annotations": []
+    },
+    {
+      "self_ref": "#/pictures/2",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "picture",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 51.475383758544936,
+            "t": 437.2885589599608,
+            "r": 154.19786071777347,
+            "b": 366.78996276855463,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            0
+          ]
+        }
+      ],
+      "captions": [],
+      "references": [],
+      "footnotes": [],
+      "annotations": []
+    }
+  ],
+  "tables": [],
+  "key_value_items": [],
+  "form_items": [],
+  "pages": {
+    "1": {
+      "size": {
+        "width": 792.0000000000001,
+        "height": 611.9999999999999
+      },
+      "page_no": 1
+    }
+  }
+}

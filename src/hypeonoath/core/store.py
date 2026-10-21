@@ -35,6 +35,29 @@ def get_client(chroma_dir: Path | None = None):
     return chromadb.PersistentClient(path=str(chroma_dir), settings=Settings(anonymized_telemetry=False))
 
 
+def release_client(chroma_dir: Path | None = None) -> None:
+    """
+    Stop the shared Chroma system for this folder, closing its file handles
+    (every client of that path in this process becomes unusable).
+
+    Needed before the folder is renamed or deleted: Windows refuses either
+    while a handle is open, and chromadb shares one ref-counted system per
+    path, so one client.close() is not enough while other clients exist.
+    Private chromadb API -- the version is pinned (config.PINNED_VERSIONS)
+    and the fresh-directory rebuild tests cover it.
+    """
+    import gc
+
+    from chromadb.api.shared_system_client import SharedSystemClient
+
+    identifier = str(config.CHROMA_DIR if chroma_dir is None else chroma_dir)
+    system = SharedSystemClient._identifier_to_system.pop(identifier, None)
+    SharedSystemClient._identifier_to_refcount.pop(identifier, None)
+    if system is not None:
+        system.stop()
+    gc.collect()
+
+
 def flatten_metadata(chunk: Chunk) -> dict[str, Any]:
     """Every Chunk field except `text`, as str/int/float/bool only."""
     flat: dict[str, Any] = {}

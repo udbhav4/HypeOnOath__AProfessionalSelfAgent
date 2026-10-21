@@ -165,7 +165,7 @@ Each row is a discrete decision. Format: Decision → Alternatives considered �
 
 The corpus is **not homogeneous** — three distinct content types require three distinct chunking rules. A single fixed-size chunking rule applied uniformly is explicitly rejected as insufficient (plan2.md:94).
 
-**Terminology update [2026-09-13, session discussion — see Change Log v1.2]:** the content type originally named "Transcripts" below is renamed `structured_doc` to reflect that the chunking rule applies to any record-structured document (transcripts, certifications, tabular data), not transcripts specifically. The original table is preserved immediately below as an **earlier decision**, per this document's change-log convention; the current, renamed version follows it.
+**Terminology update [[REDACTED: date], session discussion — see Change Log v1.2]:** the content type originally named "Transcripts" below is renamed `structured_doc` to reflect that the chunking rule applies to any record-structured document (transcripts, certifications, tabular data), not transcripts specifically. The original table is preserved immediately below as an **earlier decision**, per this document's change-log convention; the current, renamed version follows it.
 
 **Earlier decision (superseded, kept for history):**
 
@@ -185,7 +185,7 @@ Source: plan2.md:88-94.
 | **`structured_doc`** (e.g., academic transcripts, structured certifications, tabular records) | Turn/entry-aware: one chunk per record | These documents are already discrete records (e.g., course, grade, term) | Mid-record splitting can separate a fact from its identifying label (e.g., a grade from its course name) — the exact fact needing citation is lost |
 | Code samples | AST-based via `tree-sitter`: one chunk per function/class, merge trivially small chunks, split only unusually large functions | Preserves complete, syntactically valid logic units | Fixed-size cuts routinely bisect a function, returning a broken, logic-incomplete fragment |
 
-Source: plan2.md:88-94, renamed per `plans/phase0-document-prep-subplan-v2.md` Section 4.2 (session discussion 2026-09-13).
+Source: plan2.md:88-94, renamed per `plans/phase0-document-prep-subplan-v2.md` Section 4.2 (session discussion [REDACTED: date]).
 
 **Superseded 2026-09-19 — see Current (v1.3) below.** The v1.2 table above assigns `content_type` per *document* (a whole file is either `prose` or `structured_doc`). Reasoning through a real corpus file (`system-design-rag-chatbot.md` — this document itself, added to `corpus/raw/`) exposed that this is the wrong grain: that file mixes prose sections with exposition tables (167 lines of table syntax used for ADR/comparison tables, not record data), and no per-document scoring rule can correctly resolve a file that is genuinely heterogeneous. Full rationale in `plans/phase0-document-prep-subplan-v5.md`, Section 3C.
 
@@ -210,14 +210,14 @@ Implied by the citation requirement (plan2.md:39, 102) but not explicitly schema
 | Field | Purpose |
 |---|---|
 | `source_document` | Which file the chunk came from (for citation) |
-| `content_type` | **Scope changed 2026-09-19 (v1.3):** now a **per-chunk** field (e.g. `prose` / `table` / `record` / `code`), assigned by the Phase 1 chunker's block-level typing (Section 5.1's Current (v1.3) design) — no longer a per-document field assigned in Phase 0. Earlier values (`prose`/`structured_doc`/`code`, assigned per-document in Phase 0) are superseded; renamed from `transcript` to `structured_doc`, 2026-09-13, before this later scope change — see Section 5.1 and Change Log v1.2/v1.3 |
+| `content_type` | **Scope changed 2026-09-19 (v1.3):** now a **per-chunk** field (e.g. `prose` / `table` / `record` / `code`), assigned by the Phase 1 chunker's block-level typing (Section 5.1's Current (v1.3) design) — no longer a per-document field assigned in Phase 0. Earlier values (`prose`/`structured_doc`/`code`, assigned per-document in Phase 0) are superseded; renamed from `transcript` to `structured_doc`, [REDACTED: date], before this later scope change — see Section 5.1 and Change Log v1.2/v1.3 |
 | `project_name` (where applicable) | Groups chunks belonging to the same project across doc types |
 | `date` | For provenance / freshness |
 | `chunk_id` | Unique identifier for citation linking |
 
 Source for the requirement (not the field list, which is derived): plan2.md:112 ("tag each with metadata (source type, project name, date)"). Renaming source: `plans/phase0-document-prep-subplan-v2.md` Section 4.2.
 
-### 5.4 Document format conversion (pre-chunking) **[Derived — added 2026-09-13, session discussion]**
+### 5.4 Document format conversion (pre-chunking) **[Derived — added [REDACTED: date], session discussion]**
 
 Not addressed in `plan2.md` or in this document's v1: source documents are not guaranteed to arrive in Markdown/plain text. Non-Markdown formats must be converted *before* chunking (Section 5.1) can run, since it depends on real heading syntax and clean text structure.
 
@@ -230,7 +230,7 @@ Not addressed in `plan2.md` or in this document's v1: source documents are not g
 
 **[Assumption flagged]:** conversion tool output accuracy on this project's specific documents (resume/transcript formatting) is not independently verified here — spot-check output against 1-2 real files before trusting it on the full corpus.
 
-Source: `plans/phase0-document-prep-subplan-v2.md` Step 3.1 (session discussion 2026-09-13, not in `plan2.md`).
+Source: `plans/phase0-document-prep-subplan-v2.md` Step 3.1 (session discussion [REDACTED: date], not in `plan2.md`).
 
 **Current (v1.3, 2026-09-19) — library changed to `docling`, plus an added hyperlink-extraction pass:**
 
@@ -242,7 +242,7 @@ A second, separate defect was found after that fix: `docling` groups text into l
 
 Source: `plans/phase0-document-prep-subplan-v5.md`, Step 3.3 and Section 3B (real implementation and testing, 2026-09-15 through 2026-09-19).
 
-### 5.5 Content-type detection — moved from a Phase 0 document-level step to a Phase 1 chunk-level step **[Derived — added 2026-09-13, session discussion; superseded 2026-09-19]**
+### 5.5 Content-type detection — moved from a Phase 0 document-level step to a Phase 1 chunk-level step **[Derived — added [REDACTED: date], session discussion; superseded 2026-09-19]**
 
 **Earlier decision (v1, superseded):** this document's v1 did not specify a detection mechanism; Phase 0 sub-plan v1 (`plans/phase0-document-prep-subplan.md`) resolved this by manual folder sorting — a human decides prose vs. transcript by placing each file in `corpus/prose/` or `corpus/transcripts/`.
 
@@ -253,7 +253,7 @@ Source: `plans/phase0-document-prep-subplan-v5.md`, Step 3.3 and Section 3B (rea
 | Classification mechanism | After Section 5.4's conversion step, a detection script scans each document for structured-record signals (e.g., repeated `Course:`/`Grade:`/`Term:`-style labels, tabular/record-like repetition). If found → tag `content_type: structured_doc`; otherwise → tag `content_type: prose`. The script writes the tag directly into the document's front-matter — no manual folder-sorting step | Fully removes the manual per-file classification step from Phase 0 sub-plan v1. Detection is heuristic (regex/pattern-based), not ML — appropriate at personal-corpus scale and keeps the "hand-written, no framework" learning goal intact (consistent with ADR-2), while still being a genuine algorithmic decision rather than manual sorting |
 | Folder structure implication | `corpus/` no longer needs separate `prose/`/`structured_doc/` folders — a single flat `corpus/documents/` folder is used, since `content_type` now lives in each file's front-matter, assigned by the script, rather than being encoded by manual folder placement | Folder placement was never a functional requirement — only the metadata tag is (Section 5.2) |
 
-Source: `plans/phase0-document-prep-subplan-v2.md` Section 3 (Steps 3.5) (session discussion 2026-09-13, not in `plan2.md`).
+Source: `plans/phase0-document-prep-subplan-v2.md` Section 3 (Steps 3.5) (session discussion [REDACTED: date], not in `plan2.md`).
 
 **Current (v1.3, 2026-09-19) — detection step removed from Phase 0 entirely; superseded by Section 5.1's per-block typing:**
 
@@ -326,7 +326,7 @@ This is called out in the source plan as **the core hard part of the product** (
 
 **Deployment dependency note [Derived]:** because Chroma is embedded/file-based rather than a separately hosted service, the vector store's persisted files must be deployed *alongside* the backend (e.g., committed/synced as part of the deployment artifact) rather than connected to over a network — this has implications for how re-indexing updates reach production. This is now resolved below (Section 9.1); previously an open gap (see Section 11.3 change log).
 
-### 9.1 Re-indexing strategy for a deployed product **[Derived — resolved 2026-09-13, session discussion]**
+### 9.1 Re-indexing strategy for a deployed product **[Derived — resolved [REDACTED: date], session discussion]**
 
 **Constraint driving this decision:** Render's free tier has an ephemeral filesystem — anything Chroma writes at runtime is lost on restart/redeploy. This rules out "re-index live on the running server" as an option outright. The index must instead be baked into the deployment artifact at deploy time, not updated at runtime.
 
@@ -405,7 +405,7 @@ These are structural gaps this document surfaces by attempting to give every com
 | Gap | Why it matters | Recommended resolution point | Status |
 |---|---|---|---|
 | No formal `/chat` request/response schema in source plan | Section 3.2 above proposes one, but it is derived, not sourced — needs explicit confirmation | Phase 2 (backend service build) | Open |
-| ~~No specified mechanism for propagating re-indexed Chroma data to the deployed backend~~ | Because Chroma is embedded/file-based, updating the corpus in production is not a simple "call an API" — needed a defined deploy/sync step | — | **Resolved 2026-09-13 — see Section 9.1** |
+| ~~No specified mechanism for propagating re-indexed Chroma data to the deployed backend~~ | Because Chroma is embedded/file-based, updating the corpus in production is not a simple "call an API" — needed a defined deploy/sync step | — | **Resolved [REDACTED: date] — see Section 9.1** |
 | No numeric rate-limit or input-length cap decided | Already flagged as open (11.2), listed here to ensure it isn't lost among smaller items | Phase 2 | Open |
 | No named testing framework for API/unit-level correctness (distinct from the eval set, which tests answer *quality*, not code correctness) | Eval set alone won't catch e.g. schema bugs or chunking crashes on edge-case documents | Phase 1 onward | Open |
 
@@ -415,9 +415,9 @@ These are structural gaps this document surfaces by attempting to give every com
 
 | Version | Date | Change | Reason |
 |---|---|---|---|
-| v1 | 2026-09-13 | Initial system design document created from `plans/plan2.md` | First formal system design artifact for this project; no prior system design document existed |
-| v1.1 | 2026-09-13 | Added Section 9.1 (Re-indexing strategy for a deployed product): chose Option A (commit regenerated index, redeploy on push) as the resolved design; retained Option B (reindex inside Render build step) and Option C (externalize vector store — persistent disk or hosted pgvector) as documented, deliberately-deferred alternatives. Closed the corresponding gap in Section 11.3. | User asked how re-indexing would be handled in a fully-deployed product; answered in chat (session discussion, not in `plans/plan2.md`), then explicitly requested this be appended to the system design document with Option B kept as an alternative and Option C flagged as a future option |
-| v1.2 | 2026-09-13 | Three changes to Section 5 (Data Design), all sourced from `plans/phase0-document-prep-subplan-v2.md`: (1) added Section 5.4, Document format conversion — non-Markdown sources (PDF via `pymupdf4llm`, DOCX/other via `pandoc`) converted to Markdown before chunking or content-type detection; (2) added Section 5.5, Automatic prose vs. `structured_doc` detection — a fully automatic heuristic script tags `content_type` in front-matter, no manual folder-sorting step, and the corpus folder structure collapses to a flat `corpus/documents/` (+ separate `corpus/code/`); (3) renamed the `content_type` value `transcript` to `structured_doc` throughout Sections 5.1 and 5.2, since the chunking rule applies to any record-structured document, not transcripts specifically. Prior wording kept as "earlier decision" blocks in Sections 5.1/5.2 rather than deleted. | User explicitly requested these three items be appended to the system design doc, referencing `plans/phase0-document-prep-subplan-v2.md` as source; user also explicitly corrected an initial hybrid (auto-detect + manual low-confidence override) framing — the finalized design is fully automatic detection, no manual override step |
+| v1 | [REDACTED: date] | Initial system design document created from `plans/plan2.md` | First formal system design artifact for this project; no prior system design document existed |
+| v1.1 | [REDACTED: date] | Added Section 9.1 (Re-indexing strategy for a deployed product): chose Option A (commit regenerated index, redeploy on push) as the resolved design; retained Option B (reindex inside Render build step) and Option C (externalize vector store — persistent disk or hosted pgvector) as documented, deliberately-deferred alternatives. Closed the corresponding gap in Section 11.3. | User asked how re-indexing would be handled in a fully-deployed product; answered in chat (session discussion, not in `plans/plan2.md`), then explicitly requested this be appended to the system design document with Option B kept as an alternative and Option C flagged as a future option |
+| v1.2 | [REDACTED: date] | Three changes to Section 5 (Data Design), all sourced from `plans/phase0-document-prep-subplan-v2.md`: (1) added Section 5.4, Document format conversion — non-Markdown sources (PDF via `pymupdf4llm`, DOCX/other via `pandoc`) converted to Markdown before chunking or content-type detection; (2) added Section 5.5, Automatic prose vs. `structured_doc` detection — a fully automatic heuristic script tags `content_type` in front-matter, no manual folder-sorting step, and the corpus folder structure collapses to a flat `corpus/documents/` (+ separate `corpus/code/`); (3) renamed the `content_type` value `transcript` to `structured_doc` throughout Sections 5.1 and 5.2, since the chunking rule applies to any record-structured document, not transcripts specifically. Prior wording kept as "earlier decision" blocks in Sections 5.1/5.2 rather than deleted. | User explicitly requested these three items be appended to the system design doc, referencing `plans/phase0-document-prep-subplan-v2.md` as source; user also explicitly corrected an initial hybrid (auto-detect + manual low-confidence override) framing — the finalized design is fully automatic detection, no manual override step |
 | v1.3 | 2026-09-19 | Four changes to Section 5 (Data Design), sourced from `plans/phase0-document-prep-subplan-v5.md`: (1) Section 5.4 updated — PDF/DOCX conversion library changed from `pymupdf4llm`/`pandoc` to `docling` (a real, confirmed table/heading-misdetection bug in `pymupdf4llm` on a real PDF, not fixed by its own `table_strategy` parameter), plus a new always-on independent hyperlink-extraction pass (a second, separate bug: `docling` silently dropped word-level PDF link annotations because its text grouping is coarser than the PDF's own link rectangles); (2) Section 5.5's document-level `prose`/`structured_doc` detection step is **removed from Phase 0 entirely**, not replaced by a corrected document-level rule — triggered by adding this system design document itself to the real corpus and finding that its 167 lines of exposition-table syntax would falsely trigger the old rule's `structured_doc` branch, exposing that whole-document binary classification is the wrong grain for real (heterogeneous) documents; (3) Section 5.1 gains a Current (v1.3) design — content-type/structural typing moves to a **per-block** decision made at chunk time in Phase 1 (block partitioning via `docling`'s own typed document model for PDF/DOCX-origin content, `markdown-it-py` for native Markdown, `tree-sitter` for code, unchanged), the standard approach used by tools like `unstructured` and LlamaParse; (4) Section 5.2's `content_type` chunk-metadata field changes scope from per-document (Phase 0) to per-chunk (Phase 1). All prior wording kept as "earlier decision" blocks per this document's convention, not deleted. | Corpus file addition and follow-up discussion (session, 2026-09-19) surfaced the classification-grain flaw directly; user then explicitly requested this system design document be updated to match both the discussion and the finalized `phase0-document-prep-subplan-v5.md` |
 
 ---
@@ -432,10 +432,10 @@ Every section of this document maps back to a specific part of `plans/plan2.md` 
 | Section 2 (Architecture Overview) | Lines 27-43 |
 | Section 3 (Component Design) | Lines 51-60, 34-40 |
 | Section 4 (ADRs) | Lines 16-18, 43, 51-62, 66-94 |
-| Section 5 (Data Design) | Lines 20-21, 88-94, 112; Sections 5.4-5.5 and the `structured_doc` renaming sourced from `plans/phase0-document-prep-subplan-v2.md` (session discussion 2026-09-13, not in plan2.md) — see Change Log v1.2. Sections 5.1/5.2/5.4/5.5 Current (v1.3) content sourced from `plans/phase0-document-prep-subplan-v5.md` (session discussion 2026-09-19, not in plan2.md) — see Change Log v1.3 |
+| Section 5 (Data Design) | Lines 20-21, 88-94, 112; Sections 5.4-5.5 and the `structured_doc` renaming sourced from `plans/phase0-document-prep-subplan-v2.md` (session discussion [REDACTED: date], not in plan2.md) — see Change Log v1.2. Sections 5.1/5.2/5.4/5.5 Current (v1.3) content sourced from `plans/phase0-document-prep-subplan-v5.md` (session discussion 2026-09-19, not in plan2.md) — see Change Log v1.3 |
 | Section 6 (Retrieval & Prompting) | Lines 35-39, 80, 102, 117 |
 | Section 7 (Grounding & Anti-Hallucination) | Lines 19, 43, 98-104 |
 | Section 8 (Non-Functional Requirements) | Lines 5, 17-23, 47-62, 122-128 |
-| Section 9 (Deployment View) | Lines 58-59; Section 9.1 sourced from session discussion 2026-09-13 (not in plan2.md) — see Change Log v1.1 |
+| Section 9 (Deployment View) | Lines 58-59; Section 9.1 sourced from session discussion [REDACTED: date] (not in plan2.md) — see Change Log v1.1 |
 | Section 10 (Phased Roadmap) | Lines 108-128 |
 | Section 11 (Risks & Open Items) | Lines 62, 76, 80, 134-137 |

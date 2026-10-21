@@ -115,6 +115,44 @@ NOTEBOOK_DEFAULT_LANGUAGE = "python"
 DEFAULT_TOP_K = 8                # tune against the eval set
 MAX_CONTEXT_TOKENS = 6000        # tune -- chunk context budget in the prompt
 REFUSAL_PHRASE = "I don't have information about that in my documents"
+# Prompt version in use; serving.prompt.PROMPT_PERSON maps it to the person
+# ("third" / "first") the decline templates are written in.
+PROMPT_VERSION = "v1"
+
+# --- Privacy (plans/privacy-pii-redaction-plan-v3.md) ------------------------
+PRIVACY_DIR = CORPUS_DIR / ".privacy"                      # gitignored, never committed
+PRIVACY_DECISIONS_PATH = PRIVACY_DIR / "decisions.json"    # exact values -- never logged
+PRIVACY_SCAN_STATE_PATH = PRIVACY_DIR / "scan_state.json"  # P-D38: per-file hashes + pending flags, no values
+PRIVACY_BUILD_LOCK_PATH = PRIVACY_DIR / "build.lock"       # P-D47: one index build at a time
+PRIVACY_LOG_PATH = LOGS_DIR / "privacy.jsonl"              # types/labels/counts only, never values
+PRIVACY_LANGUAGES = ("en", "de")                           # analyzer languages, extend freely
+PRIVACY_SPACY_MODELS = {"en": "en_core_web_lg", "de": "de_core_news_lg"}
+PRIVACY_MIN_SCORE = 0.3          # P-D22 -- display threshold; lower (down to 0) if a known value is missed
+REDACTED_PLACEHOLDER = "[REDACTED: {label}]"
+GUARD_SPAN_REPLACEMENT = "[private]"
+GUARD_NOTE = "Some personal details are kept private."
+GUARD_FULL_DECLINE_SHARE = 0.5   # tune -- redacted share of the answer that triggers a full decline
+GUARD_PARTIAL_ID_MIN = 6         # min chars of a stored ID that count as a partial leak
+GUARD_FUZZY_RATIO = 0.9
+GUARD_FUZZY_MIN_CHARS = 8
+# Detection routing (plan v4, P-D25 / P-D26, 6.3.1)
+PRIVACY_LANGUAGE_ROUTING = True  # False = v3 behaviour (every text in every PRIVACY_LANGUAGES)
+PRIVACY_LANG_MIN_WORDS = 8       # tune -- fewer words: use the document's language, else both
+PRIVACY_LANG_MIN_HITS = 3        # tune -- min stop-word hits of the winning language
+PRIVACY_LANG_MARGIN = 2.0        # tune -- winner needs >= 2x the other language's hits
+PRIVACY_CODE_BLOCK_TYPES = ("code_chunk", "code_fence")   # P-D26: no NER results on these
+PRIVACY_CODE_LANGUAGES = ("en",)                          # P-D26: patterns are identical in en/de
+PRIVACY_NER_RECOGNIZERS = ("SpacyRecognizer",)            # recognizer names dropped on code
+PRIVACY_CODE_DROPPED_ENTITIES = ("URL",)                   # P-D34: entity types dropped on code
+# P-D35 / P-D51: vehicle plate / postcode / US driver licence recognizers are off (generator);
+# stale keep decisions of these types are pruned (decisions.prune_retired). Must match the dropped classes (tested).
+PRIVACY_RETIRED_ENTITIES = ("DE_KFZ", "UK_VEHICLE_REGISTRATION", "IN_VEHICLE_REGISTRATION",
+                            "NG_VEHICLE_REGISTRATION", "TR_LICENSE_PLATE", "DE_PLZ", "UK_POSTCODE",
+                            "US_DRIVER_LICENSE")
+DECLINE_TEMPLATES = {            # keyed by prompt person; prompt v1 is third person
+    "third": "The candidate prefers not to share their {label} here.",
+    "first": "I'd rather not share my {label} here.",
+}
 
 # --- Generation: local Ollama, Phase 1 only (ADR-4) -------------------------
 OLLAMA_URL = "http://localhost:11434"
@@ -139,4 +177,8 @@ PINNED_VERSIONS: dict[str, str] = {
     "nbformat": "5.11.1",
     "markdown-it-py": "4.2.0",
     "docling-core": "2.99.0",
+    "presidio-analyzer": "2.2.364",
+    "spacy": "3.8.16",
+    "en-core-web-lg": "3.8.0",        # spaCy models: requirements-privacy-models.txt
+    "de-core-news-lg": "3.8.0",
 }

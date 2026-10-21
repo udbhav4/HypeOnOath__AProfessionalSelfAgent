@@ -87,6 +87,36 @@ def test_prompt_without_code_has_no_projects_block():
     assert "Projects referenced" not in prompt.user
 
 
+def test_prompt_private_note_after_question():
+    """F3 (silent-skip fix plan v2): labels once, first-appearance order, decline sentence from the template."""
+    items = [RetrievedItem(prose("a", "Admitted. Applicant no.: [REDACTED: applicant number]"), 0.9),
+             RetrievedItem(prose("b", "Born [REDACTED: date of birth], ref [REDACTED: applicant number]"), 0.8)]
+    user = build_prompt("Admitted? Application number?", items).user
+    note = user.split("QUESTION: Admitted? Application number?\n\n", 1)[1]
+    assert note.startswith("NOTE: the context contains private items: applicant number, date of birth.")
+    assert note.count("applicant number") == 3                     # list + "for <label>" + its sentence
+    for label in ("applicant number", "date of birth"):
+        assert f'"{config.DECLINE_TEMPLATES["third"].format(label=label)}"' in note
+
+
+def test_prompt_private_note_uses_the_guard_sentence():
+    from hypeonoath.core import private_values as pv
+    from hypeonoath.serving.guard import guard_answer
+
+    value = pv.values_from_entries([{"id": "x", "decision": "private", "label": "phone number",
+                                     "entity_type": "PHONE_NUMBER", "match_kind": "id", "value": "+49 151 2345678",
+                                     "normalized": "491512345678", "aliases": [], "surface_forms": ["+49 151 2345678"]}])
+    declined = guard_answer("+49 151 2345678", "phone?", value).text
+    prompt = build_prompt("q", [RetrievedItem(prose("a", "Tel: [REDACTED: phone number]"), 0.9)])
+    assert f'"{declined}"' in prompt.user
+    assert pv.find_private_spans(prompt.as_text(), value) == []        # labels only, never a value
+
+
+def test_prompt_without_placeholder_has_no_note():
+    user = build_prompt("q", [RetrievedItem(prose("a"), 0.9)]).user
+    assert "NOTE:" not in user and user.endswith("QUESTION: q")
+
+
 def test_prompt_split_group_label():
     parts = [code(f"p{n}", n, 2, "g") for n in (1, 2)]
     prompt = build_prompt("q", [RetrievedItem(parts[0], 0.9, parts)])

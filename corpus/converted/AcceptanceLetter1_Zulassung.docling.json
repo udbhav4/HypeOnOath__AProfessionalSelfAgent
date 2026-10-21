@@ -1,0 +1,630 @@
+{
+  "schema_name": "DoclingDocument",
+  "version": "1.10.0",
+  "name": "AcceptanceLetter1_Zulassung",
+  "origin": {
+    "mimetype": "application/pdf",
+    "binary_hash": 2783417110533875548,
+    "filename": "AcceptanceLetter1_Zulassung.pdf"
+  },
+  "furniture": {
+    "self_ref": "#/furniture",
+    "children": [],
+    "content_layer": "furniture",
+    "name": "_root_",
+    "label": "unspecified"
+  },
+  "body": {
+    "self_ref": "#/body",
+    "children": [
+      {
+        "$ref": "#/texts/0"
+      },
+      {
+        "$ref": "#/texts/1"
+      },
+      {
+        "$ref": "#/texts/2"
+      },
+      {
+        "$ref": "#/texts/3"
+      },
+      {
+        "$ref": "#/texts/4"
+      },
+      {
+        "$ref": "#/texts/5"
+      },
+      {
+        "$ref": "#/texts/6"
+      },
+      {
+        "$ref": "#/texts/7"
+      },
+      {
+        "$ref": "#/texts/8"
+      },
+      {
+        "$ref": "#/pictures/0"
+      },
+      {
+        "$ref": "#/groups/0"
+      },
+      {
+        "$ref": "#/texts/17"
+      }
+    ],
+    "content_layer": "body",
+    "name": "_root_",
+    "label": "unspecified"
+  },
+  "groups": [
+    {
+      "self_ref": "#/groups/0",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/12"
+        },
+        {
+          "$ref": "#/texts/13"
+        },
+        {
+          "$ref": "#/texts/14"
+        },
+        {
+          "$ref": "#/texts/15"
+        },
+        {
+          "$ref": "#/texts/16"
+        }
+      ],
+      "content_layer": "body",
+      "name": "group",
+      "label": "key_value_area"
+    }
+  ],
+  "texts": [
+    {
+      "self_ref": "#/texts/0",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 89.07421503857421,
+            "t": 675.836002545166,
+            "r": 260.6747940585498,
+            "b": 670.3750652727051,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            69
+          ]
+        }
+      ],
+      "orig": "Technische Universität Darmstadt | Karolinenplatz 5 | 64289 Darmstadt",
+      "text": "Technische Universität Darmstadt | Karolinenplatz 5 | 64289 Darmstadt"
+    },
+    {
+      "self_ref": "#/texts/1",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 89.07421503857421,
+            "t": 647.4295049136334,
+            "r": 215.84014550385987,
+            "b": 630.8797592364093,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            69
+          ]
+        }
+      ],
+      "orig": "[REDACTED: name] Internationales Referat VIIIA Zulassung International",
+      "text": "[REDACTED: name] Internationales Referat VIIIA Zulassung International"
+    },
+    {
+      "self_ref": "#/texts/2",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 89.07421503857421,
+            "t": 568.5417982347034,
+            "r": 293.6623577979203,
+            "b": 534.1297632676593,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            182
+          ]
+        }
+      ],
+      "orig": "Admission procedure for the Master's program M.Sc. Artificial Intelligence and Machine Learning (2023) Application Number: [REDACTED: applicant number] Result of the subject-specific examination: admitted",
+      "text": "Admission procedure for the Master's program M.Sc. Artificial Intelligence and Machine Learning (2023) Application Number: [REDACTED: applicant number] Result of the subject-specific examination: admitted"
+    },
+    {
+      "self_ref": "#/texts/3",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 89.07421503857421,
+            "t": 532.6795096948834,
+            "r": 235.57720854313493,
+            "b": 525.1459648144453,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            45
+          ]
+        }
+      ],
+      "orig": "(Part of admission decision letter/enclosure)",
+      "text": "(Part of admission decision letter/enclosure)"
+    },
+    {
+      "self_ref": "#/texts/4",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 89.07421503857421,
+            "t": 514.6795104448834,
+            "r": 155.41389634942072,
+            "b": 507.53884398025303,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            18
+          ]
+        }
+      ],
+      "orig": "Dear Sir or Madam,",
+      "text": "Dear Sir or Madam,"
+    },
+    {
+      "self_ref": "#/texts/5",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 89.07421503857421,
+            "t": 496.67951119488345,
+            "r": 406.765738276427,
+            "b": 480.12976551765934,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            182
+          ]
+        }
+      ],
+      "orig": "Udbhav Narayan Sharma is admitted for the Master's program M.Sc. Artificial Intelligence and Machine Learning (2023) for the winter term 2025 at the Technische Universität Darmstadt.",
+      "text": "Udbhav Narayan Sharma is admitted for the Master's program M.Sc. Artificial Intelligence and Machine Learning (2023) for the winter term 2025 at the Technische Universität Darmstadt."
+    },
+    {
+      "self_ref": "#/texts/6",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 89.07421503857421,
+            "t": 469.67951231988343,
+            "r": 406.76680267638255,
+            "b": 399.12976889265934,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            691
+          ]
+        }
+      ],
+      "orig": "As part of the formal examination (according to § 17a of the General Examination Terms of the Technische Universität Darmstadt, GET) the individual qualification was determined by the examination board of the Department of Computer Science in the subject-specific examination. The available competencies, regardless of the nature and origin of the first university degree, are assessed for qualitative and quantitative equivalent. The study regulations of the Master's program M.Sc. Artificial Intelligence and Machine Learning (2023) of the Department of Computer Science at the Technischen Universität Darmstadt serves as basis (Ausführungsbestimmungen Anhang II: Kompetenzbeschreibungen).",
+      "text": "As part of the formal examination (according to § 17a of the General Examination Terms of the Technische Universität Darmstadt, GET) the individual qualification was determined by the examination board of the Department of Computer Science in the subject-specific examination. The available competencies, regardless of the nature and origin of the first university degree, are assessed for qualitative and quantitative equivalent. The study regulations of the Master's program M.Sc. Artificial Intelligence and Machine Learning (2023) of the Department of Computer Science at the Technischen Universität Darmstadt serves as basis (Ausführungsbestimmungen Anhang II: Kompetenzbeschreibungen)."
+    },
+    {
+      "self_ref": "#/texts/7",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 89.07421503857421,
+            "t": 388.6835659878299,
+            "r": 406.7689886262916,
+            "b": 372.1297700176593,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            145
+          ]
+        }
+      ],
+      "orig": "The prerequisites for a subject-specific approval are fulfilled. We are looking forward to welcome Udbhav Narayan Sharma to our Master's program.",
+      "text": "The prerequisites for a subject-specific approval are fulfilled. We are looking forward to welcome Udbhav Narayan Sharma to our Master's program."
+    },
+    {
+      "self_ref": "#/texts/8",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 89.07421503857421,
+            "t": 352.67951719488343,
+            "r": 215.3055228377885,
+            "b": 327.14597306444523,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            75
+          ]
+        }
+      ],
+      "orig": "Kind regards, Professor Dr. M. Fischlin (Chairman of the Examination Board)",
+      "text": "Kind regards, Professor Dr. M. Fischlin (Chairman of the Examination Board)"
+    },
+    {
+      "self_ref": "#/texts/9",
+      "parent": {
+        "$ref": "#/pictures/0"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 463.6666666666667,
+            "t": 725.2533133333334,
+            "r": 540.3333333333334,
+            "b": 712.91998,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            10
+          ]
+        }
+      ],
+      "orig": "TECHNISCHE",
+      "text": "TECHNISCHE"
+    },
+    {
+      "self_ref": "#/texts/10",
+      "parent": {
+        "$ref": "#/pictures/0"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 464.0,
+            "t": 711.5866466666666,
+            "r": 540.0,
+            "b": 699.91998,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            11
+          ]
+        }
+      ],
+      "orig": "UNIVERSITÄT",
+      "text": "UNIVERSITÄT"
+    },
+    {
+      "self_ref": "#/texts/11",
+      "parent": {
+        "$ref": "#/pictures/0"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 464.0,
+            "t": 698.5866466666666,
+            "r": 540.0,
+            "b": 686.5866466666666,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            9
+          ]
+        }
+      ],
+      "orig": "DARMSTADT",
+      "text": "DARMSTADT"
+    },
+    {
+      "self_ref": "#/texts/12",
+      "parent": {
+        "$ref": "#/groups/0"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 428.3671696513672,
+            "t": 533.4214090777405,
+            "r": 538.5787410680705,
+            "b": 518.5444343874094,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            30
+          ]
+        }
+      ],
+      "orig": "Department of Computer Science",
+      "text": "Department of Computer Science"
+    },
+    {
+      "self_ref": "#/texts/13",
+      "parent": {
+        "$ref": "#/groups/0"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 428.3671696513672,
+            "t": 506.4295107886334,
+            "r": 493.0988879292122,
+            "b": 500.5565860162488,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            17
+          ]
+        }
+      ],
+      "orig": "Examination Board",
+      "text": "Examination Board"
+    },
+    {
+      "self_ref": "#/texts/14",
+      "parent": {
+        "$ref": "#/groups/0"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 428.3671696513672,
+            "t": 480.17951188238345,
+            "r": 485.73142693338934,
+            "b": 465.3065874849988,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            32
+          ]
+        }
+      ],
+      "orig": "[REDACTED: address / place]. 10 64289 Darmstadt",
+      "text": "[REDACTED: address / place]. 10 64289 Darmstadt"
+    },
+    {
+      "self_ref": "#/texts/15",
+      "parent": {
+        "$ref": "#/groups/0"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 428.3671696513672,
+            "t": 453.17951300738343,
+            "r": 519.1625009020806,
+            "b": 420.3065893599988,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            86
+          ]
+        }
+      ],
+      "orig": "Tel. [REDACTED: phone number] Fax [REDACTED: phone number] [REDACTED: email address]",
+      "text": "Tel. [REDACTED: phone number] Fax [REDACTED: phone number] [REDACTED: email address]"
+    },
+    {
+      "self_ref": "#/texts/16",
+      "parent": {
+        "$ref": "#/groups/0"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 428.3671696513672,
+            "t": 389.9121962979163,
+            "r": 465.69466104605516,
+            "b": 375.3065912349988,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            15
+          ]
+        }
+      ],
+      "orig": "Date 29.07.2025",
+      "text": "Date 29.07.2025"
+    },
+    {
+      "self_ref": "#/texts/17",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "furniture",
+      "label": "page_footer",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 56.68359138818359,
+            "t": 72.17952888238347,
+            "r": 338.39742037510706,
+            "b": 64.62978283015934,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            84
+          ]
+        }
+      ],
+      "orig": "This document was created automatically and is valid even without signature or seal.",
+      "text": "This document was created automatically and is valid even without signature or seal."
+    }
+  ],
+  "pictures": [
+    {
+      "self_ref": "#/pictures/0",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/9"
+        },
+        {
+          "$ref": "#/texts/10"
+        },
+        {
+          "$ref": "#/texts/11"
+        }
+      ],
+      "content_layer": "body",
+      "label": "picture",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 416.3655993106509,
+            "t": 729.9238497320122,
+            "r": 539.1913304203786,
+            "b": 682.697213493765,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            0
+          ]
+        }
+      ],
+      "captions": [],
+      "references": [],
+      "footnotes": [],
+      "annotations": []
+    }
+  ],
+  "tables": [],
+  "key_value_items": [],
+  "form_items": [],
+  "pages": {
+    "1": {
+      "size": {
+        "width": 595.91998,
+        "height": 841.91998
+      },
+      "page_no": 1
+    }
+  }
+}

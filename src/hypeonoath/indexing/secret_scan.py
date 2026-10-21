@@ -1,29 +1,28 @@
 """
-Secret + personal-info scan -- WARNING-ONLY (guideline v4, Sections 0, 3A.13;
-design doc ADR-15, accepted risk in 5.3).
+Secret scan for the index-build REPORT (guideline v4, 3A.13; privacy plan v3, 7.2).
 
-What it does:
-  * scans raw decoded code text (code_chunker, Step 3) and every final chunk
-    of every content type (build_index, step 3);
-  * secrets via detect-secrets' built-in plugins (pip-only, no system binary);
-  * personal info via simple named regexes (email, phone, street address,
-    ID-number-like digit runs / IBAN) -- cheap and good enough for a warning.
+Personal information moved to hypeonoath.privacy (Presidio + owner review +
+redaction). Secrets are found by detect-secrets in two places:
+  * the privacy review (hypeonoath.privacy.detector, via _secret_matches),
+    where the owner marks each one private (redacted) or keep;
+  * this module, on the raw code text (code_chunker) and on every final
+    chunk (build_index) -- so the report lists what is still in the index:
+    secrets the owner kept or allowlisted.
 
 What it never does:
-  * stop the run (user decision 2026-09-30) -- the indexer always continues;
+  * stop the run -- stopping is the privacy review's job;
   * record the matched value, masked or not -- a Finding has no field for it,
     so neither the report file, the console nor a future API/UI can leak it;
-  * change content (no redaction -- it can silently break code).
+  * change content.
 
-Reviewed, accepted findings go in corpus/.scan_allowlist.yaml as
+Reviewed, accepted findings may also go in corpus/.scan_allowlist.yaml as
 {file, line?, finding_type, reason}; they are hidden from the warnings but
-counted in the summary. The report (.logs/scan_warnings.jsonl) holds the
-LATEST run only -- it is what the Phase 2 API will expose.
+counted in the summary (the privacy review treats them as "keep"). The
+report (.logs/scan_warnings.jsonl) holds the LATEST run only.
 """
 from __future__ import annotations
 
 import json
-import re
 import uuid
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
@@ -38,7 +37,7 @@ from hypeonoath.core.records import Chunk
 
 @dataclass(frozen=True)
 class Finding:
-    """One possible secret / personal-info hit. Deliberately has NO value field."""
+    """One possible secret hit. Deliberately has NO value field."""
 
     file: str
     line: int | None
@@ -53,44 +52,12 @@ class ScanReport:
     allowlisted: int = 0
 
 
-# --- personal-info detectors --------------------------------------------------
-
-_EMAIL_RE = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
-_PHONE_CANDIDATE_RE = re.compile(r"(?<![\w+.])\+?\(?\d[\d\s()-]{6,}\d(?![\w.])")
-_STREET_RE = re.compile(
-    r"\b\d{1,5}\s+[A-Z][A-Za-z]+\s+(?:Street|St\.|Road|Rd\.|Avenue|Ave\.?|Lane|Drive|Boulevard)\b"
-    r"|\b[A-ZÄÖÜ][a-zäöüß]+(?:straße|strasse|str\.|weg|platz|allee|gasse|ring)\s+\d{1,4}[a-z]?\b"
-)
-_ID_NUMBER_RE = re.compile(r"(?<![\w.+-])\d{9,}(?![\w.])")
-_IBAN_RE = re.compile(r"\b[A-Z]{2}\d{2}(?:\s?[A-Z0-9]{4}){3,7}\b")
-
-
-def _phone_like(candidate: str) -> bool:
-    digits = sum(ch.isdigit() for ch in candidate)
-    has_sep = any(ch in candidate for ch in " -()")
-    return 9 <= digits <= 15 and (candidate.startswith(("+", "(")) or has_sep)
-
-
-def pii_findings_in_line(line: str) -> list[str]:
-    """Names of personal-info types present in one line (no values returned)."""
-    types: list[str] = []
-    if _EMAIL_RE.search(line):
-        types.append("email_address")
-    phones = [m.group(0) for m in _PHONE_CANDIDATE_RE.finditer(line) if _phone_like(m.group(0).strip())]
-    if phones:
-        types.append("phone_number")
-    if _STREET_RE.search(line):
-        types.append("street_address")
-    phone_text = " ".join(phones)
-    if _IBAN_RE.search(line) or any(m.group(0) not in phone_text for m in _ID_NUMBER_RE.finditer(line)):
-        types.append("id_number")
-    return types
-
-
-def _secret_hits(lines: list[str], filename: str) -> dict[int, set[str]]:
+def _secret_matches(lines: list[str], filename: str) -> list[tuple[int, str, str | None]]:
     """
-    detect-secrets in FILE mode over `lines` -> {1-based line index: {types}}.
-    Values are dropped right here.
+    detect-secrets in FILE mode over `lines` -> [(1-based line, type, value)].
+
+    The value is for the privacy review ONLY (in memory, never persisted or
+    logged); everything in this module drops it right away (_secret_hits).
 
     Uses _process_line_based_plugins (what scan_file() runs per file) rather
     than the public scan_line(): scan_line is detect-secrets' ad-hoc
@@ -101,10 +68,18 @@ def _secret_hits(lines: list[str], filename: str) -> dict[int, set[str]]:
     from detect_secrets.core.scan import _process_line_based_plugins
     from detect_secrets.settings import default_settings
 
-    hits: dict[int, set[str]] = {}
     with default_settings():
-        for secret in _process_line_based_plugins(lines=list(enumerate(lines, start=1)), filename=filename):
-            hits.setdefault(secret.line_number, set()).add(secret.type)
+        return [
+            (secret.line_number, secret.type, getattr(secret, "secret_value", None))
+            for secret in _process_line_based_plugins(lines=list(enumerate(lines, start=1)), filename=filename)
+        ]
+
+
+def _secret_hits(lines: list[str], filename: str) -> dict[int, set[str]]:
+    """{1-based line: {secret types}} -- values dropped right here."""
+    hits: dict[int, set[str]] = {}
+    for line_number, secret_type, _value in _secret_matches(lines, filename):
+        hits.setdefault(line_number, set()).add(secret_type)
     return hits
 
 
@@ -115,10 +90,9 @@ def scan_text(text: str, file: str, first_line: int = 1) -> list[Finding]:
     lines = text.split("\n")
     secrets = _secret_hits(lines, file)
     findings: list[Finding] = []
-    for index, line in enumerate(lines, start=1):
+    for index in range(1, len(lines) + 1):
         line_no = first_line + index - 1
         findings += [Finding(file, line_no, t, "detect-secrets") for t in sorted(secrets.get(index, ()))]
-        findings += [Finding(file, line_no, t, "pii-regex") for t in pii_findings_in_line(line)]
     return findings
 
 
@@ -153,11 +127,10 @@ def scan_chunks(chunks: list[Chunk]) -> list[Finding]:
         lines = chunk.text.split("\n")
         secrets = _secret_hits(lines, chunk.source_document)
         for index, line in enumerate(lines):
-            types = [(t, "detect-secrets") for t in sorted(secrets.get(index + 1, ()))]
-            types += [(t, "pii-regex") for t in pii_findings_in_line(line)]
+            types = sorted(secrets.get(index + 1, ()))
             if types:
                 line_no = _line_in_source(chunk, line, index)
-                findings += [Finding(chunk.source_document, line_no, t, d) for t, d in types]
+                findings += [Finding(chunk.source_document, line_no, t, "detect-secrets") for t in types]
     return findings
 
 
@@ -214,15 +187,16 @@ def format_summary(report: ScanReport) -> str:
     bar = "=" * 72
     if not report.findings:
         tail = f" ({report.allowlisted} allowlisted)" if report.allowlisted else ""
-        return f"{bar}\nSecret / personal-info scan: no warnings{tail}.\n{bar}"
+        return f"{bar}\nSecret scan: no secrets left in the index{tail}.\n{bar}"
     counts: dict[str, int] = {}
     for finding in report.findings:
         counts[finding.finding_type] = counts.get(finding.finding_type, 0) + 1
     lines = [
         bar,
-        f"WARNING: {len(report.findings)} possible secret / personal-info finding(s) "
-        f"({report.allowlisted} allowlisted). The run was NOT stopped:",
-        "flagged content IS in the index. Review before any git push of the index folder.",
+        f"NOTE: {len(report.findings)} possible secret(s) still in the index "
+        f"({report.allowlisted} allowlisted).",
+        "Each was kept in the privacy review (hypeonoath-privacy review). If one is real, mark it",
+        "private (hypeonoath-privacy set ID --decision private) and rebuild before any git push.",
         "By type: " + ", ".join(f"{t}={n}" for t, n in sorted(counts.items())),
         *[f"  {f.file}:{f.line if f.line is not None else '?'}: {f.finding_type}" for f in report.findings],
         f"Report: {config.SCAN_WARNINGS_PATH}   Allowlist: {config.SCAN_ALLOWLIST_PATH}",

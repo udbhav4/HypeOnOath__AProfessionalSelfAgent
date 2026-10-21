@@ -5,3 +5,14 @@
 {"timestamp": "2026-09-22T12:27:47.758545+00:00", "file": "CV_Udbhav.pdf", "status": "converted", "output": "converted/CV_Udbhav.md", "links_extracted": 2}
 {"timestamp": "2026-09-22T12:27:47.759841+00:00", "file": "CV_Udbhav.pdf", "status": "structured_export_failed", "error": "simulated disk failure"}
 {"timestamp": "2026-09-22T12:28:51.187436+00:00", "file": "CV_Udbhav.pdf", "status": "converted", "output": "converted/CV_Udbhav.md", "links_extracted": 2}
+{"timestamp": "2026-10-16T21:43:37.790582+00:00", "file": "AcceptanceLetter1_Zulassung.pdf", "status": "converted", "output": "converted/AcceptanceLetter1_Zulassung.md", "links_extracted": 0}
+{"timestamp": "2026-10-16T21:43:45.102417+00:00", "file": "Coursera AnalyzingBigDataWithSQL Certificate.pdf", "status": "converted", "output": "converted/Coursera AnalyzingBigDataWithSQL Certificate.md", "links_extracted": 0}
+{"timestamp": "2026-10-16T21:43:51.968465+00:00", "file": "Coursera ImprovingDeepNeuralNetworks (1).pdf", "status": "converted", "output": "converted/Coursera ImprovingDeepNeuralNetworks (1).md", "links_extracted": 0}
+{"timestamp": "2026-10-16T21:44:01.248148+00:00", "file": "Coursera ModernBigDataAnalysisWithSQL Certificate.pdf", "status": "converted", "output": "converted/Coursera ModernBigDataAnalysisWithSQL Certificate.md", "links_extracted": 0}
+{"timestamp": "2026-10-16T21:44:07.855239+00:00", "file": "Coursera NeuralNetworksAndDeepLearning.pdf", "status": "converted", "output": "converted/Coursera NeuralNetworksAndDeepLearning.md", "links_extracted": 0}
+{"timestamp": "2026-10-16T21:44:15.994857+00:00", "file": "Coursera StructuringMachineLearningProjects.pdf", "status": "converted", "output": "converted/Coursera StructuringMachineLearningProjects.md", "links_extracted": 0}
+{"timestamp": "2026-10-16T21:44:22.449338+00:00", "file": "CV_Udbhav3.pdf", "status": "converted", "output": "converted/CV_Udbhav3.md", "links_extracted": 2}
+{"timestamp": "2026-10-19T20:52:13.537669+00:00", "file": "CV_Udbhav.pdf", "status": "converted", "output": "converted/CV_Udbhav.md", "links_extracted": 2}
+{"timestamp": "2026-10-19T20:52:25.248114+00:00", "file": "CV_Udbhav2.pdf", "status": "converted", "output": "converted/CV_Udbhav2.md", "links_extracted": 2}
+{"timestamp": "2026-10-19T20:52:31.855211+00:00", "file": "CV_Udbhav3.pdf", "status": "converted", "output": "converted/CV_Udbhav3.md", "links_extracted": 2}
+{"timestamp": "2026-10-19T20:52:33.783835+00:00", "file": "Cover_Letter_Udbhav.pdf", "status": "converted", "output": "converted/Cover_Letter_Udbhav.md", "links_extracted": 0}

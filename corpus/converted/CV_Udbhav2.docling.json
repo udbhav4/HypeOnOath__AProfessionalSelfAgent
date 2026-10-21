@@ -39,76 +39,73 @@
         "$ref": "#/texts/6"
       },
       {
+        "$ref": "#/texts/7"
+      },
+      {
+        "$ref": "#/texts/8"
+      },
+      {
         "$ref": "#/groups/0"
-      },
-      {
-        "$ref": "#/texts/10"
-      },
-      {
-        "$ref": "#/texts/11"
       },
       {
         "$ref": "#/texts/12"
       },
       {
+        "$ref": "#/texts/13"
+      },
+      {
+        "$ref": "#/texts/14"
+      },
+      {
         "$ref": "#/groups/1"
-      },
-      {
-        "$ref": "#/texts/17"
-      },
-      {
-        "$ref": "#/texts/18"
       },
       {
         "$ref": "#/texts/19"
       },
       {
-        "$ref": "#/groups/2"
+        "$ref": "#/texts/20"
       },
       {
-        "$ref": "#/texts/24"
+        "$ref": "#/groups/2"
       },
       {
         "$ref": "#/texts/25"
       },
       {
-        "$ref": "#/groups/3"
+        "$ref": "#/texts/26"
       },
       {
-        "$ref": "#/texts/29"
+        "$ref": "#/groups/3"
       },
       {
         "$ref": "#/texts/30"
       },
       {
-        "$ref": "#/texts/31"
-      },
-      {
         "$ref": "#/tables/0"
       },
       {
-        "$ref": "#/texts/32"
+        "$ref": "#/texts/31"
       },
       {
         "$ref": "#/groups/4"
       },
       {
-        "$ref": "#/texts/38"
+        "$ref": "#/texts/35"
       },
       {
-        "$ref": "#/texts/39"
+        "$ref": "#/texts/36"
       },
       {
         "$ref": "#/groups/5"
       },
       {
-        "$ref": "#/texts/42"
+        "$ref": "#/texts/39"
       },
       {
         "$ref": "#/groups/6"
       },
       {
-        "$ref": "#/texts/44"
+        "$ref": "#/texts/41"
       },
       {
         "$ref": "#/groups/7"
@@ -126,13 +123,13 @@
       },
       "children": [
         {
-          "$ref": "#/texts/7"
-        },
-        {
-          "$ref": "#/texts/8"
-        },
-        {
           "$ref": "#/texts/9"
+        },
+        {
+          "$ref": "#/texts/10"
+        },
+        {
+          "$ref": "#/texts/11"
         }
       ],
       "content_layer": "body",
@@ -146,16 +143,16 @@
       },
       "children": [
         {
-          "$ref": "#/texts/13"
-        },
-        {
-          "$ref": "#/texts/14"
-        },
-        {
           "$ref": "#/texts/15"
         },
         {
           "$ref": "#/texts/16"
+        },
+        {
+          "$ref": "#/texts/17"
+        },
+        {
+          "$ref": "#/texts/18"
         }
       ],
       "content_layer": "body",
@@ -169,9 +166,6 @@
       },
       "children": [
         {
-          "$ref": "#/texts/20"
-        },
-        {
           "$ref": "#/texts/21"
         },
         {
@@ -179,6 +173,9 @@
         },
         {
           "$ref": "#/texts/23"
+        },
+        {
+          "$ref": "#/texts/24"
         }
       ],
       "content_layer": "body",
@@ -192,13 +189,13 @@
       },
       "children": [
         {
-          "$ref": "#/texts/26"
-        },
-        {
           "$ref": "#/texts/27"
         },
         {
           "$ref": "#/texts/28"
+        },
+        {
+          "$ref": "#/texts/29"
         }
       ],
       "content_layer": "body",
@@ -212,19 +209,13 @@
       },
       "children": [
         {
+          "$ref": "#/texts/32"
+        },
+        {
           "$ref": "#/texts/33"
         },
         {
           "$ref": "#/texts/34"
-        },
-        {
-          "$ref": "#/texts/35"
-        },
-        {
-          "$ref": "#/texts/36"
-        },
-        {
-          "$ref": "#/texts/37"
         }
       ],
       "content_layer": "body",
@@ -238,10 +229,10 @@
       },
       "children": [
         {
-          "$ref": "#/texts/40"
+          "$ref": "#/texts/37"
         },
         {
-          "$ref": "#/texts/41"
+          "$ref": "#/texts/38"
         }
       ],
       "content_layer": "body",
@@ -255,7 +246,7 @@
       },
       "children": [
         {
-          "$ref": "#/texts/43"
+          "$ref": "#/texts/40"
         }
       ],
       "content_layer": "body",
@@ -269,10 +260,10 @@
       },
       "children": [
         {
-          "$ref": "#/texts/45"
+          "$ref": "#/texts/42"
         },
         {
-          "$ref": "#/texts/46"
+          "$ref": "#/texts/43"
         }
       ],
       "content_layer": "body",
@@ -316,6 +307,61 @@
       },
       "children": [],
       "content_layer": "body",
+      "label": "section_header",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 143.02,
+            "t": 805.6809506000001,
+            "r": 452.2514660499999,
+            "b": 783.923734270317,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            21
+          ]
+        }
+      ],
+      "orig": "Udbhav Narayan Sharma",
+      "text": "Udbhav Narayan Sharma",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/2",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "text",
+      "prov": [
+        {
+          "page_no": 1,
+          "bbox": {
+            "l": 147.494,
+            "t": 781.1339153,
+            "r": 447.7789775099999,
+            "b": 771.6001792965418,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            57
+          ]
+        }
+      ],
+      "orig": "+49 1637223004 | udbhavns26@gmail.com | LinkedIn | GitHub",
+      "text": "+49 1637223004 | udbhavns26@gmail.com | LinkedIn | GitHub"
+    },
+    {
+      "self_ref": "#/texts/3",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
       "label": "text",
       "prov": [
         {
@@ -329,15 +375,15 @@
           },
           "charspan": [
             0,
-            391
+            390
           ]
         }
       ],
-      "orig": "M.Sc. AI & ML student at TUDarmstadt with 3.5 years of professional experience in Business Analytics across FinTech and Travel industries. Currently focussed on hands-on implementation of modern agentic AI systems , especially the SLMs, with reduction in hallucination . Experience across the ML stack - from data analysis & preprocessing, to probabilistic model training, to on-device LLMs.",
-      "text": "M.Sc. AI & ML student at TUDarmstadt with 3.5 years of professional experience in Business Analytics across FinTech and Travel industries. Currently focussed on hands-on implementation of modern agentic AI systems , especially the SLMs, with reduction in hallucination . Experience across the ML stack - from data analysis & preprocessing, to probabilistic model training, to on-device LLMs."
+      "orig": "M.Sc. AI & ML student at TU Darmstadt with 3.5 years of professional experience in Business Analytics across FinTech and Travel industries. Currently focussed on hands-on implementation of modern agentic AI systems, especially the SLMs, with reduction in hallucination. Experience across the ML stack - from data analysis & preprocessing, to probabilistic model training, to on-device LLMs.",
+      "text": "M.Sc. AI & ML student at TU Darmstadt with 3.5 years of professional experience in Business Analytics across FinTech and Travel industries. Currently focussed on hands-on implementation of modern agentic AI systems, especially the SLMs, with reduction in hallucination. Experience across the ML stack - from data analysis & preprocessing, to probabilistic model training, to on-device LLMs."
     },
     {
-      "self_ref": "#/texts/2",
+      "self_ref": "#/texts/4",
       "parent": {
         "$ref": "#/body"
       },
@@ -365,7 +411,7 @@
       "level": 1
     },
     {
-      "self_ref": "#/texts/3",
+      "self_ref": "#/texts/5",
       "parent": {
         "$ref": "#/body"
       },
@@ -392,7 +438,7 @@
       "text": "Assistant Manager - Planning & Growth (Data Analytics)"
     },
     {
-      "self_ref": "#/texts/4",
+      "self_ref": "#/texts/6",
       "parent": {
         "$ref": "#/body"
       },
@@ -419,7 +465,7 @@
       "text": "May 2024 - Aug 2025"
     },
     {
-      "self_ref": "#/texts/5",
+      "self_ref": "#/texts/7",
       "parent": {
         "$ref": "#/body"
       },
@@ -446,7 +492,7 @@
       "text": "Cleartrip Private Limited (Flipkart)"
     },
     {
-      "self_ref": "#/texts/6",
+      "self_ref": "#/texts/8",
       "parent": {
         "$ref": "#/body"
       },
@@ -473,7 +519,7 @@
       "text": "Bangalore, India"
     },
     {
-      "self_ref": "#/texts/7",
+      "self_ref": "#/texts/9",
       "parent": {
         "$ref": "#/groups/0"
       },
@@ -502,7 +548,7 @@
       "marker": "\u00b7"
     },
     {
-      "self_ref": "#/texts/8",
+      "self_ref": "#/texts/10",
       "parent": {
         "$ref": "#/groups/0"
       },
@@ -531,7 +577,7 @@
       "marker": "\u00b7"
     },
     {
-      "self_ref": "#/texts/9",
+      "self_ref": "#/texts/11",
       "parent": {
         "$ref": "#/groups/0"
       },
@@ -560,7 +606,7 @@
       "marker": "\u00b7"
     },
     {
-      "self_ref": "#/texts/10",
+      "self_ref": "#/texts/12",
       "parent": {
         "$ref": "#/body"
       },
@@ -588,7 +634,7 @@
       "level": 1
     },
     {
-      "self_ref": "#/texts/11",
+      "self_ref": "#/texts/13",
       "parent": {
         "$ref": "#/body"
       },
@@ -615,7 +661,7 @@
       "text": "July 2022 - May 2024"
     },
     {
-      "self_ref": "#/texts/12",
+      "self_ref": "#/texts/14",
       "parent": {
         "$ref": "#/body"
       },
@@ -656,7 +702,7 @@
       "text": "Freecharge Payment Technologies Private Limited Gurugram, India"
     },
     {
-      "self_ref": "#/texts/13",
+      "self_ref": "#/texts/15",
       "parent": {
         "$ref": "#/groups/1"
       },
@@ -675,17 +721,17 @@
           },
           "charspan": [
             0,
-            124
+            123
           ]
         }
       ],
-      "orig": "\u00b7 Built a Machine Learning model to predict likely loan defaulters at 90% accuracy and reduced the EMI default rate by 30% .",
-      "text": "Built a Machine Learning model to predict likely loan defaulters at 90% accuracy and reduced the EMI default rate by 30% .",
+      "orig": "\u00b7 Built a Machine Learning model to predict likely loan defaulters at 90% accuracy and reduced the EMI default rate by 30%.",
+      "text": "Built a Machine Learning model to predict likely loan defaulters at 90% accuracy and reduced the EMI default rate by 30%.",
       "enumerated": false,
       "marker": "\u00b7"
     },
     {
-      "self_ref": "#/texts/14",
+      "self_ref": "#/texts/16",
       "parent": {
         "$ref": "#/groups/1"
       },
@@ -714,7 +760,7 @@
       "marker": "\u00b7"
     },
     {
-      "self_ref": "#/texts/15",
+      "self_ref": "#/texts/17",
       "parent": {
         "$ref": "#/groups/1"
       },
@@ -743,7 +789,7 @@
       "marker": "\u00b7"
     },
     {
-      "self_ref": "#/texts/16",
+      "self_ref": "#/texts/18",
       "parent": {
         "$ref": "#/groups/1"
       },
@@ -762,17 +808,17 @@
           },
           "charspan": [
             0,
-            126
+            125
           ]
         }
       ],
-      "orig": "\u00b7 Received the FC Warrior award for exceptional performance in the time period of November, 2022 to March, 2023 at Freecharge.",
-      "text": "Received the FC Warrior award for exceptional performance in the time period of November, 2022 to March, 2023 at Freecharge.",
+      "orig": "\u00b7 Received the FCWarrior award for exceptional performance in the time period of November, 2022 to March, 2023 at Freecharge.",
+      "text": "Received the FCWarrior award for exceptional performance in the time period of November, 2022 to March, 2023 at Freecharge.",
       "enumerated": false,
       "marker": "\u00b7"
     },
     {
-      "self_ref": "#/texts/17",
+      "self_ref": "#/texts/19",
       "parent": {
         "$ref": "#/body"
       },
@@ -800,7 +846,7 @@
       "level": 1
     },
     {
-      "self_ref": "#/texts/18",
+      "self_ref": "#/texts/20",
       "parent": {
         "$ref": "#/body"
       },
@@ -813,49 +859,22 @@
           "bbox": {
             "l": 36.0,
             "t": 342.2782672,
-            "r": 455.7327257599999,
+            "r": 543.5795353599999,
             "b": 331.7844267481268,
             "coord_origin": "BOTTOMLEFT"
           },
           "charspan": [
             0,
-            72
+            81
           ]
         }
       ],
-      "orig": "Gliimr - On-device Personal Health Intelligence App | (Solo, End-to-End)",
-      "text": "Gliimr - On-device Personal Health Intelligence App | (Solo, End-to-End)",
+      "orig": "Gliimr - On-device Personal Health Intelligence App | (Solo, End-to-End) May 2026",
+      "text": "Gliimr - On-device Personal Health Intelligence App | (Solo, End-to-End) May 2026",
       "level": 1
     },
     {
-      "self_ref": "#/texts/19",
-      "parent": {
-        "$ref": "#/body"
-      },
-      "children": [],
-      "content_layer": "body",
-      "label": "text",
-      "prov": [
-        {
-          "page_no": 1,
-          "bbox": {
-            "l": 493.83394815999986,
-            "t": 342.2424016,
-            "r": 543.5795353599999,
-            "b": 331.79445257867434,
-            "coord_origin": "BOTTOMLEFT"
-          },
-          "charspan": [
-            0,
-            8
-          ]
-        }
-      ],
-      "orig": "May 2026",
-      "text": "May 2026"
-    },
-    {
-      "self_ref": "#/texts/20",
+      "self_ref": "#/texts/21",
       "parent": {
         "$ref": "#/groups/2"
       },
@@ -874,17 +893,17 @@
           },
           "charspan": [
             0,
-            215
+            213
           ]
         }
       ],
-      "orig": "\u00b7 Architected an on-device , React-native app that combines LLMs with a Dynamic Bayesian Network (DBN) resulting in a Causal Inference and Explainable AI (XAI) framework, which structurally prevents hallucinations .",
-      "text": "Architected an on-device , React-native app that combines LLMs with a Dynamic Bayesian Network (DBN) resulting in a Causal Inference and Explainable AI (XAI) framework, which structurally prevents hallucinations .",
+      "orig": "\u00b7 Architected an on-device, React-native app that combines LLMs with a Dynamic Bayesian Network (DBN) resulting in a Causal Inference and Explainable AI (XAI) framework, which structurally prevents hallucinations.",
+      "text": "Architected an on-device, React-native app that combines LLMs with a Dynamic Bayesian Network (DBN) resulting in a Causal Inference and Explainable AI (XAI) framework, which structurally prevents hallucinations.",
       "enumerated": false,
       "marker": "\u00b7"
     },
     {
-      "self_ref": "#/texts/21",
+      "self_ref": "#/texts/22",
       "parent": {
         "$ref": "#/groups/2"
       },
@@ -903,17 +922,17 @@
           },
           "charspan": [
             0,
-            177
+            175
           ]
         }
       ],
-      "orig": "\u00b7 Engineered a staged probabilistic-neural agentic pipeline , with a sequential NLU pipeline with confidence-gating , a DBN, and multiple ReAct agents for sequential generation.",
-      "text": "Engineered a staged probabilistic-neural agentic pipeline , with a sequential NLU pipeline with confidence-gating , a DBN, and multiple ReAct agents for sequential generation.",
+      "orig": "\u00b7 Engineered a staged probabilistic-neural agentic pipeline, with a sequential NLU pipeline with confidence-gating, a DBN, and multiple ReAct agents for sequential generation.",
+      "text": "Engineered a staged probabilistic-neural agentic pipeline, with a sequential NLU pipeline with confidence-gating, a DBN, and multiple ReAct agents for sequential generation.",
       "enumerated": false,
       "marker": "\u00b7"
     },
     {
-      "self_ref": "#/texts/22",
+      "self_ref": "#/texts/23",
       "parent": {
         "$ref": "#/groups/2"
       },
@@ -932,17 +951,17 @@
           },
           "charspan": [
             0,
-            120
+            119
           ]
         }
       ],
-      "orig": "\u00b7 Implemented a custom in-process MCP tool dispatcher , that handles a possible format mismatch by the generative model.",
-      "text": "Implemented a custom in-process MCP tool dispatcher , that handles a possible format mismatch by the generative model.",
+      "orig": "\u00b7 Implemented a custom in-process MCP tool dispatcher, that handles a possible format mismatch by the generative model.",
+      "text": "Implemented a custom in-process MCP tool dispatcher, that handles a possible format mismatch by the generative model.",
       "enumerated": false,
       "marker": "\u00b7"
     },
     {
-      "self_ref": "#/texts/23",
+      "self_ref": "#/texts/24",
       "parent": {
         "$ref": "#/groups/2"
       },
@@ -961,17 +980,17 @@
           },
           "charspan": [
             0,
-            179
+            178
           ]
         }
       ],
-      "orig": "\u00b7 Built a hybrid persistence layer using sqlite-vec for semantic memory retrieval with recency-weighted cosine similarity , and SQLite for structured DBN state - zero data egress.",
-      "text": "Built a hybrid persistence layer using sqlite-vec for semantic memory retrieval with recency-weighted cosine similarity , and SQLite for structured DBN state - zero data egress.",
+      "orig": "\u00b7 Built a hybrid persistence layer using sqlite-vec for semantic memory retrieval with recency-weighted cosine similarity, and SQLite for structured DBN state - zero data egress.",
+      "text": "Built a hybrid persistence layer using sqlite-vec for semantic memory retrieval with recency-weighted cosine similarity, and SQLite for structured DBN state - zero data egress.",
       "enumerated": false,
       "marker": "\u00b7"
     },
     {
-      "self_ref": "#/texts/24",
+      "self_ref": "#/texts/25",
       "parent": {
         "$ref": "#/body"
       },
@@ -999,7 +1018,7 @@
       "level": 1
     },
     {
-      "self_ref": "#/texts/25",
+      "self_ref": "#/texts/26",
       "parent": {
         "$ref": "#/body"
       },
@@ -1026,7 +1045,7 @@
       "text": "July 2025"
     },
     {
-      "self_ref": "#/texts/26",
+      "self_ref": "#/texts/27",
       "parent": {
         "$ref": "#/groups/3"
       },
@@ -1045,17 +1064,17 @@
           },
           "charspan": [
             0,
-            173
+            172
           ]
         }
       ],
-      "orig": "\u00b7 Automated classification of Diabetic Retinopathy using a hybrid CNN-DNN architecture achieving 97% accuracy and 3% False Negative Rate , prioritizing clinical sensitivity.",
-      "text": "Automated classification of Diabetic Retinopathy using a hybrid CNN-DNN architecture achieving 97% accuracy and 3% False Negative Rate , prioritizing clinical sensitivity.",
+      "orig": "\u00b7 Automated classification of Diabetic Retinopathy using a hybrid CNN-DNN architecture achieving 97% accuracy and 3% False Negative Rate, prioritizing clinical sensitivity.",
+      "text": "Automated classification of Diabetic Retinopathy using a hybrid CNN-DNN architecture achieving 97% accuracy and 3% False Negative Rate, prioritizing clinical sensitivity.",
       "enumerated": false,
       "marker": "\u00b7"
     },
     {
-      "self_ref": "#/texts/27",
+      "self_ref": "#/texts/28",
       "parent": {
         "$ref": "#/groups/3"
       },
@@ -1084,7 +1103,7 @@
       "marker": "\u00b7"
     },
     {
-      "self_ref": "#/texts/28",
+      "self_ref": "#/texts/29",
       "parent": {
         "$ref": "#/groups/3"
       },
@@ -1103,72 +1122,17 @@
           },
           "charspan": [
             0,
-            154
+            152
           ]
         }
       ],
-      "orig": "\u00b7 Systematic pre-trained model selection via data augmentation and one-epoch benchmarking ; trained final model using OneCycleLR scheduling on MobileNet .",
-      "text": "Systematic pre-trained model selection via data augmentation and one-epoch benchmarking ; trained final model using OneCycleLR scheduling on MobileNet .",
+      "orig": "\u00b7 Systematic pre-trained model selection via data augmentation and one-epoch benchmarking; trained final model using OneCycleLR scheduling on MobileNet.",
+      "text": "Systematic pre-trained model selection via data augmentation and one-epoch benchmarking; trained final model using OneCycleLR scheduling on MobileNet.",
       "enumerated": false,
       "marker": "\u00b7"
     },
     {
-      "self_ref": "#/texts/29",
-      "parent": {
-        "$ref": "#/body"
-      },
-      "children": [],
-      "content_layer": "body",
-      "label": "section_header",
-      "prov": [
-        {
-          "page_no": 1,
-          "bbox": {
-            "l": 143.02,
-            "t": 805.6809506000001,
-            "r": 452.2514660499999,
-            "b": 783.923734270317,
-            "coord_origin": "BOTTOMLEFT"
-          },
-          "charspan": [
-            0,
-            21
-          ]
-        }
-      ],
-      "orig": "Udbhav Narayan Sharma",
-      "text": "Udbhav Narayan Sharma",
-      "level": 1
-    },
-    {
       "self_ref": "#/texts/30",
-      "parent": {
-        "$ref": "#/body"
-      },
-      "children": [],
-      "content_layer": "body",
-      "label": "text",
-      "prov": [
-        {
-          "page_no": 1,
-          "bbox": {
-            "l": 147.494,
-            "t": 781.1339153,
-            "r": 447.7789775099999,
-            "b": 771.6001792965418,
-            "coord_origin": "BOTTOMLEFT"
-          },
-          "charspan": [
-            0,
-            57
-          ]
-        }
-      ],
-      "orig": "+49 1637223004 | udbhavns26@gmail.com | LinkedIn | GitHub",
-      "text": "+49 1637223004 | udbhavns26@gmail.com | LinkedIn | GitHub"
-    },
-    {
-      "self_ref": "#/texts/31",
       "parent": {
         "$ref": "#/body"
       },
@@ -1196,7 +1160,7 @@
       "level": 1
     },
     {
-      "self_ref": "#/texts/32",
+      "self_ref": "#/texts/31",
       "parent": {
         "$ref": "#/body"
       },
@@ -1224,7 +1188,7 @@
       "level": 1
     },
     {
-      "self_ref": "#/texts/33",
+      "self_ref": "#/texts/32",
       "parent": {
         "$ref": "#/groups/4"
       },
@@ -1243,15 +1207,15 @@
           },
           "charspan": [
             0,
-            122
+            121
           ]
         }
       ],
-      "orig": "AI & ML : Machine Learning, Deep Learning (DNNs, Transfer Learning), Convolutional Neural Networks (CNNs), Computer Vision",
-      "text": "AI & ML : Machine Learning, Deep Learning (DNNs, Transfer Learning), Convolutional Neural Networks (CNNs), Computer Vision"
+      "orig": "AI & ML: Machine Learning, Deep Learning (DNNs, Transfer Learning), Convolutional Neural Networks (CNNs), Computer Vision",
+      "text": "AI & ML: Machine Learning, Deep Learning (DNNs, Transfer Learning), Convolutional Neural Networks (CNNs), Computer Vision"
     },
     {
-      "self_ref": "#/texts/34",
+      "self_ref": "#/texts/33",
       "parent": {
         "$ref": "#/groups/4"
       },
@@ -1264,48 +1228,21 @@
           "bbox": {
             "l": 36.0,
             "t": 637.0586426,
-            "r": 163.16301505999996,
-            "b": 627.4830307429394,
-            "coord_origin": "BOTTOMLEFT"
-          },
-          "charspan": [
-            0,
-            21
-          ]
-        }
-      ],
-      "orig": "Generative AI Systems",
-      "text": "Generative AI Systems"
-    },
-    {
-      "self_ref": "#/texts/35",
-      "parent": {
-        "$ref": "#/groups/4"
-      },
-      "children": [],
-      "content_layer": "body",
-      "label": "text",
-      "prov": [
-        {
-          "page_no": 2,
-          "bbox": {
-            "l": 36.0,
-            "t": 624.1076426,
-            "r": 154.49137147000002,
+            "r": 559.2789815199999,
             "b": 614.5320307429394,
             "coord_origin": "BOTTOMLEFT"
           },
           "charspan": [
             0,
-            18
+            186
           ]
         }
       ],
-      "orig": "Programming & Data",
-      "text": "Programming & Data"
+      "orig": "Generative AI Systems: Large Language Models, Agentic Frameworks (ReAct), RAG / Vector DB Programming & Data: SQL, Python, Pandas, NumPy, PyTorch, TensorFlow, PySpark, Thematic Analysis,",
+      "text": "Generative AI Systems: Large Language Models, Agentic Frameworks (ReAct), RAG / Vector DB Programming & Data: SQL, Python, Pandas, NumPy, PyTorch, TensorFlow, PySpark, Thematic Analysis,"
     },
     {
-      "self_ref": "#/texts/36",
+      "self_ref": "#/texts/34",
       "parent": {
         "$ref": "#/groups/4"
       },
@@ -1332,34 +1269,7 @@
       "text": "Time-Series Analysis"
     },
     {
-      "self_ref": "#/texts/37",
-      "parent": {
-        "$ref": "#/groups/4"
-      },
-      "children": [],
-      "content_layer": "body",
-      "label": "text",
-      "prov": [
-        {
-          "page_no": 2,
-          "bbox": {
-            "l": 154.49137147000002,
-            "t": 637.0259153,
-            "r": 559.2789815199999,
-            "b": 614.5411792965417,
-            "coord_origin": "BOTTOMLEFT"
-          },
-          "charspan": [
-            0,
-            147
-          ]
-        }
-      ],
-      "orig": ": Large Language Models, Agentic Frameworks (ReAct), RAG / Vector DB : SQL, Python, Pandas, NumPy, PyTorch, TensorFlow, PySpark, Thematic Analysis,",
-      "text": ": Large Language Models, Agentic Frameworks (ReAct), RAG / Vector DB : SQL, Python, Pandas, NumPy, PyTorch, TensorFlow, PySpark, Thematic Analysis,"
-    },
-    {
-      "self_ref": "#/texts/38",
+      "self_ref": "#/texts/35",
       "parent": {
         "$ref": "#/body"
       },
@@ -1387,7 +1297,7 @@
       "level": 1
     },
     {
-      "self_ref": "#/texts/39",
+      "self_ref": "#/texts/36",
       "parent": {
         "$ref": "#/body"
       },
@@ -1415,36 +1325,7 @@
       "level": 1
     },
     {
-      "self_ref": "#/texts/40",
-      "parent": {
-        "$ref": "#/groups/5"
-      },
-      "children": [],
-      "content_layer": "body",
-      "label": "list_item",
-      "prov": [
-        {
-          "page_no": 2,
-          "bbox": {
-            "l": 45.274,
-            "t": 550.1699153,
-            "r": 429.67904760999966,
-            "b": 540.6361792965417,
-            "coord_origin": "BOTTOMLEFT"
-          },
-          "charspan": [
-            0,
-            74
-          ]
-        }
-      ],
-      "orig": "Enhanced the DSPy-Haystack integration adapter using model-adaptive prompt",
-      "text": "Enhanced the DSPy-Haystack integration adapter using model-adaptive prompt",
-      "enumerated": false,
-      "marker": ""
-    },
-    {
-      "self_ref": "#/texts/41",
+      "self_ref": "#/texts/37",
       "parent": {
         "$ref": "#/groups/5"
       },
@@ -1456,24 +1337,53 @@
           "page_no": 2,
           "bbox": {
             "l": 36.0,
-            "t": 548.1037008,
+            "t": 550.1699153,
+            "r": 429.67904760999966,
+            "b": 540.6361792965417,
+            "coord_origin": "BOTTOMLEFT"
+          },
+          "charspan": [
+            0,
+            76
+          ]
+        }
+      ],
+      "orig": "\u00b7 Enhanced the DSPy-Haystack integration adapter using model-adaptive prompt",
+      "text": "Enhanced the DSPy-Haystack integration adapter using model-adaptive prompt",
+      "enumerated": false,
+      "marker": "\u00b7"
+    },
+    {
+      "self_ref": "#/texts/38",
+      "parent": {
+        "$ref": "#/groups/5"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [
+        {
+          "page_no": 2,
+          "bbox": {
+            "l": 45.274,
+            "t": 537.2189152999999,
             "r": 253.63562817999994,
             "b": 527.6851792965417,
             "coord_origin": "BOTTOMLEFT"
           },
           "charspan": [
             0,
-            43
+            41
           ]
         }
       ],
-      "orig": "\u00b7 templates for improved model performance.",
+      "orig": "templates for improved model performance.",
       "text": "templates for improved model performance.",
       "enumerated": false,
-      "marker": "\u00b7"
+      "marker": ""
     },
     {
-      "self_ref": "#/texts/42",
+      "self_ref": "#/texts/39",
       "parent": {
         "$ref": "#/body"
       },
@@ -1501,7 +1411,7 @@
       "level": 1
     },
     {
-      "self_ref": "#/texts/43",
+      "self_ref": "#/texts/40",
       "parent": {
         "$ref": "#/groups/6"
       },
@@ -1530,7 +1440,7 @@
       "marker": "\u00b7"
     },
     {
-      "self_ref": "#/texts/44",
+      "self_ref": "#/texts/41",
       "parent": {
         "$ref": "#/body"
       },
@@ -1558,7 +1468,7 @@
       "level": 1
     },
     {
-      "self_ref": "#/texts/45",
+      "self_ref": "#/texts/42",
       "parent": {
         "$ref": "#/groups/7"
       },
@@ -1570,9 +1480,9 @@
           "page_no": 2,
           "bbox": {
             "l": 36.0,
-            "t": 463.7813722,
+            "t": 460.9559153,
             "r": 111.33824460000001,
-            "b": 450.014088,
+            "b": 451.4221792965418,
             "coord_origin": "BOTTOMLEFT"
           },
           "charspan": [
@@ -1587,7 +1497,7 @@
       "marker": "\u00b7"
     },
     {
-      "self_ref": "#/texts/46",
+      "self_ref": "#/texts/43",
       "parent": {
         "$ref": "#/groups/7"
       },
@@ -1599,9 +1509,9 @@
           "page_no": 2,
           "bbox": {
             "l": 36.0,
-            "t": 443.8563722,
+            "t": 441.0309153,
             "r": 196.56449744000003,
-            "b": 430.089088,
+            "b": 431.4971792965418,
             "coord_origin": "BOTTOMLEFT"
           },
           "charspan": [
@@ -1661,7 +1571,7 @@
             "end_row_offset_idx": 1,
             "start_col_offset_idx": 0,
             "end_col_offset_idx": 1,
-            "text": "Technische Universit\u00a8 at Darmstadt MSc. in Artificial Intelligence & Machine Learning Grade: 2.1 (Current) | German scale (1.0 = Best)",
+            "text": "Technische Universit\u00a8at Darmstadt MSc. in Artificial Intelligence & Machine Learning Grade: 2.1 (Current) | German scale (1.0 = Best)",
             "column_header": false,
             "row_header": false,
             "row_section": false,
@@ -1747,7 +1657,7 @@
               "end_row_offset_idx": 1,
               "start_col_offset_idx": 0,
               "end_col_offset_idx": 1,
-              "text": "Technische Universit\u00a8 at Darmstadt MSc. in Artificial Intelligence & Machine Learning Grade: 2.1 (Current) | German scale (1.0 = Best)",
+              "text": "Technische Universit\u00a8at Darmstadt MSc. in Artificial Intelligence & Machine Learning Grade: 2.1 (Current) | German scale (1.0 = Best)",
               "column_header": false,
               "row_header": false,
               "row_section": false,

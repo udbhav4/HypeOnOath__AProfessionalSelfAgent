@@ -308,15 +308,20 @@ def load_documents(manifest: dict | None = None) -> list[LoadedDocument]:
     resolution (converted .md for PDF/DOCX, the original for .md/.txt), so
     the two phases can't disagree about which file holds a document's text.
     """
+    return [load_converted_file(path) if is_converted else load_markdown_file(path)
+            for path, is_converted in document_targets(manifest)]
+
+
+def document_targets(manifest: dict | None = None) -> list[tuple[Path, bool]]:
+    """(path, is_converted) of every existing document file, in load order (shared with privacy.scan)."""
     manifest = load_manifest(ingestion_config.MANIFEST_PATH) if manifest is None else manifest
-    documents: list[LoadedDocument] = []
+    targets: list[tuple[Path, bool]] = []
     for rel_path in sorted(manifest):
         target = resolve_document_target(rel_path, manifest[rel_path])
         if target is None:
             continue
-        path, is_converted = target
-        if not path.exists():
+        if not target[0].exists():
             log_json_line(config.DOCUMENT_LOADING_LOG_PATH, file=rel_path, status="missing_target")
             continue
-        documents.append(load_converted_file(path) if is_converted else load_markdown_file(path))
-    return documents
+        targets.append(target)
+    return targets

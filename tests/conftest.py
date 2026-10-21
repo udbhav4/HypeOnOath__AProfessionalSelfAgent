@@ -61,9 +61,17 @@ def project():
 
 @pytest.fixture(autouse=True)
 def isolated_logs(tmp_path, monkeypatch):
-    """Never write test logs/reports into the real corpus/.logs/."""
+    """
+    Never write test logs/reports into the real corpus/.logs/, and never read
+    or write the owner's real privacy decisions (corpus/.privacy/).
+    """
     from hypeonoath.core import config
 
-    for name in ("CODE_CHUNKING_LOG_PATH", "DOCUMENT_LOADING_LOG_PATH", "INDEXING_LOG_PATH", "SCAN_WARNINGS_PATH"):
+    for name in ("CODE_CHUNKING_LOG_PATH", "DOCUMENT_LOADING_LOG_PATH", "INDEXING_LOG_PATH", "SCAN_WARNINGS_PATH",
+                 "PRIVACY_LOG_PATH"):
         monkeypatch.setattr(config, name, tmp_path / "logs" / f"{name.lower()}.jsonl")
+    monkeypatch.setattr(config, "PRIVACY_DIR", tmp_path / "privacy")
+    monkeypatch.setattr(config, "PRIVACY_DECISIONS_PATH", tmp_path / "privacy" / "decisions.json")
+    monkeypatch.setattr(config, "PRIVACY_SCAN_STATE_PATH", tmp_path / "privacy" / "scan_state.json")
+    monkeypatch.setattr(config, "PRIVACY_BUILD_LOCK_PATH", tmp_path / "privacy" / "build.lock")
     return tmp_path / "logs"
