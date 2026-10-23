@@ -114,10 +114,10 @@ NOTEBOOK_DEFAULT_LANGUAGE = "python"
 # --- Retrieval / prompting (Sections 6, 7) ----------------------------------
 DEFAULT_TOP_K = 8                # tune against the eval set
 MAX_CONTEXT_TOKENS = 6000        # tune -- chunk context budget in the prompt
-REFUSAL_PHRASE = "I don't have information about that in my documents"
-# Prompt version in use; serving.prompt.PROMPT_PERSON maps it to the person
-# ("third" / "first") the decline templates are written in.
+# Prompt version in use (eval plan v8: prompt registry). v1 is first person:
+# the bot is the owner (eval D55).
 PROMPT_VERSION = "v1"
+OWNER_NAME = "Udbhav"            # eval D55: the bot speaks as this person
 
 # --- Privacy (plans/privacy-pii-redaction-plan-v3.md) ------------------------
 PRIVACY_DIR = CORPUS_DIR / ".privacy"                      # gitignored, never committed
@@ -129,9 +129,12 @@ PRIVACY_LANGUAGES = ("en", "de")                           # analyzer languages,
 PRIVACY_SPACY_MODELS = {"en": "en_core_web_lg", "de": "de_core_news_lg"}
 PRIVACY_MIN_SCORE = 0.3          # P-D22 -- display threshold; lower (down to 0) if a known value is missed
 REDACTED_PLACEHOLDER = "[REDACTED: {label}]"
-GUARD_SPAN_REPLACEMENT = "[private]"
-GUARD_NOTE = "Some personal details are kept private."
-GUARD_FULL_DECLINE_SHARE = 0.5   # tune -- redacted share of the answer that triggers a full decline
+# Answer guard (P0 guideline, eval D63): sentences holding a private value are
+# dropped and this line is appended; the reply is this line alone when the hits
+# are >= GUARD_FULL_DECLINE_SHARE of it or fewer than GUARD_MIN_WORDS_LEFT words remain.
+GUARD_LINE = "Happy to talk more about what you asked in person."
+GUARD_FULL_DECLINE_SHARE = 0.5   # tune -- private share of the answer that makes the reply GUARD_LINE alone
+GUARD_MIN_WORDS_LEFT = 3         # tune -- fewer words left after the drop (citations excluded) -> GUARD_LINE alone
 GUARD_PARTIAL_ID_MIN = 6         # min chars of a stored ID that count as a partial leak
 GUARD_FUZZY_RATIO = 0.9
 GUARD_FUZZY_MIN_CHARS = 8
@@ -149,10 +152,6 @@ PRIVACY_CODE_DROPPED_ENTITIES = ("URL",)                   # P-D34: entity types
 PRIVACY_RETIRED_ENTITIES = ("DE_KFZ", "UK_VEHICLE_REGISTRATION", "IN_VEHICLE_REGISTRATION",
                             "NG_VEHICLE_REGISTRATION", "TR_LICENSE_PLATE", "DE_PLZ", "UK_POSTCODE",
                             "US_DRIVER_LICENSE")
-DECLINE_TEMPLATES = {            # keyed by prompt person; prompt v1 is third person
-    "third": "The candidate prefers not to share their {label} here.",
-    "first": "I'd rather not share my {label} here.",
-}
 
 # --- Generation: local Ollama, Phase 1 only (ADR-4) -------------------------
 OLLAMA_URL = "http://localhost:11434"

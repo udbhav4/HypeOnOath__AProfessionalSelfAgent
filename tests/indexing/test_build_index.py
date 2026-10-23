@@ -385,8 +385,8 @@ def test_known_fake_value_appears_only_in_decisions_json(corpus, capsys, caplog)
     decide_all()
     assert run() == 0
     values = pv.load_private_values()
-    guard_answer(f"The passport is {MARKER}.", "passport number?", values)
-    guard_answer(f"Lots of text about the candidate and projects. {MARKER}", "tell me", values)
+    guard_answer(f"The passport is {MARKER}.", values)
+    guard_answer(f"Lots of text about the candidate and projects. {MARKER}", values)
 
     out = capsys.readouterr()
     assert MARKER not in out.out and MARKER not in out.err

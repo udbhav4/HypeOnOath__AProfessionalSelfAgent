@@ -78,7 +78,7 @@ def test_prompt_layout_projects_once_and_citations():
     assert "[1] source: corpus/code/a.ts:10-15 (code)" in prompt.user
     assert "[3] source: corpus/converted/cv.md (prose)" in prompt.user
     assert prompt.user.rstrip().endswith("QUESTION: What does f do?")
-    assert config.REFUSAL_PHRASE in prompt.system and "part i/n" in prompt.system
+    assert config.OWNER_NAME in prompt.system and "part i/n" in prompt.system
 
 
 def test_prompt_without_code_has_no_projects_block():
@@ -88,27 +88,28 @@ def test_prompt_without_code_has_no_projects_block():
 
 
 def test_prompt_private_note_after_question():
-    """F3 (silent-skip fix plan v2): labels once, first-appearance order, decline sentence from the template."""
+    """F3 mechanism, P0 wording (eval D56): labels once, first-appearance order, ask-in-person guidance."""
+    from hypeonoath.serving import prompt as prompt_module
+
     items = [RetrievedItem(prose("a", "Admitted. Applicant no.: [REDACTED: applicant number]"), 0.9),
              RetrievedItem(prose("b", "Born [REDACTED: date of birth], ref [REDACTED: applicant number]"), 0.8)]
     user = build_prompt("Admitted? Application number?", items).user
     note = user.split("QUESTION: Admitted? Application number?\n\n", 1)[1]
     assert note.startswith("NOTE: the context contains private items: applicant number, date of birth.")
-    assert note.count("applicant number") == 3                     # list + "for <label>" + its sentence
-    for label in ("applicant number", "date of birth"):
-        assert f'"{config.DECLINE_TEMPLATES["third"].format(label=label)}"' in note
+    assert note.count("applicant number") == 1 and note.count("date of birth") == 1
+    assert f'"{prompt_module._ASK_IN_PERSON_SAMPLE}"' in note and "answer the other parts normally" in note
+    for retired in ("prefers not", "rather not", "write exactly"):
+        assert retired not in note
 
 
-def test_prompt_private_note_uses_the_guard_sentence():
+def test_prompt_private_note_holds_labels_only():
     from hypeonoath.core import private_values as pv
-    from hypeonoath.serving.guard import guard_answer
 
     value = pv.values_from_entries([{"id": "x", "decision": "private", "label": "phone number",
                                      "entity_type": "PHONE_NUMBER", "match_kind": "id", "value": "+49 151 2345678",
                                      "normalized": "491512345678", "aliases": [], "surface_forms": ["+49 151 2345678"]}])
-    declined = guard_answer("+49 151 2345678", "phone?", value).text
     prompt = build_prompt("q", [RetrievedItem(prose("a", "Tel: [REDACTED: phone number]"), 0.9)])
-    assert f'"{declined}"' in prompt.user
+    assert "NOTE: the context contains private items: phone number." in prompt.user
     assert pv.find_private_spans(prompt.as_text(), value) == []        # labels only, never a value
 
 

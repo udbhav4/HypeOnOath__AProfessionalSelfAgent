@@ -1,5 +1,5 @@
 """Serving-side privacy wiring: chat applies the guard, prompt rule 7, retriever
-fingerprint warning (privacy plan v3, 7.4 - 7.6)."""
+fingerprint warning (privacy plan v3, 7.4 - 7.6; interim prompt per the P0 guideline)."""
 from __future__ import annotations
 
 import io
@@ -9,8 +9,8 @@ from pathlib import Path
 
 from hypeonoath.core import config
 from hypeonoath.core import private_values as pv
-from hypeonoath.serving import chat, guard, llm_client, retriever
-from hypeonoath.serving.prompt import PROMPT_PERSON, SYSTEM_RULES
+from hypeonoath.serving import chat, llm_client, prompt, retriever
+from hypeonoath.serving.prompt import SYSTEM_RULES
 
 ENTRY = {"id": "pv_dob", "decision": "private", "label": "date of birth", "entity_type": "DATE_TIME",
          "match_kind": "date", "value": "12.03.1999", "normalized": "1999-03-12",
@@ -39,7 +39,7 @@ def test_chat_guards_the_answer(monkeypatch, capsys):
     assert run_chat(monkeypatch, "Born on 12 March 1999.") == 0
     out = capsys.readouterr().out
     assert "1999" not in out
-    assert "The candidate prefers not to share their date of birth here." in out
+    assert config.GUARD_LINE in out
 
 
 def test_chat_without_decisions_file_says_guard_inactive(monkeypatch, capsys):
@@ -48,38 +48,53 @@ def test_chat_without_decisions_file_says_guard_inactive(monkeypatch, capsys):
     assert "privacy guard: no decisions file" in captured.err and "A harmless answer." in captured.out
 
 
-def test_prompt_rule_7_and_person_mapping():
-    """Test 14.11 (v13, P-D52): rewritten rule 7; rules 1-6 and the person mapping unchanged."""
-    assert "7. Text shown as [REDACTED: <label>] is private." in SYSTEM_RULES
-    assert f'write exactly: "{config.DECLINE_TEMPLATES["third"].format(label="<label>")}"' in SYSTEM_RULES
-    assert f'Never answer a redacted item with "{config.REFUSAL_PHRASE}"' in SYSTEM_RULES
-    assert "an age from a date of birth" in SYSTEM_RULES                                  # derived questions
-    assert "Answer every other part of the question normally" in SYSTEM_RULES
-    assert "Never guess, reconstruct, hint at or partly reveal a redacted value." in SYSTEM_RULES
-    assert "Example. Context:" in SYSTEM_RULES and "[REDACTED: email address]" in SYSTEM_RULES
-    assert "6. Be concise and factual.\n7. " in SYSTEM_RULES
-    assert PROMPT_PERSON == {"v1": "third"}
-
-
-def test_rules_2_7a_8_silent_skip_fix():
-    """Silent-skip fix plan v2: F1 any wording, F2 per-part refusal (rule 2) + rule 8 every part."""
-    assert ('2. If the context covers none of the question, reply exactly: '
-            f'"{config.REFUSAL_PHRASE}". If it covers only some parts, answer those and say '
-            f'"{config.REFUSAL_PHRASE}" for each part it does not cover.') in SYSTEM_RULES
+def test_prompt_first_person_and_rule_7():
+    """P0-1 / D55 / D56: first person as OWNER_NAME; rule 7 answers private parts in the ask-in-person spirit."""
+    assert SYSTEM_RULES.startswith(f"You are {config.OWNER_NAME}, answering a recruiter's questions about yourself")
+    assert f'Questions that name {config.OWNER_NAME} or say "he", "him" or "the candidate" are about you.' \
+        in SYSTEM_RULES
+    assert "7. Text shown as [REDACTED: <label>] must never be shared." in SYSTEM_RULES
     assert 'asks for it in any wording (for example "application number" for [REDACTED: applicant number])' \
         in SYSTEM_RULES
+    assert "an age from a date of birth), reply to that part as in rule 2b." in SYSTEM_RULES
+    assert "Answer every other part of the question normally" in SYSTEM_RULES
+    assert ("Never say that anything is hidden, redacted, private, withheld or missing, never mention "
+            '"documents" or "context", and never repeat [REDACTED: ...].') in SYSTEM_RULES
+    assert "Example. Context:" in SYSTEM_RULES and "[REDACTED: email address]" in SYSTEM_RULES
+    assert "6. Be concise and factual.\n7. " in SYSTEM_RULES
+    for retired in ("prefers not", "rather not share", "reply exactly", "write exactly", "in my documents"):
+        assert retired not in SYSTEM_RULES
+
+
+def test_rules_2_and_8_every_part():
+    """D56: two absence kinds with their sample phrasings; rule 8 is the last line; rules 1, 3, 4, 6 kept."""
+    assert "2. Handle every part of the question on its own." in SYSTEM_RULES
+    assert f'a. a skill or experience: say so softly and honestly, e.g. "{prompt._ABSENT_SKILL_SAMPLE}".' \
+        in SYSTEM_RULES
+    assert "ONE sentence about a related skill or experience from the context, with its citation" in SYSTEM_RULES
+    assert f'b. a fact or detail: reply in this spirit: "{prompt._ASK_IN_PERSON_SAMPLE}"' in SYSTEM_RULES
     assert SYSTEM_RULES.endswith("8. Address every part of the question. Never leave a part out silently: "
-                                 "each part is answered, declined (rule 7) or refused (rule 2).")
-    assert "1. Use only facts stated in the CONTEXT." in SYSTEM_RULES and "3. Cite the source" in SYSTEM_RULES
+                                 "each part is answered from the context or gets a reply as in rule 2.")
+    assert "1. Use only facts stated in the CONTEXT. Never use outside knowledge or guess about yourself." \
+        in SYSTEM_RULES
+    assert "3. Cite the source of every claim inline" in SYSTEM_RULES
+    assert '4. A code chunk marked "part i/n" is only one piece' in SYSTEM_RULES
+    assert "5. Entries under \"Projects referenced\" are your own project descriptions" in SYSTEM_RULES
 
 
-def test_rule_7_decline_sentence_is_the_guard_sentence():
-    """Single source (14.11): the prompt's decline sentence is exactly what the guard produces."""
-    example_value = pv.values_from_entries([{**ENTRY, "label": "email address", "match_kind": "email",
-                                             "value": "x@example.org", "normalized": "x@example.org",
-                                             "surface_forms": ["x@example.org"]}])
-    guarded = guard.guard_answer("x@example.org", "email?", example_value, person="third")
-    assert guarded.declined and f"Example_CV.md]. {guarded.text}\"" in SYSTEM_RULES
+def test_rule_7_example_answer_asks_in_person_without_hints():
+    """Replaces the retired guard-sentence equality (D56 / D63: no shared decline sentence any more)."""
+    answer = SYSTEM_RULES.split("   Answer: ", 1)[1].split("\n", 1)[0]
+    assert answer.startswith('"I work with Python and SQL [corpus/converted/Example_CV.md].')
+    assert "feel free to ask me in person" in answer
+    assert "[REDACTED" not in answer and "private" not in answer.lower()
+
+
+def test_retired_config_is_gone():
+    """P0-2: fixed reply sentences must not creep back."""
+    for name in ("REFUSAL_PHRASE", "DECLINE_TEMPLATES", "GUARD_NOTE", "GUARD_SPAN_REPLACEMENT"):
+        assert not hasattr(config, name)
+    assert not hasattr(prompt, "PROMPT_PERSON")
 
 
 def test_rule_7_example_is_invented_and_holds_no_private_value():
