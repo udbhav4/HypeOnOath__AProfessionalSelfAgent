@@ -3,7 +3,7 @@ Code-project registry check + project-summary chunks (guideline v4, 3A.12).
 
 Every code file must carry a compulsory project_key/project_name/
 project_description. The registry itself (CODE_PROJECTS + CODE_PROJECT_MAP)
-lives in Phase 0's hypeonoath/ingestion/config.py; Phase 0's metadata_tagger copies
+lives in hypeonoath/core/registry.py (re-exported by ingestion/config.py); Phase 0's metadata_tagger copies
 the resolved fields into corpus/code/_metadata.yaml. This module is the FIRST
 step of every indexing run:
 
@@ -51,7 +51,7 @@ class ProjectValidationError(Exception):
             f"Indexing stopped: {len(self.failures)} code-project problem(s). "
             "Every code file needs a project name + description (guideline 3A.12).",
             *[f"  - {failure}" for failure in self.failures],
-            "Fix src/hypeonoath/ingestion/config.py (CODE_PROJECTS / CODE_PROJECT_MAP), then re-run "
+            "Fix src/hypeonoath/core/registry.py (CODE_PROJECTS / CODE_PROJECT_MAP), then re-run "
             "corpus preparation (python -m hypeonoath.ingestion.prepare_corpus), then this indexer. "
             "The existing index was not touched.",
         ]

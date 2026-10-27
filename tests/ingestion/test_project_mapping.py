@@ -40,3 +40,13 @@ def test_real_registry_has_verbatim_gliimr_entry():
         "on your phone, entirely in private, entirely explainable."
     )
     assert ingestion_config.CODE_PROJECT_MAP["agent.ts"] == "gliimr"
+
+
+def test_document_project_name_comes_from_the_registry(monkeypatch):
+    """Document-registry plan v2, 3.3 / T-6: front matter project_name = the project's registry name."""
+    monkeypatch.setattr(ingestion_config, "CODE_PROJECTS", {"chat": {"name": "Chatbot", "description": "d"}})
+    monkeypatch.setattr(ingestion_config, "DOCUMENTS", {"design.md": {"description": "x", "project": "chat"},
+                                                        "cv.pdf": {"description": "y", "project": None}})
+    assert metadata_tagger.resolve_project_name("design.md") == "Chatbot"
+    assert metadata_tagger.resolve_project_name("cv.pdf") is None
+    assert metadata_tagger.resolve_project_name("unknown.pdf") is None

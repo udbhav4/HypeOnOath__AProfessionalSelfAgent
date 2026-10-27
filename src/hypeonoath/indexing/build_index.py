@@ -54,6 +54,7 @@ from hypeonoath.core import config, embedder
 from hypeonoath.core.logging_utils import log_json_line
 from hypeonoath.indexing import chunker, code_chunker, indexer, project_registry, secret_scan
 from hypeonoath.indexing.block_loader import LoadedDocument, load_documents
+from hypeonoath.core import document_registry
 
 logger = logging.getLogger(__name__)
 
@@ -252,6 +253,18 @@ def _build(*, force: bool) -> int:
         print(exc.format(), file=sys.stderr)
         return EXIT_NOT_REVIEWED
     resolved, documents, code = corpus.resolved, corpus.documents, corpus.code
+    # Document registry check (document-registry plan v2, DR-9): here, not in load_corpus, so a
+    # missing description stops only the build, not the privacy review that also loads the corpus.
+    doc_failures = document_registry.validate_documents([d.source_document for d in documents])
+    if doc_failures:
+        print("\n".join([
+            f"Indexing stopped: {len(doc_failures)} document-registry problem(s). "
+            "Every document needs a description (document-registry plan v2, DR-9).",
+            *[f"  - {failure}" for failure in doc_failures],
+            "Fix DOCUMENTS / CODE_PROJECTS in src/hypeonoath/core/registry.py, then re-run this indexer. "
+            "The existing index was not touched.",
+        ]), file=sys.stderr)
+        return EXIT_PROJECT_CHECK
     all_documents = corpus.all_documents
     if force:
         scan.run(corpus)                  # --force: unscanned files still get the defaults (secrets private)

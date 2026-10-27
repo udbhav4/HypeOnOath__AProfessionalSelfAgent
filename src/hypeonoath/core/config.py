@@ -157,7 +157,7 @@ PRIVACY_RETIRED_ENTITIES = ("DE_KFZ", "UK_VEHICLE_REGISTRATION", "IN_VEHICLE_REG
 OLLAMA_URL = "http://localhost:11434"
 OLLAMA_MODEL = "llama3.1:8b"
 OLLAMA_NUM_CTX = 8192            # Ollama's default context is too small for k=8
-OLLAMA_TIMEOUT_SECONDS = 300
+OLLAMA_TIMEOUT_SECONDS = 600       # CPU-only laptop: ~7k-token prompt at ~31 tok/s + answer ≈ 265 s (measured 2026-10-26)
 
 # --- Pinned library versions (3A.4 Step 0) -----------------------------------
 # Recorded here next to the model name so a version change is a deliberate,

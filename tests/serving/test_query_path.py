@@ -71,13 +71,15 @@ def test_duplicate_code_suppressed():
 
 
 def test_prompt_layout_projects_once_and_citations():
+    from hypeonoath.serving import prompt as prompt_module
+
     items = [RetrievedItem(code("c1"), 0.9), RetrievedItem(code("c2"), 0.8), RetrievedItem(prose("d"), 0.7)]
     prompt = build_prompt("What does f do?", items)
     assert prompt.user.count("Desc of P") == 1
     assert prompt.user.index("Projects referenced:") < prompt.user.index("[1] source:")
-    assert "[1] source: corpus/code/a.ts:10-15 (code)" in prompt.user
+    assert "[1] source: corpus/code/a.ts:10-15 (code; project: P)" in prompt.user
     assert "[3] source: corpus/converted/cv.md (prose)" in prompt.user
-    assert prompt.user.rstrip().endswith("QUESTION: What does f do?")
+    assert prompt.user.endswith("QUESTION: What does f do?\n\n" + prompt_module._PART_REMINDER)
     assert config.OWNER_NAME in prompt.system and "part i/n" in prompt.system
 
 
@@ -100,6 +102,8 @@ def test_prompt_private_note_after_question():
     assert f'"{prompt_module._ASK_IN_PERSON_SAMPLE}"' in note and "answer the other parts normally" in note
     for retired in ("prefers not", "rather not", "write exactly"):
         assert retired not in note
+    assert note.endswith("\n\n" + prompt_module._PART_REMINDER)
+    assert note.count(prompt_module._PART_REMINDER) == 1
 
 
 def test_prompt_private_note_holds_labels_only():
@@ -114,14 +118,70 @@ def test_prompt_private_note_holds_labels_only():
 
 
 def test_prompt_without_placeholder_has_no_note():
+    from hypeonoath.serving.prompt import _PART_REMINDER
+
     user = build_prompt("q", [RetrievedItem(prose("a"), 0.9)]).user
-    assert "NOTE:" not in user and user.endswith("QUESTION: q")
+    assert "NOTE:" not in user and user.endswith("QUESTION: q\n\n" + _PART_REMINDER)
+
+
+def test_part_reminder_is_always_the_last_line():
+    """Fix round FR-2: the every-part reminder ends every user message, once (no context / no NOTE / NOTE)."""
+    from hypeonoath.serving.prompt import _PART_REMINDER
+
+    for items in ([], [RetrievedItem(prose("a"), 0.9)],
+                  [RetrievedItem(prose("b", "Tel: [REDACTED: phone number]"), 0.9)]):
+        user = build_prompt("q", items).user
+        assert user.split("\n\n")[-1] == _PART_REMINDER
+        assert user.count(_PART_REMINDER) == 1
+
+
+def test_labels_carry_the_project_and_keep_the_citable_label(doc_registry):
+    """Document-registry plan v2, L1 / T-8."""
+    from hypeonoath.serving.prompt import _cite_label
+
+    design = Chunk("d1", "Design > ADRs\nfact", "corpus/documents/design.md", "record")
+    cv = prose("c1")                                                   # corpus/converted/cv.md, no project
+    items = [RetrievedItem(design, 0.9), RetrievedItem(code("k1"), 0.8), RetrievedItem(cv, 0.7)]
+    user = build_prompt("q", items).user
+    assert "[1] source: corpus/documents/design.md (record; project: Chatbot)" in user
+    assert "[2] source: corpus/code/a.ts:10-15 (code; project: P)" in user
+    assert "[3] source: corpus/converted/cv.md (prose)\n" in user          # no project -> label as before
+    assert [_cite_label(i) for i in items] == ["corpus/documents/design.md", "corpus/code/a.ts:10-15",
+                                               "corpus/converted/cv.md"]
+
+
+def test_projects_and_documents_blocks(doc_registry):
+    """L2 + L3 / T-9: document projects listed once, each document described once, blocks before [1]."""
+    from hypeonoath.serving import prompt as prompt_module
+
+    design_a = Chunk("d1", "Design\nA", "corpus/documents/design.md", "record")
+    design_b = Chunk("d2", "Design\nB", "corpus/documents/design.md", "prose")
+    cv = Chunk("c1", "CV\nPhone [REDACTED: phone number]", "corpus/converted/cv.md", "prose")
+    items = [RetrievedItem(c, s) for c, s in ((design_a, 0.9), (code("k1"), 0.8), (design_b, 0.7), (cv, 0.6))]
+    user = build_prompt("q", items).user
+    context = user.split("\n\nQUESTION:")[0]
+    projects, documents = context.split("\n\n")[0], context.split("\n\n")[1]
+    assert projects == "CONTEXT:\nProjects referenced:\n- Chatbot: A chatbot project.\n- P: Desc of P"
+    assert documents == ("Documents referenced:\n- corpus/documents/design.md: Design document of the chatbot.\n"
+                         "- corpus/converted/cv.md: My CV.")
+    assert user.index("Documents referenced:") < user.index("[1] source:")
+    assert user.index("QUESTION: q") < user.index("NOTE:")
+    assert user.split("\n\n")[-1] == prompt_module._PART_REMINDER
+
+
+def test_no_blocks_without_registry_entries_or_for_code_only(doc_registry, caplog):
+    unknown = Chunk("u1", "X\nfact", "corpus/documents/unknown.md", "prose")
+    summary = Chunk("s", "Project: P\nDescription: D", "corpus/code/_projects/p", "project_summary", project_key="p")
+    user = build_prompt("q", [RetrievedItem(unknown, 0.9), RetrievedItem(summary, 0.8)]).user
+    assert "Documents referenced" not in user and "Projects referenced" not in user
+    assert "(prose)\n" in user                                         # unknown document: label unchanged
+    assert "corpus/documents/unknown.md" in caplog.text               # warned once, path only
 
 
 def test_prompt_split_group_label():
     parts = [code(f"p{n}", n, 2, "g") for n in (1, 2)]
     prompt = build_prompt("q", [RetrievedItem(parts[0], 0.9, parts)])
-    assert "corpus/code/a.ts:10-25 (code, parts 1-2 of 2)" in prompt.user
+    assert "corpus/code/a.ts:10-25 (code, parts 1-2 of 2; project: P)" in prompt.user
 
 
 # --- llm_client against a fake Ollama ---------------------------------------------------
