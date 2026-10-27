@@ -13,9 +13,11 @@ formatted as DD.MM.YYYY (config.DATE_FORMAT), never ISO -- the format itself
 was confirmed with the user the same day, resolving what had been an open
 question about how the date strings should be interpreted.
 
-project_name (documents): config.PROJECT_NAME_MAP, keyed by path relative
-to corpus/raw/. A document with no entry gets project_name: null -- the
-documented default, not a gap.
+project_name (documents): the name of the document's project in the
+project registry -- config.DOCUMENTS[rel_path]["project"] -> CODE_PROJECTS
+(document-registry plan v2, 3.3; replaces PROJECT_NAME_MAP). A document with
+no project gets project_name: null -- the documented default, not a gap.
+Serving does not read this field; it looks the registry up itself.
 
 project fields (code): config.CODE_PROJECTS + config.CODE_PROJECT_MAP (the
 code-project registry, Phase 1 guideline v4 Section 3A.12). Every code entry
@@ -60,8 +62,10 @@ def resolve_date(rel_path: str, raw_path: Path) -> tuple[str, str]:
 
 
 def resolve_project_name(rel_path: str) -> str | None:
-    """Return the mapped project name for a document, or None if unmapped."""
-    return config.PROJECT_NAME_MAP.get(rel_path)
+    """Return the registry name of the document's project, or None (no entry / no project)."""
+    project_key = (config.DOCUMENTS.get(rel_path) or {}).get("project")
+    project = config.CODE_PROJECTS.get(project_key) if project_key else None
+    return project.get("name") if project else None
 
 
 def resolve_code_project(rel_path: str) -> str | None:

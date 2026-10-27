@@ -78,40 +78,11 @@ CUSTOM_DATE_OVERRIDES: dict[str, str] = {
     "system-design-rag-chatbot.md": "20.09.2026",
 }
 
-# Per-file project name, keyed by path relative to corpus/raw/. A file with
-# no entry here gets project_name: null -- this is the documented default,
-# not a gap (guideline v2/v3, Section 6). Populated 2026-09-20 per explicit
-# user instruction; all other current files deliberately left unmapped.
-PROJECT_NAME_MAP: dict[str, str] = {
-    "CV_Udbhav.pdf": "AI specific CV",
-    "CV_Udbhav2.pdf": "Analytics specific CV",
-}
-
-# --- Code-project registry (Phase 1 guideline v4, Sections 3A.12 / 16) ------
-# Every code file must belong to a project with a compulsory display name and
-# description. Each project is defined ONCE here; files only point to it via
-# CODE_PROJECT_MAP, so an umbrella project's description can never drift
-# between files. PROJECT_NAME_MAP above stays documents-only.
-#
-# Values for "gliimr" are verbatim from the user (2026-10-01) -- do not
-# reword: the description is shown to the LLM as grounded, citable context,
-# and Phase 1's stale-metadata check compares these strings exactly.
-CODE_PROJECTS: dict[str, dict[str, str]] = {
-    "gliimr": {
-        "name": "Gliimr: A personal health intelligence app",
-        "description": (
-            "On-device personal health intelligence app. No cloud. No hallucinations.\n"
-            "Gliimr is a React Native health app that passively senses how you live, "
-            "extracts meaning from what you say, and maintains a clinically grounded "
-            "probabilistic model of your health - entirely on your phone, entirely in "
-            "private, entirely explainable."
-        ),
-    },
-}
-
-# File -> project_key, keyed by path relative to corpus/raw/. A key ending in
-# "/" is a folder prefix: every code file under it belongs to that project
-# (umbrella project). The longest matching key wins.
-CODE_PROJECT_MAP: dict[str, str] = {
-    "agent.ts": "gliimr",
-}
+# --- Project + document registry --------------------------------------------
+# Defined in hypeonoath.core.registry (serving reads it too, invariant I5) and
+# re-exported here for the ingestion and indexing code.
+from hypeonoath.core.registry import (  # noqa: E402, F401 -- re-exported names
+    CODE_PROJECT_MAP,
+    CODE_PROJECTS,
+    DOCUMENTS,
+)

@@ -21,6 +21,7 @@ import yaml
 
 from hypeonoath.core import config, embedder
 from hypeonoath.core import private_values as pv
+from hypeonoath.core import registry
 from hypeonoath.indexing import build_index, indexer
 from hypeonoath.ingestion import config as ingestion_config
 from hypeonoath.ingestion import router
@@ -68,6 +69,7 @@ def corpus(tmp_path, monkeypatch):
 
     monkeypatch.setattr(ingestion_config, "CODE_PROJECTS", PROJECT)
     monkeypatch.setattr(ingestion_config, "CODE_PROJECT_MAP", {"fake_secret.py": "demo", "small_functions.py": "demo"})
+    monkeypatch.setattr(registry, "DOCUMENTS", {"notes.md": {"description": "Test notes.", "project": None}})
     for name, value in {"CORPUS_DIR": corpus_dir, "RAW_DIR": raw_dir, "DOCUMENTS_DIR": docs_dir,
                         "CODE_DIR": code_dir, "CONVERTED_DIR": corpus_dir / "converted",
                         "MANIFEST_PATH": tmp_path / "manifest.json"}.items():
@@ -132,6 +134,7 @@ def add_document(corpus, name, text):
     manifest = json.loads((corpus / "manifest.json").read_text())
     manifest[name] = {"destination_category": "document", "converted_output": None}
     (corpus / "manifest.json").write_text(json.dumps(manifest))
+    registry.DOCUMENTS[name] = {"description": f"Test document {name}.", "project": None}  # fixture's dict
 
 
 # --- review required (P-D40, P-D42) ---------------------------------------------------------------------
@@ -333,6 +336,20 @@ def test_missing_project_stops_before_anything_and_keeps_index(corpus, capsys, m
     assert ids() == before
 
 
+def test_document_without_registry_entry_stops_the_build_and_keeps_index(corpus, capsys):
+    """Document-registry plan v2, DR-9 / T-7: every indexed document needs a description."""
+    decide_all()
+    assert run() == 0
+    before = ids()
+    add_document(corpus, "extra.md", "# Extra\n\nMore text.\n")
+    scan_and_done()
+    del registry.DOCUMENTS["extra.md"]
+    assert run() == build_index.EXIT_PROJECT_CHECK
+    err = capsys.readouterr().err
+    assert "document-registry problem" in err and "corpus/documents/extra.md: no entry" in err
+    assert ids() == before
+
+
 def test_embedding_failure_keeps_previous_index(corpus, monkeypatch):
     decide_all()
     assert run() == 0
@@ -385,8 +402,8 @@ def test_known_fake_value_appears_only_in_decisions_json(corpus, capsys, caplog)
     decide_all()
     assert run() == 0
     values = pv.load_private_values()
-    guard_answer(f"The passport is {MARKER}.", "passport number?", values)
-    guard_answer(f"Lots of text about the candidate and projects. {MARKER}", "tell me", values)
+    guard_answer(f"The passport is {MARKER}.", values)
+    guard_answer(f"Lots of text about the candidate and projects. {MARKER}", values)
 
     out = capsys.readouterr()
     assert MARKER not in out.out and MARKER not in out.err

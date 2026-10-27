@@ -7,6 +7,7 @@ loaded once per session from the local Hugging Face cache.
 """
 from __future__ import annotations
 
+import copy
 from pathlib import Path
 
 import pytest
@@ -30,6 +31,27 @@ def code_map(monkeypatch):
         "proj/": "proj",
         "proj/special.py": "solo",       # more specific than the folder prefix
     })
+
+
+# A small project + document registry for the document-registry tests (plan v2, 6) -- see doc_registry.
+DOC_PROJECTS = {
+    "chat": {"name": "Chatbot", "description": "A chatbot project."},
+    "app": {"name": "App", "description": "An app project."},
+}
+DOCUMENTS = {
+    "design.md": {"description": "Design document of the chatbot.", "project": "chat"},
+    "cv.pdf": {"description": "My CV.", "project": None},
+}
+
+
+@pytest.fixture
+def doc_registry(monkeypatch):
+    """Fake registry in core.registry (what serving and the checks read), so tests never depend on the owner's text."""
+    from hypeonoath.core import registry
+
+    monkeypatch.setattr(registry, "CODE_PROJECTS", copy.deepcopy(DOC_PROJECTS))   # tests may edit entries
+    monkeypatch.setattr(registry, "DOCUMENTS", copy.deepcopy(DOCUMENTS))
+    return registry
 
 
 @pytest.fixture(scope="session")

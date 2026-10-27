@@ -22,7 +22,7 @@ from hypeonoath.core import config
 from hypeonoath.core.private_values import PrivateValue, load_private_values
 from hypeonoath.core.records import RetrievedItem
 from hypeonoath.serving import guard, llm_client
-from hypeonoath.serving.prompt import PROMPT_PERSON, build_prompt
+from hypeonoath.serving.prompt import build_prompt
 from hypeonoath.serving.retriever import Retriever
 
 
@@ -68,7 +68,6 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     private_values = load_guard_values()
-    person = PROMPT_PERSON.get(config.PROMPT_VERSION, "third")
 
     print("Ask a question (empty line or 'exit' to quit).")
     while True:
@@ -84,7 +83,7 @@ def main(argv: list[str] | None = None) -> int:
             print(prompt.as_text())
         try:
             answer = llm_client.generate(prompt)
-            result = guard.guard_answer(answer, question, private_values, person=person)
+            result = guard.guard_answer(answer, private_values)
             print("\n" + result.text)
         except llm_client.LLMUnavailableError as exc:
             print(f"\n[LLM unavailable] {exc}")

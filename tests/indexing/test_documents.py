@@ -146,7 +146,7 @@ def test_real_converted_cv_uses_docling_and_keeps_links():
     if not md.exists():
         pytest.skip("converted CV not present")
     doc = block_loader.load_converted_file(md)
-    assert doc.project_name == "AI specific CV" and doc.date
+    assert doc.date               # project_name no longer checked: PROJECT_NAME_MAP was removed (registry plan v2)
     assert any(b.block_type == "table" for b in doc.blocks)
     links = [b for b in doc.blocks if b.heading_path == ["Links"]]
     assert links and "github.com" in links[0].text
