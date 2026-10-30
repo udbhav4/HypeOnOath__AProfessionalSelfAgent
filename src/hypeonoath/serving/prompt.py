@@ -13,7 +13,8 @@ Steps 6-7, the NOTE line and serving.guard handle [REDACTED: <label>] placeholde
 P0 guideline; eval D55 / D56 / D63).
 
 Prompt v1 = the Stage P text (eval plan v9, Section 16; D53 / D66), written by the
-prompt-writer subagent. Versions live in PROMPTS; build_prompt uses PROMPTS[config.PROMPT_VERSION].
+prompt-writer subagent. Versions live in PROMPTS; build_prompt uses PROMPTS[version], default
+config.PROMPT_VERSION (eval plan v15, Section 8: the `version` parameter, Stage B).
 Stage P fix round (plans/stage-p-fix-round-plan-v2.md): template examples, always-on part reminder.
 Document registry (plans/document-registry-and-labels-plan-v2.md): project tag in every chunk label,
 projects of documents in "Projects referenced", a "Documents referenced" block -- looked up here, never embedded.
@@ -96,12 +97,13 @@ A: "That one stays with me — but ask me anything about my work and projects.\"
 PROMPTS = {"v1": _PROMPT_V1}
 
 
-def system_rules() -> str:
-    """The system message for config.PROMPT_VERSION, with the owner's name filled in."""
+def system_rules(version: str | None = None) -> str:
+    """The system message for `version` (default config.PROMPT_VERSION), with the owner's name filled in."""
+    version = config.PROMPT_VERSION if version is None else version
     try:
-        template = PROMPTS[config.PROMPT_VERSION]
+        template = PROMPTS[version]
     except KeyError:
-        raise ValueError(f"unknown PROMPT_VERSION {config.PROMPT_VERSION!r}; known: {sorted(PROMPTS)}") from None
+        raise ValueError(f"unknown PROMPT_VERSION {version!r}; known: {sorted(PROMPTS)}") from None
     return template.format(owner_name=config.OWNER_NAME)
 
 # [REDACTED: <label>] in the assembled context; built from config so it follows
@@ -185,8 +187,8 @@ def _private_note(context: str) -> str:
             f'"{_ASK_IN_PERSON_SAMPLE}" Never say that it is private, and answer the other parts normally.')
 
 
-def build_prompt(question: str, items: list[RetrievedItem]) -> Prompt:
-    """Assemble the Layer 1 prompt from retriever output (already ordered by rank)."""
+def build_prompt(question: str, items: list[RetrievedItem], version: str | None = None) -> Prompt:
+    """Assemble the Layer 1 prompt from retriever output (already ordered by rank); `version` names a PROMPTS entry."""
     sections: list[str] = []
     for block in (_projects_block(items), _documents_block(items)):
         if block:
@@ -209,4 +211,4 @@ def build_prompt(question: str, items: list[RetrievedItem]) -> Prompt:
     if note:
         user += f"\n\n{note}"
     user += f"\n\n{_PART_REMINDER}"
-    return Prompt(system=system_rules(), user=user)
+    return Prompt(system=system_rules(version), user=user)

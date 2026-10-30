@@ -196,7 +196,8 @@ class _Handler(BaseHTTPRequestHandler):
         self.send_response(self.status)
         self.end_headers()
         if self.status == 200:
-            self.wfile.write(json.dumps({"message": {"content": "  answer [x]  "}}).encode())
+            self.wfile.write(json.dumps({"message": {"content": "  answer [x]  "}, "total_duration": 5,
+                                         "eval_count": 3, "done": True}).encode())
         else:
             self.wfile.write(b'{"error": "model not found"}')
 
@@ -216,7 +217,9 @@ def fake_ollama():
 def test_generate_sends_system_user_and_options(fake_ollama):
     _Handler.status = 200
     prompt = build_prompt("q", [])
-    assert llm_client.generate(prompt, model="m", base_url=fake_ollama) == "answer [x]"
+    result = llm_client.generate(prompt, model="m", base_url=fake_ollama)
+    assert result.text == "answer [x]"
+    assert result.stats == {"total_duration": 5, "eval_count": 3}          # D25: only the known int stats
     sent = _Handler.seen
     assert sent["model"] == "m" and sent["stream"] is False
     assert [m["role"] for m in sent["messages"]] == ["system", "user"]
@@ -232,3 +235,60 @@ def test_missing_model_message(fake_ollama):
 def test_unreachable_ollama():
     with pytest.raises(llm_client.LLMUnavailableError, match="Cannot reach Ollama"):
         llm_client.generate(build_prompt("q", []), base_url="http://127.0.0.1:9", timeout=2)
+
+
+# --- eval plan v15, Section 8: prompt version parameter, chat --prompt, mmr -------------------------
+
+def test_build_prompt_version_parameter(monkeypatch):
+    from hypeonoath.serving import prompt as prompt_module
+
+    monkeypatch.setitem(prompt_module.PROMPTS, "vtest", "TEST PROMPT for {owner_name}")
+    assert build_prompt("q", [], "vtest").system == f"TEST PROMPT for {config.OWNER_NAME}"
+    assert build_prompt("q", []).system == build_prompt("q", [], config.PROMPT_VERSION).system
+    with pytest.raises(ValueError, match="unknown PROMPT_VERSION"):
+        build_prompt("q", [], "v404")
+
+
+def test_chat_prompt_flag_passes_the_version(monkeypatch, capsys):
+    import io
+
+    from hypeonoath.serving import chat
+
+    seen = []
+    monkeypatch.setattr(chat, "Retriever", lambda: type("R", (), {"retrieve": lambda self, q, k: []})())
+    monkeypatch.setattr(chat, "build_prompt", lambda q, items, version: seen.append(version) or build_prompt(q, items))
+    monkeypatch.setattr(llm_client, "generate", lambda p: llm_client.GenerationResult("fine"))
+    monkeypatch.setattr("sys.stdin", io.StringIO("hi\n"))
+    assert chat.main(["--prompt", "v1"]) == 0 and seen == ["v1"]
+    with pytest.raises(SystemExit):
+        chat.main(["--prompt", "v404"])
+
+
+def test_mmr_rejects_bad_input_and_keeps_k():
+    from hypeonoath.serving.retriever import mmr
+
+    hits = [RetrievedItem(prose("a"), 0.9), RetrievedItem(prose("b"), 0.8), RetrievedItem(prose("c"), 0.1)]
+    vectors = [[1.0, 0.0], [1.0, 0.0], [0.0, 1.0]]
+    assert [i.chunk.chunk_id for i in mmr(hits, vectors, 2, 0.3)] == ["a", "c"]       # b is a duplicate of a
+    assert [i.chunk.chunk_id for i in mmr(hits, vectors, 3, 1.0)] == ["a", "b", "c"]
+    assert mmr([], [], 3, 0.5) == []
+    with pytest.raises(ValueError):
+        mmr(hits, vectors, 2, 1.5)
+    with pytest.raises(ValueError):
+        mmr(hits, vectors[:2], 2, 0.5)
+
+
+def test_unreadable_ollama_body_is_llm_unavailable(monkeypatch):
+    class Broken:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+        def read(self):
+            return b"<html>not json"
+
+    monkeypatch.setattr(llm_client.urllib.request, "urlopen", lambda *a, **k: Broken())
+    with pytest.raises(llm_client.LLMUnavailableError, match="unreadable response"):
+        llm_client.generate(build_prompt("q", []))

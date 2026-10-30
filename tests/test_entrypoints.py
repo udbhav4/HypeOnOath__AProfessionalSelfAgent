@@ -24,6 +24,7 @@ ENTRY_POINTS = [
     "hypeonoath.indexing.build_index",
     "hypeonoath.serving.chat",
     "hypeonoath.privacy.cli",
+    "hypeonoath.evaluation.cli",
 ]
 
 
@@ -48,7 +49,7 @@ def test_old_names_are_gone(old):
 
 @pytest.mark.parametrize("command", [
     [sys.executable, "-m", "hypeonoath.serving.chat", "--help"],
-    [sys.executable, "eval/run_eval.py", "--help"],
+    [sys.executable, "-m", "hypeonoath.evaluation.cli", "--help"],
     [sys.executable, "-m", "hypeonoath.indexing.build_index", "--help"],
     [sys.executable, "-m", "hypeonoath.privacy.cli", "--help"],
 ])
@@ -64,6 +65,7 @@ FORBIDDEN_FOR_SERVING = [
     "chonkie", "tree_sitter_language_pack", "tree_sitter", "detect_secrets",
     "docling", "docling_core", "nbformat", "markdown_it", "frontmatter", "fitz", "docx",
     "presidio_analyzer", "spacy", "yaml",
+    "hypeonoath.evaluation", "matplotlib",
 ]
 
 
@@ -89,6 +91,15 @@ def test_console_script_hypeonoath_privacy_installed():
     result = subprocess.run([str(script), "--help"], cwd=ROOT, env=_clean_env(), capture_output=True,
                             text=True, timeout=180)
     assert result.returncode == 0 and "check-git" in result.stdout
+
+
+def test_console_script_hypeonoath_eval_installed():
+    """`hypeonoath-eval --help` works as an installed script (eval plan v15, Section 8)."""
+    script = Path(sys.executable).with_name("hypeonoath-eval" + (".exe" if os.name == "nt" else ""))
+    assert script.exists(), "re-run: pip install -e ."
+    result = subprocess.run([str(script), "--help"], cwd=ROOT, env=_clean_env(), capture_output=True,
+                            text=True, timeout=180)
+    assert result.returncode == 0 and "validate" in result.stdout and "review-gold" in result.stdout
 
 
 def test_private_values_imports_stdlib_and_core_config_only():

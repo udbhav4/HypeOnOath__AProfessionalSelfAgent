@@ -45,7 +45,13 @@ indexing = [
     "presidio-analyzer==2.2.364",
     "spacy==3.8.16",
 ]
-# Tests + eval script.
+# Eval harness (hypeonoath.evaluation, eval plan v15 Section 8); never in the serving install.
+# matplotlib is used from Stage D (charts) and imported lazily.
+eval = [
+    "pyyaml==6.0.3",
+    "matplotlib==3.11.2",
+]
+# Tests.
 dev = [
     "pytest==9.1.1",
     "pyyaml==6.0.3",
@@ -56,6 +62,7 @@ hypeonoath-prepare = "hypeonoath.ingestion.prepare_corpus:main"
 hypeonoath-index = "hypeonoath.indexing.build_index:main"
 hypeonoath-chat = "hypeonoath.serving.chat:main"
 hypeonoath-privacy = "hypeonoath.privacy.cli:main"
+hypeonoath-eval = "hypeonoath.evaluation.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

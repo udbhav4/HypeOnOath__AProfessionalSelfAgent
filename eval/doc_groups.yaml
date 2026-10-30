@@ -1,0 +1,39 @@
+# Document groups (eval plan v15, 3.2; D32, D70). Committed (D50).
+# Every corpus file used as evidence must belong to exactly one group; `validate`
+# fails on an evidence document that belongs to no group. A new corpus file needs a
+# row here AND in the plan's 3.2 table. `min` = minimum questions with this doc_group
+# (V3); no `min` = no minimum (cv: the largest share).
+groups:
+  cv:
+    files:
+      - corpus/converted/CV_Udbhav.md
+      - corpus/converted/CV_Udbhav2.md
+      - corpus/converted/CV_Udbhav3.md
+  cover_letter:
+    min: 3
+    files:
+      - corpus/converted/Cover_Letter_Udbhav.md
+  certificates:
+    min: 4
+    files:
+      - corpus/converted/Coursera AnalyzingBigDataWithSQL Certificate.md
+      - corpus/converted/Coursera ImprovingDeepNeuralNetworks (1).md
+      - corpus/converted/Coursera ModernBigDataAnalysisWithSQL Certificate.md
+      - corpus/converted/Coursera NeuralNetworksAndDeepLearning.md
+      - corpus/converted/Coursera StructuringMachineLearningProjects.md
+  admission_letter:
+    min: 2
+    files:
+      - corpus/converted/AcceptanceLetter1_Zulassung.md
+  system_design:
+    min: 4
+    files:
+      - corpus/documents/system-design-rag-chatbot.md
+  readme:
+    min: 3
+    files:
+      - corpus/documents/README.md
+  code:
+    min: 7
+    files:
+      - corpus/code/agent.ts
