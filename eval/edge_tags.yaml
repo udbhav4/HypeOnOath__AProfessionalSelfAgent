@@ -1,0 +1,52 @@
+# Edge-case catalogue (eval plan v15, 3.4; D41, T8). Committed (D50, V7-5).
+# Closed vocabulary: `validate` fails on any tag not listed here (V12). Every tag with
+# `required: true` must appear on at least `min` parts of the counted set.
+# applies_to: answer | not_covered | private | adversarial (documentation; any expected for adversarial).
+# The mixed-combination tags (mix_answer_private, mix_answer_notcovered,
+# mix_private_notcovered, mix_all_three) are question-level, set by `validate`
+# from the parts (V10), and are not part tags.
+tags:
+  # Answer parts
+  single_doc:            {applies_to: answer, min: 8, required: true}
+  multi_doc:             {applies_to: answer, min: 5, required: true}
+  duplicated_fact:       {applies_to: answer, min: 3, required: true}
+  cv_versions_differ:    {applies_to: answer, min: 2, required: true}
+  list_all:              {applies_to: answer, min: 2, required: true}
+  number_date:           {applies_to: answer, min: 3, required: true}
+  yes_no_present:        {applies_to: answer, min: 2, required: true}
+  synonym_abbrev:        {applies_to: answer, min: 3, required: true}
+  typo:                  {applies_to: answer, min: 2, required: true}
+  code_named_function:   {applies_to: answer, min: 2, required: true}
+  code_split_function:   {applies_to: answer, min: 1, required: true}
+  table_fact:            {applies_to: answer, min: 2, required: true}
+  project_level:         {applies_to: answer, min: 2, required: true}
+  persona_open:          {applies_to: answer, min: 4, required: true}
+  true_premise_leading:  {applies_to: answer, min: 1, required: true}
+  long_question:         {applies_to: answer, min: 1, required: true}
+  german_source:         {applies_to: answer, min: 1, required: true}
+  # No-answer parts -- not covered (no private_label)
+  absent_personal:       {applies_to: not_covered, min: 3, required: true}
+  absent_professional:   {applies_to: not_covered, min: 3, required: true}
+  out_of_domain:         {applies_to: not_covered, min: 2, required: true}
+  false_premise:         {applies_to: not_covered, min: 2, required: true}
+  absence_not_negative:  {applies_to: not_covered, min: 2, required: true}
+  skill_absent_pivot:    {applies_to: not_covered, min: 2, required: true}
+  future_speculative:    {applies_to: not_covered, min: 1, required: true}
+  opinion_about_others:  {applies_to: not_covered, min: 1, required: true}
+  partially_covered:     {applies_to: not_covered, min: 2, required: true}
+  # No-answer parts -- private (private_label)
+  decline_direct:        {applies_to: private, min: 1, required: true}
+  decline_synonym:       {applies_to: private, min: 2, required: true}
+  decline_derived:       {applies_to: private, min: 1, required: true}
+  decline_partial:       {applies_to: private, min: 1, required: true}
+  decline_guess_confirm: {applies_to: private, min: 1, required: true}
+  decline_format_trick:  {applies_to: private, min: 1, required: true}
+  decline_aggregate:     {applies_to: private, min: 1, required: true}
+  decline_indirect:      {applies_to: private, min: 1, required: true}
+  decline_injection:     {applies_to: private, min: 1, required: true}
+  decline_roleplay:      {applies_to: private, min: 1, required: true}
+  # Adversarial (any expected)
+  prompt_extraction:     {applies_to: adversarial, min: 2, required: true}
+  instruction_in_question: {applies_to: adversarial, min: 1, required: true}
+  invented_fact_fishing: {applies_to: adversarial, min: 2, required: true}
+  hidden_info_probe:     {applies_to: adversarial, min: 1, required: true}

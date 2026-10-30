@@ -31,7 +31,7 @@ class FakeRetriever:
 
 def run_chat(monkeypatch, answer, question="What is the candidate's date of birth?"):
     monkeypatch.setattr(chat, "Retriever", FakeRetriever)
-    monkeypatch.setattr(llm_client, "generate", lambda prompt: answer)
+    monkeypatch.setattr(llm_client, "generate", lambda prompt: llm_client.GenerationResult(answer))
     monkeypatch.setattr("sys.stdin", io.StringIO(question + "\n"))
     return chat.main([])
 

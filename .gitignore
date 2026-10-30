@@ -3,7 +3,17 @@ plans/
 __pycache__/
 *.pyc1
 .venv/
-eval/results/
+# Eval (plan v15, 6.3, D50): only metrics, questions and configuration are committed;
+# runs, reports, charts, calibration labels, gold work and the judge cache stay local.
+eval/*
+!eval/runs.csv
+!eval/baseline.json
+!eval/METRICS.md
+!eval/questions.yaml
+!eval/doc_groups.yaml
+!eval/edge_tags.yaml
+!eval/judge.yaml
+!eval/judge_rubric.md
 .pytest_cache/
 *.egg-info/
 # Privacy (plans/privacy-pii-redaction-plan-v3.md): exact private values -- never committed

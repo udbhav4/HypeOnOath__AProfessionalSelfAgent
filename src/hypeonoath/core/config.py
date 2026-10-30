@@ -118,6 +118,13 @@ MAX_CONTEXT_TOKENS = 6000        # tune -- chunk context budget in the prompt
 # the bot is the owner (eval D55).
 PROMPT_VERSION = "v1"
 OWNER_NAME = "Udbhav"            # eval D55: the bot speaks as this person
+# MMR re-ranking of the raw hits (eval D31): None = off (production default); the eval
+# sweeps lambda in {1.0, 0.7, 0.5} over the top MMR_FETCH_K hits.
+MMR_LAMBDA: float | None = None
+MMR_FETCH_K = 20
+# Similarity-gate sweep (eval 4.2): gate_t_at_1fr = highest threshold with at most this many
+# answerable questions refused by the gate.
+GATE_MAX_FALSE_REFUSALS = 1
 
 # --- Privacy (plans/privacy-pii-redaction-plan-v3.md) ------------------------
 PRIVACY_DIR = CORPUS_DIR / ".privacy"                      # gitignored, never committed

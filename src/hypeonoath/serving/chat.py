@@ -22,7 +22,7 @@ from hypeonoath.core import config
 from hypeonoath.core.private_values import PrivateValue, load_private_values
 from hypeonoath.core.records import RetrievedItem
 from hypeonoath.serving import guard, llm_client
-from hypeonoath.serving.prompt import build_prompt
+from hypeonoath.serving.prompt import PROMPTS, build_prompt
 from hypeonoath.serving.retriever import Retriever
 
 
@@ -57,6 +57,8 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Chat with the indexed corpus (answers with citations)")
     parser.add_argument("-k", type=int, default=config.DEFAULT_TOP_K, help="top-k chunks to retrieve")
     parser.add_argument("--show-prompt", action="store_true", help="print the assembled prompt")
+    parser.add_argument("--prompt", choices=sorted(PROMPTS), default=config.PROMPT_VERSION,
+                        help=f"prompt version (default {config.PROMPT_VERSION})")
     args = parser.parse_args(argv)
     logging.basicConfig(level=logging.WARNING)
 
@@ -78,12 +80,12 @@ def main(argv: list[str] | None = None) -> int:
         if not question or question.lower() in {"exit", "quit"}:
             break
         items = retriever.retrieve(question, k=args.k)
-        prompt = build_prompt(question, items)
+        prompt = build_prompt(question, items, args.prompt)
         if args.show_prompt:
             print(prompt.as_text())
         try:
             answer = llm_client.generate(prompt)
-            result = guard.guard_answer(answer, private_values)
+            result = guard.guard_answer(answer.text, private_values)     # eval D25 / D54: the guard needs the text
             print("\n" + result.text)
         except llm_client.LLMUnavailableError as exc:
             print(f"\n[LLM unavailable] {exc}")

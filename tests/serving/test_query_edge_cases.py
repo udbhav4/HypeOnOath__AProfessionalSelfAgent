@@ -1,11 +1,7 @@
 """QA (tester-swarm): retriever on a REAL Chroma collection (where filters,
-k > count, sibling parts), run_eval.run with fakes, chat.format_sources.
+k > count, sibling parts, search / assemble / embeddings), chat.format_sources.
 No network / Ollama: vectors are hand-made, the generator is a fake."""
 from __future__ import annotations
-
-import importlib.util
-
-from pathlib import Path
 
 import pytest
 
@@ -13,11 +9,8 @@ from hypeonoath.core import config
 from hypeonoath.core.records import Chunk, RetrievedItem
 from hypeonoath.core.store import get_client
 from hypeonoath.indexing import indexer
-from hypeonoath.serving import llm_client
 from hypeonoath.serving.chat import format_sources
 from hypeonoath.serving.retriever import Retriever
-
-ROOT = Path(__file__).resolve().parents[2]
 
 
 def _vec(i: int) -> list[float]:
@@ -74,60 +67,22 @@ def test_real_chroma_where_filters(collection):
     assert len(lang) == 1
 
 
-def test_run_eval_with_fake_retriever_and_generator():
-    spec = importlib.util.spec_from_file_location("qa_run_eval", ROOT / "eval" / "run_eval.py")
-    run_eval = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(run_eval)
-
-    chunk = Chunk("c1", "// hdr\ncode", "corpus/code/a.ts", "code", line_start=3, line_end=9, chunk_method="fallback")
-
-    class FakeRetriever:
-        def __init__(self):
-            self.calls = []
-
-        def retrieve(self, question, k):
-            self.calls.append((question, k))
-            return [RetrievedItem(chunk, 0.81234)] if "code" in question else []
-
-    def generate(prompt):
-        if "boom" in prompt.user:
-            raise llm_client.LLMUnavailableError("down")
-        return "answer"
-
-    questions = [
-        {"question": "code q", "expected_answerable": True, "notes": "n"},
-        {"question": "boom q", "expected_answerable": False},
-    ]
-    fake = FakeRetriever()
-    results = run_eval.run(fake, questions, generate=generate, k=3)
-    assert fake.calls == [("code q", 3), ("boom q", 3)]
-    first, second = results
-    assert first["answer"] == "answer" and first["error"] is None and first["top_score"] == 0.8123
-    assert (first["sources"][0]["line_start"], first["sources"][0]["line_end"]) == (3, 9)
-    assert first["sources"][0]["chunk_method"] == "fallback"
-    assert second["answer"] is None and second["error"] == "down" and second["top_score"] is None
-    assert second["notes"] == ""
+def test_real_chroma_search_is_raw_and_retrieve_is_assemble_of_search(collection):
+    r = _retriever(collection, 0)
+    raw = r.search("q", k=10)
+    assert [i.chunk.chunk_id for i in raw][:1] == ["part1"] and all(not i.parts for i in raw)
+    assert len(raw) == len(_chunks())                                # parts are separate raw hits
+    assembled = [i.chunk.chunk_id for i in r.assemble(raw)]
+    assert assembled == [i.chunk.chunk_id for i in r.retrieve("q", k=10)]
 
 
-def test_real_questions_file_composition():
-    spec = importlib.util.spec_from_file_location("qa_run_eval2", ROOT / "eval" / "run_eval.py")
-    run_eval = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(run_eval)
-    questions = run_eval.load_questions()
-    assert 20 <= len(questions) <= 30                                        # Section 8
-    assert sum(not q["expected_answerable"] for q in questions) >= 3
-    assert sum("agent.ts" in q["question"] or "code" in q["question"].lower() for q in questions) >= 2
-    assert any("Gliimr" in q["question"] for q in questions)                 # project-level
+def test_real_chroma_search_with_embeddings_returns_stored_vectors(collection):
+    from hypeonoath.serving.retriever import mmr
 
-
-def test_load_questions_rejects_bad_entry(tmp_path):
-    spec = importlib.util.spec_from_file_location("qa_run_eval3", ROOT / "eval" / "run_eval.py")
-    run_eval = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(run_eval)
-    bad = tmp_path / "q.yaml"
-    bad.write_text("- question: hi\n")
-    with pytest.raises(ValueError):
-        run_eval.load_questions(bad)
+    hits, vectors = _retriever(collection, 3).search_with_embeddings("q", k=10)
+    assert len(vectors) == len(hits) and hits[0].chunk.chunk_id == "prose1"
+    assert vectors[0] == pytest.approx(_vec(3))
+    assert [i.chunk.chunk_id for i in mmr(hits, vectors, 10, 1.0)] == [i.chunk.chunk_id for i in hits]
 
 
 def test_format_sources_variants():

@@ -15,6 +15,11 @@ Step 5 -- question -> ranked context items (guideline v4, Section 6).
 Filters (project_key / content_type / language) are available via `where`
 but unused by default, so multi-hop questions see every content type.
 
+Eval plan v15, Section 8: retrieve() = assemble(search()). search() returns the raw
+ranked hits (search_with_embeddings() also their stored vectors), assemble() builds the
+production context from them, so the eval harness gets the raw ranking and the exact
+context from ONE query. mmr() re-ranks raw hits (default off: config.MMR_LAMBDA = None).
+
 On start-up the index's `privacy_fp` (collection metadata) is compared with
 the fingerprint of the local privacy decisions; a mismatch only WARNS -- a
 host without the decisions file (Phase 2) must still serve (plan 7.4).
@@ -22,6 +27,7 @@ host without the decisions file (Phase 2) must still serve (plan 7.4).
 from __future__ import annotations
 
 import logging
+import math
 from collections.abc import Callable
 
 from hypeonoath.core import config
@@ -76,11 +82,20 @@ class Retriever:
 
     def retrieve(self, question: str, k: int = config.DEFAULT_TOP_K,
                  where: dict | None = None) -> list[RetrievedItem]:
+        return self.assemble(self.search(question, k, where))
+
+    def search(self, question: str, k: int, where: dict | None = None) -> list[RetrievedItem]:
+        """Raw top-k hits with cosine similarity, best first (no sibling fetch, no dedupe)."""
+        return self.search_with_embeddings(question, k, where, embeddings=False)[0]
+
+    def search_with_embeddings(self, question: str, k: int, where: dict | None = None,
+                               embeddings: bool = True) -> tuple[list[RetrievedItem], list[list[float]]]:
+        """search() plus each hit's stored embedding (for mmr); [] when embeddings=False."""
         result = self.collection.query(
             query_embeddings=[self.embed_query(question)],
             n_results=k,
             where=where,
-            include=["documents", "metadatas", "distances"],
+            include=["documents", "metadatas", "distances"] + (["embeddings"] if embeddings else []),
         )
         hits = [
             RetrievedItem(restore_chunk(cid, doc, meta or {}), 1.0 - float(dist))
@@ -88,9 +103,11 @@ class Retriever:
                 result["ids"][0], result["documents"][0], result["metadatas"][0], result["distances"][0]
             )
         ]
-        return self._assemble(hits)
+        vectors = [[float(x) for x in v] for v in result["embeddings"][0]] if embeddings else []
+        return hits, vectors
 
-    def _assemble(self, hits: list[RetrievedItem]) -> list[RetrievedItem]:
+    def assemble(self, hits: list[RetrievedItem]) -> list[RetrievedItem]:
+        """Production context from ranked hits: sibling parts, duplicate suppression, token budget."""
         items: list[RetrievedItem] = []
         seen_groups: set[str] = set()
         seen_code: set[str] = set()
@@ -124,3 +141,32 @@ class Retriever:
         if sum(self.count(c.text) for c in parts) <= budget:
             return parts
         return [c for c in parts if abs((c.part or 0) - (hit.part or 0)) <= 1]
+
+
+def _cosine(a: list[float], b: list[float]) -> float:
+    dot = sum(x * y for x, y in zip(a, b))
+    norm = math.sqrt(sum(x * x for x in a)) * math.sqrt(sum(y * y for y in b))
+    return dot / norm if norm else 0.0
+
+
+def mmr(hits: list[RetrievedItem], embeddings: list[list[float]], k: int, lambda_: float) -> list[RetrievedItem]:
+    """
+    Maximal marginal relevance re-ranking of raw hits (eval D31; Chroma has no built-in MMR,
+    plan assumption): greedily pick argmax  lambda * sim(query, d) - (1 - lambda) * max sim(d, picked),
+    with sim(query, d) = the hit's score. lambda = 1.0 keeps the plain ranking. Returns <= k items.
+    """
+    if not 0.0 <= lambda_ <= 1.0:
+        raise ValueError(f"MMR lambda must be in [0, 1], got {lambda_}")
+    if len(embeddings) != len(hits):
+        raise ValueError("mmr needs one embedding per hit")
+    sim = [[_cosine(a, b) for b in embeddings] for a in embeddings]     # once, not per greedy step
+    remaining = list(range(len(hits)))
+    picked: list[int] = []
+    while remaining and len(picked) < k:
+        def gain(i: int) -> float:
+            redundancy = max((sim[i][j] for j in picked), default=0.0)
+            return lambda_ * hits[i].score - (1.0 - lambda_) * redundancy
+        best = max(remaining, key=gain)          # max() keeps the first (higher-ranked) hit on ties
+        picked.append(best)
+        remaining.remove(best)
+    return [hits[i] for i in picked]

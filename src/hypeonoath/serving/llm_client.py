@@ -6,12 +6,16 @@ Uses Ollama's HTTP /api/chat endpoint through the standard library, so no
 extra dependency is added for one POST request. temperature=0 keeps eval
 runs as repeatable as the model allows; num_ctx is raised because Ollama's
 default context window is too small for k=8 chunks plus rules.
+
+generate() returns GenerationResult(text, stats): stats = Ollama's raw timing / token
+fields (durations in ns, counts) for the eval harness (eval D25); callers use .text.
 """
 from __future__ import annotations
 
 import json
 import urllib.error
 import urllib.request
+from dataclasses import dataclass, field
 
 from hypeonoath.core import config
 from hypeonoath.serving.prompt import Prompt
@@ -21,12 +25,23 @@ class LLMUnavailableError(RuntimeError):
     """Ollama is not reachable / the model is missing -- actionable message."""
 
 
+# Ollama /api/chat response fields kept as generation stats (durations in ns).
+STAT_FIELDS = ("total_duration", "load_duration", "prompt_eval_count", "prompt_eval_duration",
+               "eval_count", "eval_duration")
+
+
+@dataclass(frozen=True)
+class GenerationResult:
+    text: str
+    stats: dict[str, int] = field(default_factory=dict)
+
+
 def generate(
     prompt: Prompt,
     model: str = config.OLLAMA_MODEL,
     base_url: str = config.OLLAMA_URL,
     timeout: float = config.OLLAMA_TIMEOUT_SECONDS,
-) -> str:
+) -> GenerationResult:
     payload = {
         "model": model,
         "messages": [
@@ -45,6 +60,8 @@ def generate(
     try:
         with urllib.request.urlopen(request, timeout=timeout) as response:
             body = json.loads(response.read().decode("utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError) as exc:
+        raise LLMUnavailableError(f"Ollama returned an unreadable response ({type(exc).__name__})") from exc
     except urllib.error.HTTPError as exc:
         detail = exc.read().decode("utf-8", errors="replace")
         if exc.code == 404:
@@ -59,6 +76,7 @@ def generate(
         ) from exc
 
     try:
-        return body["message"]["content"].strip()
+        text = body["message"]["content"].strip()
     except (KeyError, TypeError) as exc:
         raise LLMUnavailableError(f"Unexpected Ollama response: {body!r}") from exc
+    return GenerationResult(text, {k: body[k] for k in STAT_FIELDS if isinstance(body.get(k), int)})
