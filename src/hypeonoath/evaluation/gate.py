@@ -7,6 +7,10 @@ would_refuse(q, t) = top1(q) < t, for every distinct top-1 value t. Series:
   private     private no_answer parts and no answer part            -> shown apart
   adversarial category adversarial                                  -> shown apart
 gate_t_at_1fr = highest t with <= GATE_MAX_FALSE_REFUSALS answerable questions refused.
+
+private_refused(t) overlaps the series: it counts every private-only question (private_only flag),
+whatever its category, so private questions that are also adversarial are not lost (v19). Every
+point also carries the refused count per series, so the report shows each share as a fraction.
 """
 from __future__ import annotations
 
@@ -22,6 +26,11 @@ class GateRow:
     qid: str
     series: str          # cov_only | answerable | private | adversarial | other
     top1: float | None
+    private_only: bool = False   # >= 1 private part and no answer part, any category (private_refused)
+
+
+def is_private_only(q: Question) -> bool:
+    return PRIVATE in q.kinds and ANSWER not in q.kinds
 
 
 def series_of(q: Question) -> str:
@@ -31,7 +40,7 @@ def series_of(q: Question) -> str:
         return "answerable"
     if q.kinds == {NOT_COVERED}:
         return "cov_only"
-    if PRIVATE in q.kinds:
+    if is_private_only(q):
         return "private"
     return "other"
 
@@ -45,6 +54,9 @@ def sweep(rows: list[GateRow], max_false_refusals: int = config.GATE_MAX_FALSE_R
     by_series: dict[str, list[float]] = {}
     for r in scored:
         by_series.setdefault(r.series, []).append(r.top1)
+    private = [r.top1 for r in scored if r.private_only or r.series == "private"]   # overlapping series
+    if private:
+        by_series["private"] = private
     points = []
     for t in sorted({r.top1 for r in scored}):
         refused = {s: sum(v < t for v in vals) for s, vals in by_series.items()}
@@ -55,6 +67,7 @@ def sweep(rows: list[GateRow], max_false_refusals: int = config.GATE_MAX_FALSE_R
             "false_refusal": _share(refused.get("answerable", 0), len(by_series.get("answerable", []))),
             "private_refused": _share(refused.get("private", 0), len(by_series.get("private", []))),
             "adversarial_refused": _share(refused.get("adversarial", 0), len(by_series.get("adversarial", []))),
+            "refused": refused,                                          # counts per series (report fractions)
         })
     ok = [p for p in points if p["false_refusals"] <= max_false_refusals]
     best = max(ok, key=lambda p: p["t"]) if ok else None

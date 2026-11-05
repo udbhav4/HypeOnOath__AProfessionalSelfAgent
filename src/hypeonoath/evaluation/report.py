@@ -119,11 +119,22 @@ def _curves(scores: dict[str, Any]) -> list[str]:
     lines = ["| k | " + " | ".join(str(k) for k in paths.K_VALUES) + " |", "|---|" + "---|" * len(paths.K_VALUES),
              "| Hit@k | " + " | ".join(_fmt(r.get(f"hit@{k}")) for k in paths.K_VALUES) + " |",
              "| Recall@k | " + " | ".join(_fmt(r["recall_curve"].get(k)) for k in paths.K_VALUES) + " |", ""]
-    gate = scores["gate"]
-    lines += [f"Gate sweep (series sizes: {gate['n']}); gate_t_at_1fr = {_fmt(gate['gate_t_at_1fr'])}:", "",
-              "| t | correct refusal | false refusals | private refused | adversarial refused |", "|---|---|---|---|---|"]
-    lines += [f"| {p['t']:.3f} | {_fmt(p['correct_refusal'])} | {p['false_refusals']} | {_fmt(p['private_refused'])} "
-              f"| {_fmt(p['adversarial_refused'])} |" for p in gate["points"]]
+    gate, n = scores["gate"], scores["gate"]["n"]
+    order = ("answerable", "cov_only", "private", "adversarial", "other")
+    sizes = ", ".join(f"{s} {n[s]}" for s in order if s in n) or "none"
+    overlap = "; private overlaps adversarial" if "private" in n and "adversarial" in n else ""
+    lines += [f"Gate sweep (series sizes: {sizes}{overlap}); "
+              f"gate_t_at_1fr = {_fmt(gate['gate_t_at_1fr'])}. Cells: share (refused / series size).", "",
+              "| t | correct refusal | false refusal | private refused | adversarial refused |", "|---|---|---|---|---|"]
+
+    def cell(p: dict[str, Any], series: str, share_key: str) -> str:
+        if not n.get(series):
+            return "—"                                    # series absent in this question set
+        return f"{_fmt(p[share_key])} ({p['refused'].get(series, 0)}/{n[series]})"
+
+    lines += [f"| {p['t']:.3f} | {cell(p, 'cov_only', 'correct_refusal')} | {cell(p, 'answerable', 'false_refusal')} "
+              f"| {cell(p, 'private', 'private_refused')} | {cell(p, 'adversarial', 'adversarial_refused')} |"
+              for p in gate["points"]]
     return lines
 
 
