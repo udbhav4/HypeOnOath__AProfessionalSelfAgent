@@ -79,6 +79,36 @@ def test_sweep_values_and_threshold():
     assert out["n"] == {"answerable": 3, "cov_only": 2, "private": 1, "adversarial": 1}
 
 
+def test_sweep_refused_counts_per_point():
+    rows = [GateRow("a1", "answerable", 0.9), GateRow("a2", "answerable", 0.5), GateRow("c1", "cov_only", 0.4)]
+    by_t = {p["t"]: p for p in sweep(rows)["points"]}
+    assert by_t[0.9]["refused"] == {"answerable": 1, "cov_only": 1}           # a2 and c1 below 0.9
+    assert by_t[0.4]["refused"] == {"answerable": 0, "cov_only": 0}
+
+
+def test_private_series_overlaps_adversarial():
+    """v19: an adversarial private-only question counts in BOTH adversarial and private, never twice in private."""
+    rows = [GateRow("x_priv", "adversarial", 0.3, private_only=True), GateRow("x", "adversarial", 0.5),
+            GateRow("p", "private", 0.4, private_only=True), GateRow("a", "answerable", 0.9)]
+    out = sweep(rows)
+    assert out["n"] == {"adversarial": 2, "private": 2, "answerable": 1}
+    by_t = {p["t"]: p for p in out["points"]}
+    assert by_t[0.5]["private_refused"] == 1.0 and by_t[0.5]["refused"]["private"] == 2     # 0.3, 0.4 < 0.5
+    assert by_t[0.4]["private_refused"] == 0.5 and by_t[0.4]["adversarial_refused"] == 0.5
+    assert out["gate_t_at_1fr"] == 0.9                                         # answerable series unchanged
+
+
+def test_is_private_only():
+    from hypeonoath.evaluation.gate import is_private_only
+
+    qs = parse(valid_raw())
+    assert not is_private_only(qs[0])                                          # answer + private
+    assert is_private_only(qs[6])                                              # private + not covered
+    assert not is_private_only(qs[14])                                         # not covered only
+    qs[6].category = "adversarial"
+    assert is_private_only(qs[6]) and series_of(qs[6]) == "adversarial"
+
+
 def test_sweep_empty():
     assert sweep([])["gate_t_at_1fr"] is None
 

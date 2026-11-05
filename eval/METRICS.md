@@ -131,4 +131,5 @@ Generated from `hypeonoath.evaluation.metrics.METRICS` (D37) by `hypeonoath-eval
 | **hit_at_k_curve** | Hit@k for k = 1, 3, 4, 5, 8, 10, 12, 15, 20 (D14, D74). |
 | **deltas** | Chart of this run minus the baseline per scorecard metric (Stage D chart; shown as the delta column now). |
 | **recall_at_k_curve** | Recall@k for k = 1, 3, 4, 5, 8, 10, 12, 15, 20 (D14, D74). |
-| **threshold_sweep** | Gate correct-refusal(t) and false-refusal(t) per threshold, plus the private and adversarial series (4.2). |
+| **threshold_sweep** | Gate correct-refusal(t) and false-refusal(t) per threshold, plus the private and adversarial series (4.2); every cell is share (refused / series size). The private series overlaps: every question with a private part and no answer part, adversarial ones included. |
+| **breakdowns** | Per category / doc_group / edge tag: n = questions (n_parts = parts) in the group; n_answerable (n_answer_parts) = the denominator of hit@8 and in_context. |

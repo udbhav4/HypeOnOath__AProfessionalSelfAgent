@@ -18,7 +18,7 @@ from statistics import mean
 from typing import Any
 
 from hypeonoath.evaluation import paths
-from hypeonoath.evaluation.gate import GateRow, series_of, sweep
+from hypeonoath.evaluation.gate import GateRow, is_private_only, series_of, sweep
 from hypeonoath.evaluation.leaks import leak_source, parametric_leak, private_leak_pre, prompt_leak
 from hypeonoath.evaluation.outcomes import (ANSWERED, NON_ANSWER, SKIPPED, UNKNOWN, behaviour, part_outcomes,
                                             pivots)
@@ -218,7 +218,10 @@ REPORT_TERMS = {
     "deltas": "Chart of this run minus the baseline per scorecard metric (Stage D chart; shown as the delta column now).",
     "recall_at_k_curve": f"Recall@k for k = {', '.join(map(str, paths.K_VALUES))} (D14, D74).",
     "threshold_sweep": "Gate correct-refusal(t) and false-refusal(t) per threshold, plus the private and "
-                       "adversarial series (4.2).",
+                       "adversarial series (4.2); every cell is share (refused / series size). The private series "
+                       "overlaps: every question with a private part and no answer part, adversarial ones included.",
+    "breakdowns": "Per category / doc_group / edge tag: n = questions (n_parts = parts) in the group; n_answerable "
+                  "(n_answer_parts) = the denominator of hit@8 and in_context.",
 }
 
 
@@ -434,6 +437,7 @@ def breakdowns(questions: list[Question], answers: dict[str, dict[str, Any]],
         answerable = [q for q in qs if answer_keys(q) and q.id in answers]
         row: dict[str, Any] = {
             "n": len(qs),
+            "n_answerable": len(answerable),             # denominator of hit@8 and in_context_hit
             "hit@8": _mean([1.0 if _found(answers[q.id]["ranking"][:paths.REFERENCE_K]) & set(answer_keys(q)) else 0.0
                             for q in answerable]),
             "in_context_hit": _mean([1.0 if _found(answers[q.id]["context"]) & set(answer_keys(q)) else 0.0
@@ -462,7 +466,7 @@ def breakdowns(questions: list[Question], answers: dict[str, dict[str, Any]],
     per_tag = {}
     for tag, items in sorted(tags.items()):
         a_items = [(q, p) for q, p in items if p.kind == ANSWER and q.id in answers]
-        row: dict[str, Any] = {"n_parts": len(items), "in_context": _mean([
+        row: dict[str, Any] = {"n_parts": len(items), "n_answer_parts": len(a_items), "in_context": _mean([
             1.0 if any(f"{p.id}:{g.point}" in _found(answers[q.id]["context"]) for g in p.evidence) else 0.0
             for q, p in a_items])}
         if full:
@@ -488,7 +492,7 @@ def score_run(questions: list[Question], answers_list: list[dict[str, Any]], jud
 
     retrieval = retrieval_metrics(qs, answers)
     m.update({k: v for k, v in retrieval.items() if k in m})
-    gate = sweep([GateRow(q.id, series_of(q), answers[q.id].get("top1")) for q in qs])
+    gate = sweep([GateRow(q.id, series_of(q), answers[q.id].get("top1"), is_private_only(q)) for q in qs])
     m.update(gate_t_at_1fr=gate["gate_t_at_1fr"], gate_correct_refusal_at_t=gate["gate_correct_refusal_at_t"])
 
     scores: dict[str, Any] = {"stage": stage, "metrics": m, "retrieval": retrieval, "gate": gate}

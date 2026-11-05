@@ -128,6 +128,21 @@ def test_report_renders_retrieval_stage_without_baseline():
     assert "Full stage only." in text and "Per edge tag" in text and "## 9. How to read this report" in text
 
 
+def test_report_breakdowns_show_their_denominators_and_gate_cells_fractions():
+    """v19: n_answerable / n_answer_parts next to n; every gate cell = share (refused / series size)."""
+    qs, answers, scores = retrieval_scores()                     # q1 answerable, q2 not covered (top1 0.3)
+    text = render(manifest(), scores, qs, answers, [])
+    assert "| | n | n_answerable | hit@8 | in_context_hit |" in text
+    assert "| | n_parts | n_answer_parts | in_context |" in text
+    cat = scores["breakdowns"]["category"]
+    assert sum(r["n"] for r in cat.values()) == 2 and sum(r["n_answerable"] for r in cat.values()) == 1
+    top = scores["gate"]["points"][-1]                           # highest t: q2 (0.3) is below it
+    assert f"{top['correct_refusal']:.3f} (1/1)" in text
+    assert "share (refused / series size)" in text
+    assert "series sizes: answerable 1, cov_only 1)" in text                  # fixed order
+    assert "private overlaps adversarial" not in text                        # neither series present
+
+
 def test_report_renders_full_stage_with_baseline_matrix_and_flips():
     qs, answers, judgments, scores = full_scores()
     base_scores = {**scores, "buckets": {"q1": {"bucket": "retrieval_miss"}, "q2": {"bucket": "ok"}}}
@@ -218,3 +233,36 @@ def test_world_knowledge_empty_when_nothing_judged_and_count_otherwise():
     assert score_run(qs, answers, [], MANIFEST)["metrics"]["world_knowledge_claims"] is None
     j = [judgment("q1", [seg("s1", "non_answer")], call2=False)]
     assert score_run(qs, answers, j, MANIFEST)["metrics"]["world_knowledge_claims"] == 0
+
+
+def test_score_run_private_series_overlaps_and_breakdown_denominators():
+    """v19 end to end: adversarial private-only q counts in adversarial AND private (once); answer+private q is
+    answerable only; adversarial n_answerable is the hit@8 denominator; edge tags carry n_answer_parts."""
+    from tests.evaluation.test_outcomes_metrics import NP
+    qs = [Q("x1", NP("b"), category="adversarial"), Q("x2", NC("c"), category="adversarial"),
+          Q("x3", A("a"), category="adversarial"), Q("p1", NP("b"), NC("c")), Q("m1", A("a"), NP("b"))]
+    answers = [rec("x1", [[]], top1=0.2), rec("x2", [[]], top1=0.3), rec("x3", [["a:0"]], ["a:0"], top1=0.9),
+               rec("p1", [[]], top1=0.4), rec("m1", [["a:0"]], ["a:0"], top1=0.7)]
+    scores = score_run(qs, answers, [], {"stage": "retrieval"})
+    gate = scores["gate"]
+    assert gate["n"] == {"adversarial": 3, "private": 2, "answerable": 1}
+    by_t = {p["t"]: p for p in gate["points"]}
+    assert by_t[0.9]["refused"] == {"adversarial": 2, "private": 2, "answerable": 1}
+    assert by_t[0.4]["private_refused"] == 0.5 and by_t[0.4]["correct_refusal"] is None
+    adv = scores["breakdowns"]["category"]["adversarial"]
+    assert adv["n"] == 3 and adv["n_answerable"] == 1 and adv["hit@8"] == 1.0
+    tags = scores["breakdowns"]["edge_tag"]
+    assert tags["decline_direct"]["n_parts"] == 3 and tags["decline_direct"]["n_answer_parts"] == 0
+    assert tags["decline_direct"]["in_context"] is None
+    assert tags["single_doc"]["n_answer_parts"] == 2
+    text = render(manifest(), scores, qs, answers, [])
+    assert "| 0.900 | — | 1.000 (1/1) | 1.000 (2/2) | 0.667 (2/3) |" in text      # no cov_only series -> —
+
+
+def test_report_gate_cells_dash_for_absent_series_and_empty_sweep():
+    _, _, scores = retrieval_scores()                            # no private, no adversarial question
+    assert "private" not in scores["gate"]["n"] and "adversarial" not in scores["gate"]["n"]
+    lines = [ln for ln in render(manifest(), scores, *retrieval_scores()[:2], []).splitlines() if ln.startswith("| 0.")]
+    assert lines and all(ln.rstrip().endswith("| — | — |") for ln in lines)
+    empty = {**scores, "gate": {"points": [], "n": {}, "gate_t_at_1fr": None, "gate_correct_refusal_at_t": None}}
+    assert "series sizes: none" in render(manifest(), empty, *retrieval_scores()[:2], [])
