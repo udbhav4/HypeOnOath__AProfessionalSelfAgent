@@ -64,6 +64,19 @@ METRICS: list[MetricDef] = [
        "Compare only with prompt_sha256 in the manifest.", **_SET),
     _m("top_k", "Context items given to the model.", "Retrieval experiment F1 (D29).", "-", **_SET),
     _m("mmr_lambda", "MMR lambda; empty = MMR off (D31).", "Retrieval experiment F3.", "1.0 = plain ranking.", **_SET),
+    _m("mmr_fetch_k", "Candidates MMR re-selects from (top fetch_k by similarity); empty = MMR off (D88).",
+       "A lever of the MMR experiment.", "Bigger = more candidates to diversify from.", **_SET),
+    _m("doc_description_in_chunks", "true = each chunk's text starts with its document's description (code: the "
+       "project's description) before embedding (F-R3, V13-7); false = section path only (D88).",
+       "Experiment F-R3 changes the index; this says how.", "Read with index_fp.", **_SET),
+    _m("small_sections_merged", "true = the index was built with the sibling rule (D95): a chunk under 300 tokens "
+       "absorbs the next section under the same parent heading / the next row of the same table while it stays "
+       "<= 500 tokens; false = one chunk per section / table row (F-R3).",
+       "Experiment F-R3 changes the index; this says how.", "Read with index_fp and context tokens.", **_SET),
+    _m("query_rewrite", "Retrieval-query rewrite (D94): none = the question as asked; third_person = 'you' -> the "
+       "owner's pronouns (config.OWNER_PRONOUNS) by spaCy parse + LemmInflect, never the owner's name. The prompt "
+       "always gets the original question (F-R4).", "Experiment F-R4.",
+       "answers.jsonl retrieval_query = the rewritten query of each question.", **_SET),
     _m("index_fp", "Chunk count + hash of the sorted chunk ids.", "Re-indexing changes ids.",
        "Different = not the same index.", **_SET),
     _m("privacy_fp", "Fingerprint of the private decisions (D49).", "Privacy is frozen during the eval.",
@@ -89,16 +102,19 @@ METRICS: list[MetricDef] = [
          "(after MMR if on).", "Can the retriever find the material at all?", "Higher is better; the knee of "
          "the curve guides top_k.", denominator="answerable questions", stages=BOTH, section="retrieval")
       for k in paths.K_VALUES],
-    _m("recall@8", "Evidence groups found in the top 8 / groups, averaged per question.",
-       "Multi-hop needs several facts.", "Recall << Hit -> partial evidence.", denominator="answerable questions",
-       stages=BOTH, aggregation="mean", section="retrieval"),
+    *[_m(f"recall@{k}", f"Evidence groups found in the top {k} / groups, averaged per question.",
+         "Multi-hop needs several facts.", "Recall << Hit -> partial evidence.", denominator="answerable questions",
+         stages=BOTH, aggregation="mean", section="retrieval") for k in paths.K_VALUES],
     _m("mrr", "Per question 1 / rank of the first raw-ranking item (within the top 20) holding any answer-part "
        "evidence group; 0 if none; mean.", "Right chunk near the top.",
        "0-1, higher is better.", denominator="answerable questions", stages=BOTH, aggregation="mean",
        section="retrieval"),
     _m("in_context_hit", ">= 1 evidence group found in the final context (after top_k, dedupe, sibling budget).",
-       "What the model actually saw.", "Gap to hit@8 = an assembly problem.", denominator="answerable questions",
+       "What the model actually saw.", "Gap to hit@top_k = an assembly problem.", denominator="answerable questions",
        stages=BOTH, section="retrieval"),
+    _m("in_context_recall", "Evidence groups found in the final context / groups, averaged per question (D87).",
+       "Share of the facts the model actually got (partial lists).", "Gap to recall@top_k = an assembly loss.",
+       denominator="answerable questions", stages=BOTH, aggregation="mean", section="retrieval"),
     _m("supporting_recall@8", "Share of supporting groups found in the top 8, averaged per question.",
        "Context for selling the candidate (MMR yardstick, D21).", "Read with persona and embellishment.",
        denominator="persona_pitch / project questions with supporting groups", stages=BOTH, aggregation="mean",
@@ -215,13 +231,49 @@ REPORT_TERMS = {
                "missed_no_answer, false_no_answer, retrieval_miss, silent_skip, unfaithful, embellished, incomplete, "
                "policy, unknown, ok.",
     "hit_at_k_curve": f"Hit@k for k = {', '.join(map(str, paths.K_VALUES))} (D14, D74).",
-    "deltas": "Chart of this run minus the baseline per scorecard metric (Stage D chart; shown as the delta column now).",
+    "deltas": "Chart of this run minus the baseline per scorecard rate (from Stage D, D90; the scorecard's delta "
+              "column until then).",
     "recall_at_k_curve": f"Recall@k for k = {', '.join(map(str, paths.K_VALUES))} (D14, D74).",
     "threshold_sweep": "Gate correct-refusal(t) and false-refusal(t) per threshold, plus the private and "
                        "adversarial series (4.2); every cell is share (refused / series size). The private series "
-                       "overlaps: every question with a private part and no answer part, adversarial ones included.",
+                       "overlaps: every question with a private part and no answer part, adversarial ones included. "
+                       "Chart (7.1): panel a = correct refusal (cov_only) and false refusal (answerable) over t, this "
+                       "run solid, baseline dashed, gate_t_at_1fr as vertical lines, dotted = the false-refusal limit; "
+                       "panel b = every question's top-1 per series (filled = this run, hollow = baseline). Read: a "
+                       "good config puts the cov_only dots left of the answerable ones, so the line at "
+                       "gate_t_at_1fr catches more of them; private / adversarial are on-topic by design.",
+    "retrieval_curves": "Chart (7.1, D90): (a) Hit@k and (b) Recall@k over k, this run solid, baseline dashed in "
+                        "the same colour, green / red shading = run above / below the baseline, vertical line = "
+                        "operating k, stars = in_context_hit / in_context_recall at the operating k; (c) Δ per k "
+                        "labelled in questions (recall bars = question-equivalents), grey band = ± 1 question. "
+                        "Read: low-k gains = better ordering, high-k gains = new evidence reached; a gap between a "
+                        "curve and its star = assembly loss; bars inside the band are noise-level.",
+    "runs_overlay": "Chart (7.1, T13): Hit@k and Recall@k of the latest comparable runs (same question set and "
+                    "privacy_fp, run_id before this run, at most OVERLAY_RUNS incl. this run) + the baseline "
+                    "(black dashed); this run thick blue; a dot marks each run's top_k. Runs that differ only in "
+                    "top_k share one curve (k does not move the ranking) and differ only by their dot. Read: the "
+                    "highest curve over the k range you care about wins; crossing curves = a trade-off.",
+    "first_rank_shift": "Chart (7.1): one dot per answerable question in both runs, x = baseline first matching "
+                        "rank, y = this run's ('none' = not in the top 20); grey diagonal = unchanged, dashed lines "
+                        "= the operating k of each run; green = hit@k gained, red = lost, blue = moved without a "
+                        "hit flip; a number = questions on the same point; the largest moves are labelled. Read: "
+                        "below the diagonal = ranked earlier (better); long single jumps → read the chunks "
+                        "(overfitting or gold bias).",
+    "context_tokens": "Chart (7.1): share of questions whose context has ≤ x tokens (ECDF), this run solid, "
+                      "baseline dashed; green = mean, red = p95, dotted grey = MAX_CONTEXT_TOKENS (the sibling "
+                      "budget, not a hard cap). Read: a curve shifted right = longer prompts (slower CPU "
+                      "generation); accept it only for a matching in-context gain.",
     "breakdowns": "Per category / doc_group / edge tag: n = questions (n_parts = parts) in the group; n_answerable "
-                  "(n_answer_parts) = the denominator of hit@8 and in_context.",
+                  "(n_answer_parts) = the denominator of the rates. hit@k / recall@k are at the run's operating k "
+                  "(= top_k, D86), in_context_hit / in_context_recall over the final context. With a baseline: Δ per "
+                  "rate (this run at its k minus the baseline at its k).",
+    "settings": "Report section 0 (D85): every lever of this run next to the baseline's, changed values marked ✱. "
+                "The gate threshold is a result of the sweep, not a setting.",
+    "retrieval_baseline": "baseline.json slot `retrieval` (D82): `promote` on a retrieval-stage run sets it; "
+                          "retrieval-stage reports compare against it, full-stage reports against `current`.",
+    "retrieval_flips": "Answerable questions whose hit@k, recall@k (operating k, D86), in_context_hit, "
+                       "in_context_recall or first matching rank (top 20; — = none) changed vs the baseline run: "
+                       "old → new (D82).",
 }
 
 
@@ -257,10 +309,14 @@ def _found(items: list[dict[str, Any]]) -> set[str]:
 
 # --- retrieval (4.1) ----------------------------------------------------------------------
 
-def retrieval_metrics(questions: list[Question], answers: dict[str, dict[str, Any]]) -> dict[str, Any]:
+def retrieval_metrics(questions: list[Question], answers: dict[str, dict[str, Any]],
+                      operating_k: int = paths.REFERENCE_K) -> dict[str, Any]:
+    """4.1. `operating_k` = the run's top_k: the k of the per-question record (D86)."""
     hit = {k: [] for k in paths.K_VALUES}
     recall = {k: [] for k in paths.K_VALUES}
-    rr, in_ctx, sup_rec, sup_ctx, tokens = [], [], [], [], []
+    rr, in_ctx, in_ctx_rec, sup_rec, sup_ctx, tokens = [], [], [], [], [], []
+    per_question: dict[str, dict[str, Any]] = {}        # D82 / D86: per-question retrieval flips vs a baseline
+    tokens_by_question: dict[str, int] = {}               # V22-6: context_tokens.png draws the baseline from it
     for q in questions:
         a = answers.get(q.id)
         if a is None:
@@ -268,6 +324,7 @@ def retrieval_metrics(questions: list[Question], answers: dict[str, dict[str, An
         ranking, context = a.get("ranking") or [], a.get("context") or []
         if a.get("context_tokens") is not None:
             tokens.append(a["context_tokens"])
+            tokens_by_question[q.id] = a["context_tokens"]
         keys = set(answer_keys(q))
         if keys:
             for k in paths.K_VALUES:
@@ -276,17 +333,26 @@ def retrieval_metrics(questions: list[Question], answers: dict[str, dict[str, An
                 recall[k].append(len(found) / len(keys))
             rank = next((i for i, item in enumerate(ranking[:paths.EVAL_DEPTH], 1) if set(item.get("groups") or []) & keys), None)
             rr.append(1.0 / rank if rank else 0.0)
-            in_ctx.append(1.0 if _found(context) & keys else 0.0)
+            in_found = _found(context) & keys
+            in_ctx.append(1.0 if in_found else 0.0)
+            in_ctx_rec.append(len(in_found) / len(keys))
+            at_k = _found(ranking[:operating_k]) & keys
+            per_question[q.id] = {"hit@k": bool(at_k), "recall@k": len(at_k) / len(keys),
+                                  "in_context_hit": bool(in_found), "in_context_recall": in_ctx_rec[-1],
+                                  "first_rank": rank}
         skeys = set(supporting_keys(q))
         if skeys:
             sup_rec.append(len(_found(ranking[:paths.REFERENCE_K]) & skeys) / len(skeys))
             sup_ctx.append(len(_found(context) & skeys) / len(skeys))
     out: dict[str, Any] = {f"hit@{k}": _mean(hit[k]) for k in paths.K_VALUES}
-    out["recall_curve"] = {k: _mean(recall[k]) for k in paths.K_VALUES}
-    out.update({"recall@8": _mean(recall[paths.REFERENCE_K]), "mrr": _mean(rr), "in_context_hit": _mean(in_ctx),
+    out.update({f"recall@{k}": _mean(recall[k]) for k in paths.K_VALUES})
+    out["recall_curve"] = {k: out[f"recall@{k}"] for k in paths.K_VALUES}
+    out.update({"mrr": _mean(rr), "in_context_hit": _mean(in_ctx), "in_context_recall": _mean(in_ctx_rec),
                 "supporting_recall@8": _mean(sup_rec), "supporting_in_context": _mean(sup_ctx),
                 "context_tokens_mean": _mean(tokens), "context_tokens_p95": percentile(tokens, 0.95),
-                "n_answerable": len(rr), "n_supporting": len(sup_rec), "n_tokens": len(tokens)})
+                "n_answerable": len(rr), "n_supporting": len(sup_rec), "n_tokens": len(tokens),
+                "operating_k": operating_k, "per_question": per_question,
+                "context_tokens_by_question": tokens_by_question})
     return out
 
 
@@ -432,16 +498,22 @@ def _part_ok(p, o: str) -> bool:
 
 
 def breakdowns(questions: list[Question], answers: dict[str, dict[str, Any]],
-               outcomes: dict[str, dict[str, str]], full: bool) -> dict[str, Any]:
+               outcomes: dict[str, dict[str, str]], full: bool, operating_k: int = paths.REFERENCE_K) -> dict[str, Any]:
+    """Per category / doc_group / edge tag; the ranking columns are at the run's operating k (D86)."""
+    def shares(q: Question, items: list[dict[str, Any]]) -> tuple[float, float]:
+        keys = set(answer_keys(q))
+        found = _found(items) & keys
+        return (1.0 if found else 0.0), len(found) / len(keys)
+
     def summary(qs: list[Question]) -> dict[str, Any]:
         answerable = [q for q in qs if answer_keys(q) and q.id in answers]
+        at_k = [shares(q, answers[q.id]["ranking"][:operating_k]) for q in answerable]
+        in_ctx = [shares(q, answers[q.id]["context"]) for q in answerable]
         row: dict[str, Any] = {
             "n": len(qs),
-            "n_answerable": len(answerable),             # denominator of hit@8 and in_context_hit
-            "hit@8": _mean([1.0 if _found(answers[q.id]["ranking"][:paths.REFERENCE_K]) & set(answer_keys(q)) else 0.0
-                            for q in answerable]),
-            "in_context_hit": _mean([1.0 if _found(answers[q.id]["context"]) & set(answer_keys(q)) else 0.0
-                                     for q in answerable]),
+            "n_answerable": len(answerable),             # denominator of every rate below
+            "hit@k": _mean([h for h, _ in at_k]), "recall@k": _mean([r for _, r in at_k]),
+            "in_context_hit": _mean([h for h, _ in in_ctx]), "in_context_recall": _mean([r for _, r in in_ctx]),
         }
         if full:
             known = [q for q in qs if all(outcomes.get(q.id, {}).get(p.id, UNKNOWN) != UNKNOWN for p in q.parts)]
@@ -490,7 +562,8 @@ def score_run(questions: list[Question], answers_list: list[dict[str, Any]], jud
     m: dict[str, Any] = {name: None for name in RUNS_CSV_COLUMNS}
     m.update(n=len(qs), n_parts=sum(len(q.parts) for q in qs))
 
-    retrieval = retrieval_metrics(qs, answers)
+    operating_k = manifest.get("top_k") or paths.REFERENCE_K          # D86: the run's own k
+    retrieval = retrieval_metrics(qs, answers, operating_k)
     m.update({k: v for k, v in retrieval.items() if k in m})
     gate = sweep([GateRow(q.id, series_of(q), answers[q.id].get("top1"), is_private_only(q)) for q in qs])
     m.update(gate_t_at_1fr=gate["gate_t_at_1fr"], gate_correct_refusal_at_t=gate["gate_correct_refusal_at_t"])
@@ -561,5 +634,5 @@ def score_run(questions: list[Question], answers_list: list[dict[str, Any]], jud
             "judge_errors": [a["id"] for a in sent if judgments.get(a["id"], {}).get("status") == "error"],
             "unknown_parts": [f"{q.id}/{pid}" for q in qs for pid, o in outcomes[q.id].items() if o == UNKNOWN],
         }
-    scores["breakdowns"] = breakdowns(qs, answers, outcomes, full)
+    scores["breakdowns"] = breakdowns(qs, answers, outcomes, full, operating_k)
     return scores

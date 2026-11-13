@@ -2,7 +2,7 @@
 # Do not edit by hand: edit eval/gold_work/drafts.yaml, review, and freeze again.
 meta:
   privacy_fp: 1f1296a031d64a91
-  question_set_sha256: 208f9693a4d4985bcc252018800853f9529af6f762fdd4be71ea4d37f64bc47c
+  question_set_sha256: 5c14288658bc2f635c431f7943f23fc0a082604221c7f7981c3f0d06daa5ea3c
 questions:
 - id: q001
   category: single_fact
@@ -1615,22 +1615,38 @@ questions:
   status: approved
   parts:
   - id: a
-    ask: reason for switching to docling
+    ask: a technical problem hit while building the chatbot and how it was fixed
     expected: answer
-    reference_answer: pymupdf4llm misread a text region in the real CV PDF as a table, swallowing a heading, and its table_strategy
-      settings did not fix it; docling was chosen for its dedicated table-structure recognition model.
+    reference_answer: 'Any one of: (1) pymupdf4llm misread a text region in the real CV PDF as a table, swallowing a heading,
+      and its table_strategy settings did not fix it -> switched to docling for its dedicated table-structure recognition
+      model; (2) docling dropped the URLs of clickable links (LinkedIn, GitHub) -> an independent, always-on hyperlink-extraction
+      pass was added; (3) a document-level content-type rule would have mislabeled the mixed prose-and-table design doc ->
+      content type is now decided per block at chunk time; (4) Render''s free tier has an ephemeral filesystem, so the index
+      cannot be updated on the running server -> the index is committed and ships with each push-triggered redeploy.'
     key_points:
-    - pymupdf4llm misjudged a text region in the CV PDF as a table
-    - docling has a dedicated table-structure recognition model
+    - names a concrete technical problem hit while building the chatbot
+    - explains how that problem was fixed
     evidence:
     - point: 0
       any_of:
       - document: corpus/documents/system-design-rag-chatbot.md
         quote: was found to misjudge a text region in a real PDF
+      - document: corpus/documents/system-design-rag-chatbot.md
+        quote: rendered as plain text with the URL silently dropped
+      - document: corpus/documents/system-design-rag-chatbot.md
+        quote: would have mislabeled the whole file
+      - document: corpus/documents/system-design-rag-chatbot.md
+        quote: has an ephemeral filesystem
     - point: 1
       any_of:
       - document: corpus/documents/system-design-rag-chatbot.md
         quote: chosen for its dedicated table-structure recognition model
+      - document: corpus/documents/system-design-rag-chatbot.md
+        quote: independent, always-on hyperlink-extraction pass
+      - document: corpus/documents/system-design-rag-chatbot.md
+        quote: Content-type detection now happens as part of chunking itself, at the block level
+      - document: corpus/documents/system-design-rag-chatbot.md
+        quote: commit the index, redeploy on push
     supporting: []
     edge:
     - single_doc

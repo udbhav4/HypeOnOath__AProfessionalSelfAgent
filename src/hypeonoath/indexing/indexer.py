@@ -47,9 +47,16 @@ class IndexSwapError(RuntimeError):
     """The fresh index was built but could not replace the old folder (e.g. a file lock)."""
 
 
-def _collection_metadata(privacy_fp: str) -> dict[str, str]:
-    return {"hnsw:space": "cosine", "embed_model": config.EMBED_MODEL_NAME,
-            "embed_revision": config.EMBED_MODEL_REVISION or "unpinned", "privacy_fp": privacy_fp}
+def _collection_metadata(privacy_fp: str, chunking: dict[str, bool] | None = None) -> dict[str, str | bool]:
+    """
+    `chunking` = the F-R3 chunking flags (eval D95). Only flags that are ON are written, so an index built
+    with every flag off has exactly the metadata it had before F-R3 (D98); readers treat absent as off.
+    """
+    meta: dict[str, str | bool] = {"hnsw:space": "cosine", "embed_model": config.EMBED_MODEL_NAME,
+                                   "embed_revision": config.EMBED_MODEL_REVISION or "unpinned",
+                                   "privacy_fp": privacy_fp}
+    meta.update({key: True for key, on in (chunking or {}).items() if on})
+    return meta
 
 
 def _write(collection, chunks: list[Chunk], vectors: list[list[float]]) -> None:
@@ -84,6 +91,7 @@ def rebuild_index(
     *,
     privacy_fp: str = "none",
     fresh_dir: bool = False,
+    chunking: dict[str, bool] | None = None,
 ) -> int:
     """Replace the collection with exactly these chunks. Returns the count."""
     chroma_dir = config.CHROMA_DIR if chroma_dir is None else chroma_dir
@@ -94,25 +102,27 @@ def rebuild_index(
     if duplicates:
         raise ValueError(f"Duplicate chunk_ids (would overwrite each other): {duplicates[:5]}")
 
+    metadata = _collection_metadata(privacy_fp, chunking)
     if fresh_dir:
-        _rebuild_fresh(chunks, vectors, chroma_dir, collection_name, privacy_fp)
+        _rebuild_fresh(chunks, vectors, chroma_dir, collection_name, metadata)
     else:
-        _rebuild_same_dir(chunks, vectors, chroma_dir, collection_name, privacy_fp)
+        _rebuild_same_dir(chunks, vectors, chroma_dir, collection_name, metadata)
     log_json_line(config.INDEXING_LOG_PATH, status="index_rebuilt", chunks=len(chunks),
                   content_types=dict(Counter(c.content_type for c in chunks)),
-                  privacy_fp=privacy_fp, fresh_dir=fresh_dir)
+                  privacy_fp=privacy_fp, fresh_dir=fresh_dir, index_dir=str(chroma_dir),
+                  chunking={k: v for k, v in (chunking or {}).items() if v})
     logger.info("Indexed %d chunks into %s/%s (fresh_dir=%s)", len(chunks), chroma_dir, collection_name, fresh_dir)
     return len(chunks)
 
 
-def _rebuild_same_dir(chunks, vectors, chroma_dir: Path, collection_name: str, privacy_fp: str) -> None:
+def _rebuild_same_dir(chunks, vectors, chroma_dir: Path, collection_name: str, metadata: dict) -> None:
     client = get_client(chroma_dir)
     staging = f"{collection_name}__staging"
     _delete_if_exists(client, staging)
     collection = client.create_collection(
         name=staging,
         embedding_function=None,                    # never let Chroma embed
-        metadata=_collection_metadata(privacy_fp),
+        metadata=metadata,
     )
     _write(collection, chunks, vectors)
     # Swap: only now is the old index removed.
@@ -120,7 +130,7 @@ def _rebuild_same_dir(chunks, vectors, chroma_dir: Path, collection_name: str, p
     collection.modify(name=collection_name)
 
 
-def _rebuild_fresh(chunks, vectors, chroma_dir: Path, collection_name: str, privacy_fp: str) -> None:
+def _rebuild_fresh(chunks, vectors, chroma_dir: Path, collection_name: str, metadata: dict) -> None:
     new_dir = chroma_dir.with_name(chroma_dir.name + NEW_SUFFIX)
     old_dir = chroma_dir.with_name(chroma_dir.name + OLD_SUFFIX)
     for leftover in (new_dir, old_dir):           # from an earlier interrupted run
@@ -129,8 +139,7 @@ def _rebuild_fresh(chunks, vectors, chroma_dir: Path, collection_name: str, priv
             shutil.rmtree(leftover)
     try:
         client = get_client(new_dir)
-        collection = client.create_collection(name=collection_name, embedding_function=None,
-                                              metadata=_collection_metadata(privacy_fp))
+        collection = client.create_collection(name=collection_name, embedding_function=None, metadata=metadata)
         _write(collection, chunks, vectors)
     except BaseException:
         release_client(new_dir)

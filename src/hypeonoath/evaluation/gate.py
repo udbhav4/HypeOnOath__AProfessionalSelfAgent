@@ -11,6 +11,7 @@ gate_t_at_1fr = highest t with <= GATE_MAX_FALSE_REFUSALS answerable questions r
 private_refused(t) overlaps the series: it counts every private-only question (private_only flag),
 whatever its category, so private questions that are also adversarial are not lost (v19). Every
 point also carries the refused count per series, so the report shows each share as a fraction.
+(v22, V22-6) `top1_by_question` keeps every question's top-1 and series for the threshold chart.
 """
 from __future__ import annotations
 
@@ -76,4 +77,6 @@ def sweep(rows: list[GateRow], max_false_refusals: int = config.GATE_MAX_FALSE_R
         "n": {s: len(v) for s, v in by_series.items()},
         "gate_t_at_1fr": best["t"] if best else None,
         "gate_correct_refusal_at_t": best["correct_refusal"] if best else None,
+        "top1_by_question": {r.qid: {"top1": r.top1, "series": r.series, "private_only": r.private_only}
+                             for r in scored},
     }

@@ -412,3 +412,44 @@ def test_known_fake_value_appears_only_in_decisions_json(corpus, capsys, caplog)
                      if p.is_file() and MARKER.encode() in p.read_bytes())
     # decisions.json and the untouched raw original (corpus/raw/ is never modified, P-D11)
     assert holders == ["corpus/raw/notes.md", config.PRIVACY_DECISIONS_PATH.relative_to(corpus).as_posix()]
+
+
+# --- F-R3 variant indexes (eval plan v29, D95 / D98) ---------------------------------------------------------
+
+def test_experiment_flags_refuse_the_production_folder(corpus, capsys):
+    decide_all()
+    assert build_index.main(["--merge-small-sections"]) == 1
+    assert "never goes into" in capsys.readouterr().err and not config.CHROMA_DIR.exists()
+
+
+def test_variant_index_goes_into_its_own_folder_and_leaves_production_untouched(corpus, capsys):
+    decide_all()
+    assert run() == 0
+    production = sorted(collection().get()["ids"])
+    variant = corpus / "index" / "chroma_fr3_merge_desc"
+    assert build_index.main(["--index-dir", str(variant), "--merge-small-sections", "--doc-descriptions"]) == 0
+    assert "F-R3 flags on: small_sections_merged, doc_description_in_chunks" in capsys.readouterr().out
+    assert sorted(collection().get()["ids"]) == production                       # index/chroma untouched
+    got = indexer.get_client(variant).get_collection(config.COLLECTION_NAME)
+    assert got.metadata["small_sections_merged"] is True and got.metadata["doc_description_in_chunks"] is True
+    assert got.metadata["privacy_fp"] == collection().metadata["privacy_fp"]     # same privacy decisions
+    docs = got.get(include=["documents", "metadatas"])
+    notes = [d for d, m in zip(docs["documents"], docs["metadatas"]) if m["content_type"] == "prose"]
+    assert notes and all(d.startswith("notes — Test notes.\n") for d in notes)
+    code = [d for d, m in zip(docs["documents"], docs["metadatas"]) if m["content_type"] == "code"]
+    assert code and all(d.startswith("Demo — Demo project.\n") for d in code)
+    assert EMAIL not in "\n".join(docs["documents"])                              # still redacted
+    # a rebuild of the same variant replaces it in place
+    assert build_index.main(["--index-dir", str(variant), "--merge-small-sections", "--doc-descriptions"]) == 0
+
+
+def test_target_problem_guards_other_folders(corpus, tmp_path):
+    off = {"small_sections_merged": False, "doc_description_in_chunks": False}
+    assert build_index.target_problem(config.CHROMA_DIR, off) is None
+    assert "contains or lies inside" in build_index.target_problem(config.CHROMA_DIR.parent, off)
+    assert "contains or lies inside" in build_index.target_problem(config.CHROMA_DIR / "x", off)
+    other = tmp_path / "src"
+    other.mkdir()
+    (other / "file.py").write_text("x", encoding="utf-8")
+    assert "not a Chroma index" in build_index.target_problem(other, off)
+    assert build_index.target_problem(tmp_path / "new_variant", {**off, "small_sections_merged": True}) is None

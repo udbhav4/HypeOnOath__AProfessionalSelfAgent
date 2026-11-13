@@ -59,6 +59,13 @@ QUERY_PREFIX = "search_query: "
 PROSE_MIN_TOKENS = 300           # tune -- soft target
 PROSE_MAX_TOKENS = 500           # tune -- includes heading line + DOC_PREFIX
 PROSE_OVERLAP_RATIO = 0.12       # ~10-15% between consecutive chunks of one group
+# Retrieval experiment F-R3 (eval D95, D98): production defaults OFF; a default flips only after a
+# keep decision (then index/chroma is rebuilt). With both off the chunks are byte-identical to before.
+# SMALL_SECTIONS_MERGED: the sibling rule -- a chunk under PROSE_MIN_TOKENS absorbs the next sibling
+# unit (section under the same parent heading / row of the same table) while it stays <= PROSE_MAX_TOKENS.
+# DOC_DESCRIPTION_IN_CHUNKS: one first line "document title -- description" (code: the project's) per chunk.
+SMALL_SECTIONS_MERGED = False
+DOC_DESCRIPTION_IN_CHUNKS = False
 
 # --- Code chunking (Section 3A) ---------------------------------------------
 CODE_TARGET_TOKENS = 512         # tune -- precision budget, whole chunk text
@@ -122,6 +129,13 @@ OWNER_NAME = "Udbhav"            # eval D55: the bot speaks as this person
 # sweeps lambda in {1.0, 0.7, 0.5} over the top MMR_FETCH_K hits.
 MMR_LAMBDA: float | None = None
 MMR_FETCH_K = 20
+# Retrieval experiment F-R4 (eval D94, D98): rewrite the retrieval query into the third person
+# ("none" | "third_person"); production default "none" until a keep decision. Never the owner's name.
+QUERY_REWRITE = "none"
+QUERY_REWRITE_MODES = ("none", "third_person")
+# The owner's pronouns (owner: "he/him"): subject, object, possessive, reflexive -- never hard-coded.
+OWNER_PRONOUNS: tuple[str, str, str, str] = ("he", "him", "his", "himself")
+QUERY_REWRITE_SPACY_MODEL = "en_core_web_sm"
 # Similarity-gate sweep (eval 4.2): gate_t_at_1fr = highest threshold with at most this many
 # answerable questions refused by the gate.
 GATE_MAX_FALSE_REFUSALS = 1
@@ -187,4 +201,6 @@ PINNED_VERSIONS: dict[str, str] = {
     "spacy": "3.8.16",
     "en-core-web-lg": "3.8.0",        # spaCy models: requirements-privacy-models.txt
     "de-core-news-lg": "3.8.0",
+    "en-core-web-sm": "3.8.0",        # F-R4 query rewrite (eval only until kept): requirements-eval-models.txt
+    "lemminflect": "0.2.3",
 }

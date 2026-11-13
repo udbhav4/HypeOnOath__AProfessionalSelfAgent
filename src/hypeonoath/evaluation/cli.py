@@ -8,7 +8,7 @@ hypeonoath-eval (eval plan v15, Section 9).
   run --resume RUN             continue an interrupted run
   score RUN                    recompute scores, report and the runs.csv row (no API calls)
   compare RUN_A RUN_B          B vs A over the metrics present in both
-  promote RUN --note TEXT      set the baseline (full stage, 100 % coverages)
+  promote RUN --note TEXT      set the baseline (full: 100 % coverages; retrieval: own slot, D82)
 
 Every run refuses before anything is generated when the private decisions changed since the gold
 freeze (D49). Output never holds a private value (labels and counts only).
@@ -24,7 +24,7 @@ from typing import Any
 
 from hypeonoath.core import config
 from hypeonoath.core.private_values import load_private_values
-from hypeonoath.evaluation import glossary, gold, paths, report, runner, tracking
+from hypeonoath.evaluation import charts, glossary, gold, paths, report, runner, tracking
 from hypeonoath.evaluation.answerer import ANSWERERS, make_answerer
 from hypeonoath.evaluation.metrics import METRICS_BY_NAME, REPORT_TERMS, score_run
 from hypeonoath.evaluation.questions import (current_privacy_fp, default_context, load_file, privacy_gate,
@@ -128,16 +128,25 @@ def cmd_run(args) -> int:
 
     meta, questions = load_frozen()                    # step 1: validate + privacy gate (D49), before anything
     values = load_private_values()
-    if args.resume:
-        mmr = manifest.get("mmr") or {}
-        answerer = make_answerer(manifest["answerer"], top_k=manifest["top_k"],
-                                 mmr_lambda=mmr.get("lambda") if mmr.get("enabled") else None,
-                                 fetch_k=mmr.get("fetch_k", config.MMR_FETCH_K),
-                                 prompt_version=manifest["prompt_version"])
-    else:
-        answerer = make_answerer(args.answerer, top_k=args.k, mmr_lambda=args.mmr_lambda, fetch_k=args.fetch_k,
-                                 prompt_version=args.prompt)
-    current = {"index_fp": runner.index_fingerprint(_index_ids(answerer)),
+    try:
+        if args.resume:                                # the manifest's levers win over any flag given (D26)
+            mmr = manifest.get("mmr") or {}
+            index_dir = manifest.get("index_dir")      # manifests before F-R3: the production index
+            answerer = make_answerer(manifest["answerer"], top_k=manifest["top_k"],
+                                     mmr_lambda=mmr.get("lambda") if mmr.get("enabled") else None,
+                                     fetch_k=mmr.get("fetch_k", config.MMR_FETCH_K),
+                                     prompt_version=manifest["prompt_version"],
+                                     query_rewrite=manifest.get("query_rewrite", "none"),
+                                     index_dir=config.PROJECT_ROOT / index_dir if index_dir else None)
+        else:
+            answerer = make_answerer(args.answerer, top_k=args.k, mmr_lambda=args.mmr_lambda, fetch_k=args.fetch_k,
+                                     prompt_version=args.prompt, query_rewrite=args.query_rewrite,
+                                     index_dir=Path(args.index_dir) if args.index_dir else None)
+        index_ids = _index_ids(answerer)               # also opens the index: a missing one stops here
+    except ValueError as exc:                          # bad lever, missing parser or index: refuse before a run
+        _err(str(exc))
+        return 1
+    current = {"index_fp": runner.index_fingerprint(index_ids),
                "question_set_sha256": meta["question_set_sha256"], "privacy_fp": meta["privacy_fp"]}
     if args.resume:
         problem = runner.resume_problem(manifest, current)
@@ -201,16 +210,18 @@ def finish(run_dir: Path, questions: list | None = None) -> dict[str, Any]:
                        list(PROMPT_EXAMPLES) + list(PROMPT_SAMPLE_PHRASES))
     (run_dir / "scores.json").write_text(json.dumps(scores, indent=2, ensure_ascii=False, default=str) + "\n",
                                          encoding="utf-8")
-    baseline = (tracking.read_baseline() or {}).get("current")
+    baseline = tracking.baseline_for(manifest.get("stage"))         # D82: retrieval slot or current
     baseline_scores = None
     if baseline:
         path = paths.RUNS_DIR / str(baseline["run_id"]) / "scores.json"
         baseline_scores = json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
     warnings = tracking.comparability_warnings(manifest, scores["metrics"], baseline)
     changed = tracking.changed_settings(manifest, baseline.get("settings") or {}) if baseline else None
+    drawn = charts.draw_all(run_dir, manifest, scores, baseline, baseline_scores, changed,   # D89 / D90 (7.1)
+                            tracking.read_rows())
     (run_dir / "report.md").write_text(
-        report.render(manifest, scores, questions, answers, judgments, baseline, baseline_scores, warnings, changed),
-        encoding="utf-8")
+        report.render(manifest, scores, questions, answers, judgments, baseline, baseline_scores, warnings, changed,
+                      drawn), encoding="utf-8")
     tracking.write_row(tracking.csv_row(manifest, scores["metrics"]))
     return scores
 
@@ -246,12 +257,14 @@ def cmd_compare(args) -> int:
 
 def cmd_promote(args) -> int:
     run_dir = _run_dir(args.run)
+    manifest = runner.read_manifest(run_dir)
     try:
-        tracking.promote(runner.read_manifest(run_dir), _scores(args.run), args.note)
+        tracking.promote(manifest, _scores(args.run), args.note)
     except ValueError as exc:
         _err(f"refused: {exc}")
         return 1
-    print(f"baseline -> {args.run}")
+    slot = tracking.baseline_slot(manifest.get("stage"))[0]
+    print(f"baseline ({slot}) -> {args.run}")
     return 0
 
 
@@ -281,6 +294,10 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--k", type=int, default=config.DEFAULT_TOP_K, help="top_k context items")
     p.add_argument("--mmr-lambda", type=float, default=config.MMR_LAMBDA)
     p.add_argument("--fetch-k", type=int, default=config.MMR_FETCH_K)
+    p.add_argument("--query-rewrite", choices=config.QUERY_REWRITE_MODES, default=config.QUERY_REWRITE,
+                   help="rewrite the retrieval query (F-R4): third_person = 'you' -> the owner's pronouns")
+    p.add_argument("--index-dir", metavar="PATH",
+                   help=f"index folder to read (F-R3 variants; default: {config.CHROMA_DIR.name} = production)")
     p.add_argument("--prompt", choices=sorted(PROMPTS), default=config.PROMPT_VERSION)
     p.add_argument("--pin-contexts", metavar="RUN", help="replay the contexts of an earlier run (full stage)")
     p.add_argument("--note", default="")
@@ -296,7 +313,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("run_b")
     p.set_defaults(func=cmd_compare)
 
-    p = sub.add_parser("promote", help="make a run the baseline")
+    p = sub.add_parser("promote", help="make a run the baseline (retrieval runs: the retrieval slot)")
     p.add_argument("run")
     p.add_argument("--note", required=True)
     p.set_defaults(func=cmd_promote)

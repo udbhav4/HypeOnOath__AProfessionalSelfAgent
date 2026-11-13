@@ -66,6 +66,7 @@ FORBIDDEN_FOR_SERVING = [
     "docling", "docling_core", "nbformat", "markdown_it", "frontmatter", "fitz", "docx",
     "presidio_analyzer", "spacy", "yaml",
     "hypeonoath.evaluation", "matplotlib",
+    "lemminflect",              # F-R4 (D94): serving loads spaCy / LemmInflect only after a keep decision
 ]
 
 
@@ -73,7 +74,8 @@ def test_serving_imports_only_core():
     probe = (
         "import sys\n"
         "import hypeonoath.serving.chat, hypeonoath.serving.retriever, "
-        "hypeonoath.serving.prompt, hypeonoath.serving.llm_client, hypeonoath.serving.guard\n"
+        "hypeonoath.serving.prompt, hypeonoath.serving.llm_client, hypeonoath.serving.guard, "
+        "hypeonoath.serving.query_rewrite\n"
         f"forbidden = {FORBIDDEN_FOR_SERVING!r}\n"
         "loaded = sorted(m for m in sys.modules if any(m == f or m.startswith(f + '.') for f in forbidden))\n"
         "print(','.join(loaded))\n"

@@ -59,7 +59,11 @@ def check_privacy_fingerprint(collection) -> bool:
 def _code_hash(chunk: Chunk) -> str | None:
     """Hash of the code body (header line stripped) for duplicate suppression."""
     if chunk.content_type == "code":
-        return sha256_hex((chunk.text.split("\n", 1)[1] if "\n" in chunk.text else chunk.text).strip())
+        text = chunk.text
+        # F-R3 index (D95): a "project name — description" line sits above the header; skip it too.
+        if chunk.project_name and text.startswith(f"{' '.join(chunk.project_name.split())} — "):
+            text = text.split("\n", 1)[1] if "\n" in text else text
+        return sha256_hex((text.split("\n", 1)[1] if "\n" in text else text).strip())
     if chunk.content_type == "code_fence":
         body = chunk.text.split("```")
         return sha256_hex(body[1].split("\n", 1)[-1].strip()) if len(body) >= 3 else None

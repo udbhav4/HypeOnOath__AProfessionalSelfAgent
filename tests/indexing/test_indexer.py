@@ -126,3 +126,14 @@ def test_swap_failure_moves_the_old_index_back(tmp_path, monkeypatch):
     monkeypatch.setattr(indexer.os, "replace", real_replace)
     assert indexer.get_client(chroma).get_collection("test").get()["ids"] == ["d1"]   # old index back
     assert (tmp_path / ("chroma" + indexer.NEW_SUFFIX)).exists()                      # kept for the manual step
+
+
+def test_chunking_flags_in_metadata_only_when_on(tmp_path):
+    """F-R3 (D95, D98): flags off -> metadata exactly as before; on -> recorded for the eval to read."""
+    indexer.rebuild_index([doc_chunk()], [[1.0, 0.0]], tmp_path / "a", "test",
+                          chunking={"small_sections_merged": False, "doc_description_in_chunks": False})
+    assert set(_metadata(tmp_path / "a")) == {"hnsw:space", "embed_model", "embed_revision", "privacy_fp"}
+    indexer.rebuild_index([doc_chunk()], [[1.0, 0.0]], tmp_path / "b", "test", fresh_dir=True,
+                          chunking={"small_sections_merged": True, "doc_description_in_chunks": False})
+    meta = _metadata(tmp_path / "b")
+    assert meta["small_sections_merged"] is True and "doc_description_in_chunks" not in meta

@@ -22,8 +22,10 @@ METRICS_MD_PATH = EVAL_DIR / "METRICS.md"
 
 EVAL_DEPTH = 20                                   # D14: raw ranking depth of every eval query
 K_VALUES = (1, 3, 4, 5, 8, 10, 12, 15, 20)        # D14 / D74 (v16): Hit@k / Recall@k cut-offs
-REFERENCE_K = 8          # the fixed k of recall@8, supporting_recall@8 and the hit@8 breakdowns (6.2 column names)
+REFERENCE_K = 8          # the fixed k of supporting_recall@8 (6.2 column name) and the default operating k (D86)
 MAX_CONSECUTIVE_LLM_ERRORS = 3                    # D26: abort the run after this many in a row
+OVERLAY_RUNS = 4         # T13 (v22/v23): runs in runs_overlay.png incl. this one; + the baseline = 5 curves max
+CHARTS_DIRNAME = "charts"                         # eval/runs/<id>/charts/*.png (6.1, D89)
 
 
 def check_k_values(k_values: tuple[int, ...], eval_depth: int = EVAL_DEPTH, reference_k: int = REFERENCE_K) -> None:

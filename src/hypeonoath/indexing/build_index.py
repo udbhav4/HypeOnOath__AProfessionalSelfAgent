@@ -37,6 +37,14 @@ at a time: a second build waits for the first (P-D47).
 Exit codes: 0 success, 1 any other failure (previous index untouched),
 2 project check failed, 3 privacy review needed (P-D42). (4 is retired:
 verification fixes instead of failing, P-D46.)
+
+Retrieval experiment F-R3 (eval plan v29, D95 / D98): --merge-small-sections and
+--doc-descriptions switch the chunker's sibling rule / description line on
+(defaults: config, off). An index whose flags differ from the production
+defaults is an EXPERIMENT and must go into its own folder (--index-dir, e.g.
+index/chroma_fr3_merge); index/chroma is never the target of an experiment
+build. The flags that are on are recorded in the collection metadata, so the
+eval reads them from the index it runs on.
 """
 from __future__ import annotations
 
@@ -49,6 +57,7 @@ from collections import Counter
 from collections.abc import Callable
 from contextlib import contextmanager
 from dataclasses import dataclass
+from pathlib import Path
 
 from hypeonoath.core import config, embedder
 from hypeonoath.core.logging_utils import log_json_line
@@ -217,19 +226,69 @@ def _privacy_summary(redacted: Counter, fingerprint: str, fixed: Counter, files:
     return "\n".join(lines)
 
 
+def production_chunking() -> dict[str, bool]:
+    """The F-R3 chunking flags of the production index: the config defaults (off until a keep decision, D98)."""
+    return {"small_sections_merged": config.SMALL_SECTIONS_MERGED,
+            "doc_description_in_chunks": config.DOC_DESCRIPTION_IN_CHUNKS}
+
+
+def target_problem(index_dir: Path, chunking: dict[str, bool]) -> str | None:
+    """
+    Why this build must not write into `index_dir` (None = OK). D98: an experiment index (flags other than
+    the production defaults) never goes into the production index/chroma. Also refused, because the
+    fresh-folder swap deletes the target: a folder that holds the production index, a folder inside it,
+    and an existing non-empty folder that is not a Chroma index (a typo must never delete other files).
+    """
+    target, production = index_dir.resolve(), config.CHROMA_DIR.resolve()
+    if target == production:
+        if chunking != production_chunking():
+            return (f"an experiment index (F-R3 flags {chunking} differ from the production defaults) never goes "
+                    f"into {config.CHROMA_DIR} (D98); pass --index-dir, e.g. index/chroma_fr3_merge")
+        return None
+    if target in production.parents or production in target.parents:
+        return f"{index_dir} contains or lies inside the production index {config.CHROMA_DIR}"
+    if target.name.lower().endswith((indexer.NEW_SUFFIX, indexer.OLD_SUFFIX)):
+        # the fresh-folder swap creates and deletes "<name>__new" / "<name>__old" as leftovers
+        return f"{index_dir}: names ending in {indexer.NEW_SUFFIX} / {indexer.OLD_SUFFIX} are the index swap folders"
+    if target.exists() and (not target.is_dir() or (any(target.iterdir())
+                                                     and not (target / "chroma.sqlite3").exists())):
+        return f"{index_dir} exists and is not a Chroma index folder; pick a new folder or an index folder"
+    return None
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description="Build the Chroma index from reviewed files (privacy decisions applied, no detection).")
     parser.add_argument("--force", action="store_true",
                         help="development only: build although files are pending review or not scanned")
+    parser.add_argument("--index-dir", metavar="PATH",
+                        help=f"build into this folder (F-R3 variant indexes); default: {config.CHROMA_DIR}")
+    parser.add_argument("--merge-small-sections", action=argparse.BooleanOptionalAction,
+                        default=config.SMALL_SECTIONS_MERGED,
+                        help="F-R3 sibling rule: a chunk under PROSE_MIN_TOKENS absorbs the next sibling section / "
+                             "table row up to PROSE_MAX_TOKENS (an experiment: needs --index-dir)")
+    parser.add_argument("--doc-descriptions", action=argparse.BooleanOptionalAction,
+                        default=config.DOC_DESCRIPTION_IN_CHUNKS,
+                        help="F-R3: first line 'document title - description' on every chunk "
+                             "(code: the project's; an experiment: needs --index-dir)")
     args = parser.parse_args(argv)
+
+    index_dir = Path(args.index_dir) if args.index_dir else config.CHROMA_DIR
+    chunking = {"small_sections_merged": args.merge_small_sections,
+                "doc_description_in_chunks": args.doc_descriptions}
+    problem = target_problem(index_dir, chunking)
+    if problem:
+        print(f"Indexing refused: {problem}. Nothing was built or changed.", file=sys.stderr)
+        return 1
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     with build_lock():
-        return _build(force=args.force)
+        return _build(force=args.force, index_dir=index_dir, chunking=chunking)
 
 
-def _build(*, force: bool) -> int:
+def _build(*, force: bool, index_dir: Path | None = None, chunking: dict[str, bool] | None = None) -> int:
+    index_dir = config.CHROMA_DIR if index_dir is None else index_dir
+    chunking = chunking or production_chunking()
     logger.info("Index build starting")
     from hypeonoath.privacy import decisions as dec
     from hypeonoath.privacy import redactor, scan, verify
@@ -283,7 +342,9 @@ def _build(*, force: bool) -> int:
         dec.save(data)
 
     # 5. Chunk.
-    chunks = chunker.make_chunks(all_documents, code.blocks, embedder.count_tokens)
+    chunks = chunker.make_chunks(all_documents, code.blocks, embedder.count_tokens,
+                                 merge_small=chunking["small_sections_merged"],
+                                 descriptions=chunking["doc_description_in_chunks"])
     chunks += project_registry.build_project_summary_chunks(resolved)
     logger.info("Chunked %d document(s) + %d code file(s) into %d chunks: %s",
                 len(documents), len(resolved), len(chunks), dict(Counter(c.content_type for c in chunks)))
@@ -299,8 +360,8 @@ def _build(*, force: bool) -> int:
     vectors = embedder.embed_documents([c.text for c in chunks])
 
     # 9. Only now replace the index (fresh folder when the privacy decisions changed).
-    fresh = indexer.current_privacy_fp() != fingerprint
-    indexer.rebuild_index(chunks, vectors, privacy_fp=fingerprint, fresh_dir=fresh)
+    fresh = indexer.current_privacy_fp(index_dir) != fingerprint
+    indexer.rebuild_index(chunks, vectors, index_dir, privacy_fp=fingerprint, fresh_dir=fresh, chunking=chunking)
     scan.refresh_hashes()                 # disk redaction / restore changed scanned files, nothing new in them
 
     # 10. Report + summaries printed LAST (no values anywhere).
@@ -308,9 +369,12 @@ def _build(*, force: bool) -> int:
     secret_scan.write_report(report)
     log_json_line(config.PRIVACY_LOG_PATH, event="build", redacted=dict(stats.labels),
                   files_redacted=len(changed_files), privacy_fp=fingerprint, fresh_dir=fresh,
-                  verify_fixed=dict(fixed), restored=len(restored), forced=force, pending_files=len(pending))
-    print(f"\nIndexed {len(chunks)} chunks into {config.CHROMA_DIR} (collection '{config.COLLECTION_NAME}')"
-          f"{' -- fresh folder, old index deleted' if fresh else ''}.")
+                  verify_fixed=dict(fixed), restored=len(restored), forced=force, pending_files=len(pending),
+                  index_dir=str(index_dir), chunking=chunking)
+    on = [key for key, value in chunking.items() if value]
+    print(f"\nIndexed {len(chunks)} chunks into {index_dir} (collection '{config.COLLECTION_NAME}')"
+          f"{' -- fresh folder, old index deleted' if fresh else ''}"
+          f"{'; F-R3 flags on: ' + ', '.join(on) if on else ''}.")
     print(secret_scan.format_summary(report))
     print(_privacy_summary(stats.labels, fingerprint, fixed, changed_files, restored, pending))
     return 0
