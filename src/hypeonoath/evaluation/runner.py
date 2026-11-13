@@ -202,6 +202,8 @@ def run_questions(
                 record["pinned"] = True
             else:
                 retrieved = answerer.retrieve(q.question)
+                if getattr(retrieved, "query", None):          # F-R4: the rewritten retrieval query (D94)
+                    record["retrieval_query"] = retrieved.query
                 record["ranking"] = [ranking_record(i, groups, corpus) for i in retrieved.ranking]
                 record["context"] = [context_record(i, groups, corpus) for i in retrieved.context]
                 context = retrieved.context

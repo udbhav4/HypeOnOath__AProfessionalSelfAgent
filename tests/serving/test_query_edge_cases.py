@@ -118,3 +118,15 @@ def test_fence_and_code_file_duplicate_suppressed():
     fence = Chunk("d", "README > Usage\n```ts\nfunction f() {\n  return 1;\n}\n```", "corpus/documents/README.md",
                   "code_fence")
     assert _code_hash(code) == _code_hash(fence)
+
+
+def test_duplicate_suppression_skips_the_fr3_project_line():
+    """F-R3 (D95): a code chunk with the "project name — description" line still matches its README fence."""
+    from hypeonoath.serving.retriever import _code_hash
+
+    body = "// [P] a.ts > f  [lines 1-3]\nfunction f() {\n  return 1;\n}\n"
+    plain = Chunk("c", body, "corpus/code/a.ts", "code", project_name="My  App")
+    described = Chunk("c", "My App — An app.\n" + body, "corpus/code/a.ts", "code", project_name="My  App")
+    fence = Chunk("d", "README > Usage\n```ts\nfunction f() {\n  return 1;\n}\n```", "corpus/documents/README.md",
+                  "code_fence")
+    assert _code_hash(described) == _code_hash(plain) == _code_hash(fence)

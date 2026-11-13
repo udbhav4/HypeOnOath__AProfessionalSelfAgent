@@ -97,3 +97,28 @@ def isolated_logs(tmp_path, monkeypatch):
     monkeypatch.setattr(config, "PRIVACY_SCAN_STATE_PATH", tmp_path / "privacy" / "scan_state.json")
     monkeypatch.setattr(config, "PRIVACY_BUILD_LOCK_PATH", tmp_path / "privacy" / "build.lock")
     return tmp_path / "logs"
+
+
+EVAL_REDIRECTED = {      # keep equal to tests/evaluation/conftest.py REDIRECTED
+    "QUESTIONS_PATH": "questions.yaml", "QUESTIONS_V0_PATH": "questions_v0.yaml",
+    "DRAFTS_PATH": "gold_work/drafts.yaml", "RUNS_DIR": "runs", "RUNS_CSV_PATH": "runs.csv",
+    "BASELINE_PATH": "baseline.json", "METRICS_MD_PATH": "METRICS.md",
+}
+
+
+@pytest.fixture(autouse=True)
+def isolated_eval_outputs(tmp_path, monkeypatch):
+    """
+    Never write the real eval/ outputs (questions, drafts, runs, runs.csv, baseline, METRICS.md).
+    Same redirect as tests/evaluation/conftest.py, repeated here at the root on purpose: with some
+    command-line orders (e.g. `pytest tests/evaluation/a.py tests/test_entrypoints.py
+    tests/evaluation/test_cli_gold.py`, pytest 9.1) the nested conftest's autouse fixture is NOT applied
+    to the later eval tests, which then overwrote the real eval/ files (QA finding 2026-11-11).
+    """
+    from hypeonoath.evaluation import paths
+
+    root = tmp_path / "eval"
+    for name, rel in EVAL_REDIRECTED.items():
+        monkeypatch.setattr(paths, name, root / rel)
+    root.mkdir(parents=True, exist_ok=True)
+    return root

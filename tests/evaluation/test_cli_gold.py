@@ -163,8 +163,15 @@ def test_score_compare_and_promote(tmp_path, monkeypatch, capsys):
     assert cli.main(["score", run_dir.name]) == 0 and (run_dir / "report.md").exists()
     assert cli.main(["compare", run_dir.name, run_dir.name]) == 0
     assert "hit@8" in capsys.readouterr().out
-    assert cli.main(["promote", run_dir.name, "--note", "x"]) == 1
-    assert "full run" in capsys.readouterr().err and not paths.BASELINE_PATH.exists()
+    # v20, D82: a retrieval run goes into the retrieval slot, never into current
+    assert cli.main(["promote", run_dir.name, "--note", "x"]) == 0
+    assert "baseline (retrieval)" in capsys.readouterr().out
+    data = json.loads(paths.BASELINE_PATH.read_text(encoding="utf-8"))
+    assert data["retrieval"]["run_id"] == run_dir.name and data["current"] is None
+    assert cli.main(["score", run_dir.name]) == 0                      # report now compares with the slot
+    text = (run_dir / "report.md").read_text(encoding="utf-8")
+    assert f"Baseline: {run_dir.name}" in text and "No per-question retrieval changes" in text
+    assert "| Δ Hit@k |" in text
     with pytest.raises(SystemExit):
         cli.main(["score", "missing-run"])
 
@@ -209,3 +216,60 @@ def test_resume_refuses_on_a_changed_privacy_fingerprint(tmp_path, monkeypatch, 
         cli.main(["run", "--resume", run_dir.name])
     assert exc.value.code == 1 and "privacy decisions changed" in capsys.readouterr().err
     assert len(made) == 1 and len(runner.read_answers(run_dir)) == 10       # no answerer built, nothing appended
+
+
+def test_score_with_a_baseline_whose_run_is_gone_and_full_slot_ignored(tmp_path, monkeypatch, capsys):
+    """D82: slot entry present but its run dir / scores.json missing -> scorecard vs slot metrics, no flips."""
+    frozen_set(tmp_path, monkeypatch)
+    assert cli.main(["run", "--retrieval-only"]) == 0
+    (run_dir,) = list(paths.RUNS_DIR.iterdir())
+    assert cli.main(["promote", run_dir.name, "--note", "ref"]) == 0
+    data = json.loads(paths.BASELINE_PATH.read_text(encoding="utf-8"))
+    data["retrieval"]["run_id"] = "gone"
+    data["current"] = {**data["retrieval"], "run_id": "full-only"}           # never used by a retrieval run
+    paths.BASELINE_PATH.write_text(json.dumps(data), encoding="utf-8")
+    assert cli.main(["score", run_dir.name]) == 0
+    text = (run_dir / "report.md").read_text(encoding="utf-8")
+    assert "Baseline: gone" in text and "No baseline run scores to compare with." in text
+    assert "| Δ Hit@k |" not in text and "Δ hit@8" not in text
+    assert "| hit@8 |" in text and "full-only" not in text
+
+
+
+def test_cli_retrieval_runs_settings_operating_k_and_runs_csv(tmp_path, monkeypatch, capsys):
+    """v21 end to end: run k=8, promote (retrieval slot), run k=12 with MMR on, both scored by the CLI ->
+    Settings section (D85), operating-k header (D86), in_context_recall (D87), runs.csv columns (D88)."""
+    frozen_set(tmp_path, monkeypatch)
+    ids = iter(["20260101-000001", "20260101-000002"])
+    monkeypatch.setattr(runner, "new_run_id", lambda now=None: next(ids))
+
+    def make(name, **kwargs):
+        fake = FakeAnswerer()
+        fake.settings = lambda: {"prompt_version": kwargs["prompt_version"], "prompt_sha256": "p",
+                                 "ollama_model": "m", "top_k": kwargs["top_k"], "eval_depth": 20,
+                                 "mmr": {"enabled": kwargs["mmr_lambda"] is not None,
+                                         "lambda": kwargs["mmr_lambda"], "fetch_k": kwargs["fetch_k"]}}
+        return fake
+    monkeypatch.setattr(cli, "make_answerer", make)
+
+    assert cli.main(["run", "--retrieval-only", "--k", "8"]) == 0
+    assert cli.main(["promote", "20260101-000001", "--note", "ref"]) == 0
+    assert cli.main(["run", "--retrieval-only", "--k", "12", "--mmr-lambda", "0.7", "--fetch-k", "15"]) == 0
+    text = (paths.RUNS_DIR / "20260101-000002" / "report.md").read_text(encoding="utf-8")
+    settings = text.split("## 0. Settings")[1].split("## 1.")[0]
+    assert "| top_k | 12 | 8 | ✱ changed |" in settings and "| MMR on | yes | no | ✱ changed |" in settings
+    assert "| MMR fetch_k | 15 | — | ✱ changed |" in settings
+    assert "| doc_description_in_chunks | no | no |  |" in settings          # manifests without it read false
+    assert "more than one setting changed" in text                           # D13 warning next to D85
+    assert "k = 12, baseline k = 8" in text and "| in_context_recall |" in text
+    with paths.RUNS_CSV_PATH.open(newline="", encoding="utf-8") as f:
+        rows = {r["run_id"]: r for r in csv.DictReader(f)}
+    assert rows["20260101-000001"]["mmr_fetch_k"] == "" and rows["20260101-000001"]["mmr_lambda"] == ""
+    assert rows["20260101-000002"]["mmr_fetch_k"] == "15" and rows["20260101-000002"]["mmr_lambda"] == "0.7000"
+    assert all(r["doc_description_in_chunks"] == "false" and r["in_context_recall"] != "" and r["recall@12"] != ""
+               for r in rows.values())
+    capsys.readouterr()
+    assert cli.main(["compare", "20260101-000001", "20260101-000002"]) == 0
+    assert "in_context_recall" in capsys.readouterr().out
+    for name in ("in_context_recall", "recall@12", "mmr_fetch_k", "doc_description_in_chunks", "settings"):
+        assert cli.main(["metrics", name]) == 0

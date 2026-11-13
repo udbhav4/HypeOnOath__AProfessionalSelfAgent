@@ -1,0 +1,5 @@
+# spaCy model for the F-R4 retrieval-query rewrite (hypeonoath.serving.query_rewrite; eval plan v29, D94).
+# Eval only until F-R4 is kept (D98). Not on PyPI -- pinned wheel URL from github.com/explosion/spacy-models.
+# Version must match hypeonoath.core.config.PINNED_VERSIONS.
+#   pip install -r requirements-eval-models.txt
+en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl

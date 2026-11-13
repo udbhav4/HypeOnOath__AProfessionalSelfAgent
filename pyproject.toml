@@ -46,10 +46,14 @@ indexing = [
     "spacy==3.8.16",
 ]
 # Eval harness (hypeonoath.evaluation, eval plan v15 Section 8); never in the serving install.
-# matplotlib is used from Stage D (charts) and imported lazily.
+# matplotlib draws the report charts from Stage F-R on (eval plan v22 D89, v23 D90); imported lazily.
+# F-R4 query rewrite (eval plan v29, D94): spaCy + LemmInflect for the eval only; they join the serving
+# install only if F-R4 is kept (D98). The spaCy model is not on PyPI: pip install -r requirements-eval-models.txt
 eval = [
     "pyyaml==6.0.3",
     "matplotlib==3.11.2",
+    "spacy==3.8.16",
+    "lemminflect==0.2.3",
 ]
 # Tests.
 dev = [
