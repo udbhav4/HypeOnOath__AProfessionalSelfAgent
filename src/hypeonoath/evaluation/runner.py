@@ -58,8 +58,11 @@ def _matched(item: RetrievedItem, groups: dict[str, Group], corpus: Corpus) -> l
 
 def ranking_record(item: RetrievedItem, groups: dict[str, Group], corpus: Corpus) -> dict[str, Any]:
     c = item.chunk
-    return {"chunk_id": c.chunk_id, "document": c.source_document, "line_start": c.line_start,
-            "line_end": c.line_end, "score": round(item.score, 6), "groups": _matched(item, groups, corpus)}
+    record = {"chunk_id": c.chunk_id, "document": c.source_document, "line_start": c.line_start,
+              "line_end": c.line_end, "score": round(item.score, 6), "groups": _matched(item, groups, corpus)}
+    if item.fused is not None:              # F-R5 (OD-8): where a hybrid hit came from; absent otherwise
+        record.update(fused=round(item.fused, 6), dense_rank=item.dense_rank, bm25_rank=item.bm25_rank)
+    return record
 
 
 def context_record(item: RetrievedItem, groups: dict[str, Group], corpus: Corpus) -> dict[str, Any]:

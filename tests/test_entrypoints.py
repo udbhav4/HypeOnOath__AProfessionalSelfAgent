@@ -67,6 +67,7 @@ FORBIDDEN_FOR_SERVING = [
     "presidio_analyzer", "spacy", "yaml",
     "hypeonoath.evaluation", "matplotlib",
     "lemminflect",              # F-R4 (D94): serving loads spaCy / LemmInflect only after a keep decision
+    "rank_bm25",                # F-R5 (D109): BM25 is eval only until a keep decision
 ]
 
 

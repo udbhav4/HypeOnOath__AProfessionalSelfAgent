@@ -137,6 +137,10 @@ def experiment_tags(settings: dict[str, Any] | None) -> tuple[str, ...]:
         tags.append("merged")
     if on("doc_description_in_chunks"):
         tags.append("desc")
+    hybrid = settings.get("hybrid")                     # manifest: {"mode": ...}; runs.csv row: the mode string
+    mode = hybrid.get("mode") if isinstance(hybrid, dict) else hybrid
+    if mode not in (None, "", "none"):
+        tags.append(f"hybrid-{mode}")                   # F-R5 (D109)
     return tuple(tags)
 
 

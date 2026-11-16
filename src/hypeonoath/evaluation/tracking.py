@@ -17,15 +17,18 @@ from hypeonoath.evaluation.metrics import METRICS, METRICS_BY_NAME, RUNS_CSV_COL
 
 # Settings whose change makes a run a different experiment ("Changed vs baseline", D13).
 SETTING_KEYS = ("stage", "answerer", "prompt_version", "prompt_sha256", "ollama_model", "top_k", "mmr",
-                "doc_description_in_chunks", "small_sections_merged", "query_rewrite", "index_fp",
+                "doc_description_in_chunks", "small_sections_merged", "query_rewrite", "hybrid", "index_fp",
                 "question_set_sha256", "privacy_fp")
 # Settings baked into the index: changing one always changes index_fp too, so index_fp is not counted as a
 # second changed setting next to them (D13 count; owner decision 2026-11-11).
 INDEX_BUILD_KEYS = ("doc_description_in_chunks", "small_sections_merged")
+# F-R5 (D109): the hybrid levers compared between runs (manifest "hybrid" dict).
+HYBRID_PARAMS = ("mode", "candidates", "rrf_k", "bm25_weight", "k1", "b", "epsilon")
 # Value of a setting in manifests / baseline entries written before it existed: what every run did then.
 SETTING_DEFAULTS: dict[str, Any] = {"doc_description_in_chunks": False,     # D88: no index had descriptions
                                     "small_sections_merged": False,         # D95: no index merged small chunks
-                                    "query_rewrite": "none"}                # D94: no run rewrote the query
+                                    "query_rewrite": "none",                # D94: no run rewrote the query
+                                    "hybrid": {"mode": "none"}}             # D109: no run fused BM25
 
 
 def setting(manifest: dict[str, Any], key: str) -> Any:
@@ -47,6 +50,7 @@ def manifest_columns(manifest: dict[str, Any]) -> dict[str, Any]:
         "doc_description_in_chunks": setting(manifest, "doc_description_in_chunks"),           # D88
         "small_sections_merged": setting(manifest, "small_sections_merged"),                   # D95
         "query_rewrite": setting(manifest, "query_rewrite"),                                   # D94
+        "hybrid": (setting(manifest, "hybrid") or {}).get("mode", "none"),                     # D109
         "index_fp": manifest.get("index_fp"), "privacy_fp": manifest.get("privacy_fp"),
         "question_set_sha": manifest.get("question_set_sha256"),
     }
@@ -153,6 +157,11 @@ def _comparable(settings: dict[str, Any], key: str) -> Any:
     if key == "mmr":
         mmr = settings.get("mmr") or {}
         return (mmr.get("lambda"), mmr.get("fetch_k")) if mmr.get("enabled") else None
+    if key == "hybrid":                                   # off is one value; on = mode + every parameter
+        hybrid = setting(settings, "hybrid") or {}
+        if hybrid.get("mode", "none") == "none":
+            return None
+        return tuple(hybrid.get(p) for p in HYBRID_PARAMS)
     return setting(settings, key)
 
 

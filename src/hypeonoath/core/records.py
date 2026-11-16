@@ -100,11 +100,17 @@ class RetrievedItem:
     One retrieval result: the hit chunk, its similarity score, and -- for a
     piece of a split function -- the sibling parts fetched to complete it
     (guideline Section 6). `parts` is empty for ordinary hits.
+    Hybrid search (F-R5, eval D109) also sets `fused` (the RRF score that ordered the hit) and the hit's
+    rank in each leg (`dense_rank` / `bm25_rank`, None = not in that leg's candidates); `score` stays the
+    cosine similarity either way (D110), so the gate reads one scale.
     """
 
     chunk: Chunk
     score: float
     parts: list[Chunk] = field(default_factory=list)
+    fused: float | None = None
+    dense_rank: int | None = None
+    bm25_rank: int | None = None
 
     @property
     def ordered_chunks(self) -> list[Chunk]:

@@ -22,7 +22,7 @@ from typing import Any, Protocol
 from hypeonoath.core import config
 from hypeonoath.core.records import RetrievedItem
 from hypeonoath.evaluation import paths
-from hypeonoath.serving import llm_client
+from hypeonoath.serving import lexical, llm_client
 from hypeonoath.serving.query_rewrite import check_available, rewrite_query
 from hypeonoath.serving.prompt import _PART_REMINDER, Prompt, build_prompt, system_rules
 
@@ -63,7 +63,8 @@ def index_label(index_dir: Path) -> str:
 
 class BaselineAnswerer:
     """
-    [optional third-person query rewrite, F-R4] -> Retriever.search(k=20) -> optional MMR ->
+    [optional third-person query rewrite, F-R4] -> Retriever.search(k=20) [or hybrid_search: dense + BM25
+    fused by RRF, F-R5] -> optional MMR ->
     assemble(top_k) -> build_prompt(version) -> Ollama. The index is read from `index_dir`
     (default: the production index/chroma; F-R3 variants live in their own folders, D95).
     """
@@ -73,19 +74,25 @@ class BaselineAnswerer:
     def __init__(self, retriever=None, top_k: int = config.DEFAULT_TOP_K, mmr_lambda: float | None = config.MMR_LAMBDA,
                  fetch_k: int = config.MMR_FETCH_K, prompt_version: str = config.PROMPT_VERSION,
                  generate: Callable[[Prompt], llm_client.GenerationResult] | None = None,
-                 query_rewrite: str = config.QUERY_REWRITE, index_dir: Path | str | None = None):
+                 query_rewrite: str = config.QUERY_REWRITE, index_dir: Path | str | None = None,
+                 hybrid: str = config.HYBRID):
         if not 1 <= top_k <= paths.EVAL_DEPTH:
             raise ValueError(f"top_k must be 1-{paths.EVAL_DEPTH} (the eval depth), got {top_k}")
         if mmr_lambda is not None and not 0.0 <= mmr_lambda <= 1.0:
             raise ValueError(f"MMR lambda must be in [0, 1], got {mmr_lambda}")
-        if fetch_k > paths.EVAL_DEPTH:
-            raise ValueError(f"fetch_k ({fetch_k}) cannot exceed the eval depth ({paths.EVAL_DEPTH})")
+        if fetch_k < 1:          # > EVAL_DEPTH is allowed: MMR then picks EVAL_DEPTH out of fetch_k (D112)
+            raise ValueError(f"fetch_k must be >= 1, got {fetch_k}")
         system_rules(prompt_version)                      # unknown version -> ValueError now, not mid-run
         if query_rewrite not in config.QUERY_REWRITE_MODES:
             raise ValueError(f"unknown query rewrite {query_rewrite!r}; known: {list(config.QUERY_REWRITE_MODES)}")
         if query_rewrite != "none":
             check_available()                              # missing parser -> refuse now, not 80 silent fallbacks
+        if hybrid not in config.HYBRID_MODES:
+            raise ValueError(f"unknown hybrid mode {hybrid!r}; known: {list(config.HYBRID_MODES)}")
+        if hybrid != "none":
+            lexical.check_available()                      # missing rank_bm25 -> refuse now (F-R5, D109)
         self.query_rewrite = query_rewrite
+        self.hybrid = hybrid
         self.index_dir = Path(index_dir) if index_dir is not None else config.CHROMA_DIR
         self._retriever = retriever
         self.top_k, self.mmr_lambda, self.fetch_k = top_k, mmr_lambda, fetch_k
@@ -111,12 +118,27 @@ class BaselineAnswerer:
         from hypeonoath.serving.retriever import mmr
 
         query = rewrite_query(question, self.query_rewrite)      # only the retrieval query changes (D94)
-        if self.mmr_lambda is None:
-            ranking = self.retriever.search(query, paths.EVAL_DEPTH)
+        # D112: with MMR, search max(EVAL_DEPTH, fetch_k) hits; MMR re-orders the top fetch_k and picks at most
+        # EVAL_DEPTH of them; hits after fetch_k keep their order. The ranking is always <= EVAL_DEPTH long, so
+        # the metrics read the same depth whatever fetch_k is (fetch_k <= EVAL_DEPTH = exactly as before).
+        depth = paths.EVAL_DEPTH if self.mmr_lambda is None else max(paths.EVAL_DEPTH, self.fetch_k)
+        if self.hybrid == "rrf":                                  # F-R5 (D109): same query for both legs (OD-5)
+            hits, vectors = self.retriever.hybrid_search(query, depth)
+            relevance = None
+            if self.mmr_lambda is not None:                       # D111: MMR relevance = fused / max fused
+                top = max((h.fused or 0.0 for h in hits[:self.fetch_k]), default=0.0)
+                relevance = [(h.fused or 0.0) / top if top else 0.0 for h in hits[:self.fetch_k]]
+        elif self.mmr_lambda is None:
+            hits, vectors, relevance = self.retriever.search(query, depth), [], None
         else:
-            hits, vectors = self.retriever.search_with_embeddings(query, paths.EVAL_DEPTH)
-            head = mmr(hits[:self.fetch_k], vectors[:self.fetch_k], self.fetch_k, self.mmr_lambda)
-            ranking = head + hits[self.fetch_k:]
+            hits, vectors = self.retriever.search_with_embeddings(query, depth)
+            relevance = None
+        if self.mmr_lambda is None:
+            ranking = hits[:paths.EVAL_DEPTH]
+        else:
+            head = mmr(hits[:self.fetch_k], vectors[:self.fetch_k], min(self.fetch_k, paths.EVAL_DEPTH),
+                       self.mmr_lambda, relevance)
+            ranking = (head + hits[self.fetch_k:])[:paths.EVAL_DEPTH]
         return Retrieved(ranking, self.retriever.assemble(ranking[:self.top_k]),
                          query if query != question else None)
 
@@ -133,6 +155,14 @@ class BaselineAnswerer:
         meta = getattr(getattr(self.retriever, "collection", None), "metadata", None) or {}
         return {key: bool(meta.get(key, False)) for key in ("doc_description_in_chunks", "small_sections_merged")}
 
+    def hybrid_settings(self) -> dict[str, Any]:
+        """The F-R5 levers as recorded in the manifest; parameters only when hybrid is on."""
+        if self.hybrid == "none":
+            return {"mode": "none"}
+        return {"mode": self.hybrid, "candidates": config.HYBRID_CANDIDATES, "rrf_k": config.HYBRID_RRF_K,
+                "bm25_weight": config.HYBRID_BM25_WEIGHT, "k1": config.BM25_K1, "b": config.BM25_B,
+                "epsilon": config.BM25_EPSILON}
+
     def settings(self) -> dict[str, Any]:
         return {
             "prompt_version": self.prompt_version,
@@ -144,6 +174,7 @@ class BaselineAnswerer:
             "eval_depth": paths.EVAL_DEPTH,
             "mmr": {"enabled": self.mmr_lambda is not None, "lambda": self.mmr_lambda, "fetch_k": self.fetch_k},
             "query_rewrite": self.query_rewrite,                                  # F-R4 (D94)
+            "hybrid": self.hybrid_settings(),                                     # F-R5 (D109)
             "index_dir": index_label(self.index_dir),                             # F-R3 (D95)
             **self.index_settings(),                                              # D88 / D95: from the index itself
         }

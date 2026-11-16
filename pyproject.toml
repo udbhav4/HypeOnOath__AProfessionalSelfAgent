@@ -54,6 +54,7 @@ eval = [
     "matplotlib==3.11.2",
     "spacy==3.8.16",
     "lemminflect==0.2.3",
+    "rank_bm25==0.2.2",          # F-R5 hybrid search (D109): eval only until a keep decision (D98)
 ]
 # Tests.
 dev = [

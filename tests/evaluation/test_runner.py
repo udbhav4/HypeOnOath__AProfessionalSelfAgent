@@ -225,8 +225,9 @@ def test_baseline_settings_and_bad_arguments():
     assert len(s["prompt_sha256"]) == 64 and s["prompt_version"] == "v1"
     with pytest.raises(ValueError, match="unknown PROMPT_VERSION"):
         BaselineAnswerer(FakeRetriever(), prompt_version="v9")
-    with pytest.raises(ValueError, match="eval depth"):
-        BaselineAnswerer(FakeRetriever(), fetch_k=21)
+    with pytest.raises(ValueError, match="fetch_k must be >= 1"):
+        BaselineAnswerer(FakeRetriever(), fetch_k=0)
+    BaselineAnswerer(FakeRetriever(), fetch_k=40)                        # > eval depth allowed (D112)
     with pytest.raises(ValueError, match="unknown answerer"):
         make_answerer("nope")
     assert make_answerer("baseline", retriever=FakeRetriever()).name == "baseline"
