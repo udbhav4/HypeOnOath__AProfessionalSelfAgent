@@ -71,6 +71,15 @@ def _n(m: MetricDef, scores: dict[str, Any]) -> Any:
     return scores["metrics"].get("n")                # errors: a count over the run's questions
 
 
+def _hybrid_part(field: str):
+    def get(settings: dict[str, Any]) -> Any:
+        hybrid = tracking.setting(settings, "hybrid") or {}
+        if field == "mode":
+            return hybrid.get("mode", "none")
+        return hybrid.get(field) if hybrid.get("mode", "none") != "none" else None   # only meaningful when on
+    return get
+
+
 def _mmr_part(field: str):
     def get(settings: dict[str, Any]) -> Any:
         mmr = settings.get("mmr") or {}
@@ -90,6 +99,8 @@ SETTINGS_ROWS = (("top_k", _plain("top_k")), ("MMR on", _mmr_part("enabled")), (
                  ("doc_description_in_chunks", _plain("doc_description_in_chunks")),
                  ("small_sections_merged", _plain("small_sections_merged")),
                  ("query_rewrite", _plain("query_rewrite")),
+                 ("hybrid", _hybrid_part("mode")), ("hybrid candidates", _hybrid_part("candidates")),
+                 ("hybrid rrf_k", _hybrid_part("rrf_k")),
                  ("prompt_version", _plain("prompt_version")), ("answerer", _plain("answerer")),
                  ("ollama_model", _plain("ollama_model")), ("index_fp", _plain("index_fp")),
                  ("question set", lambda m: (str(m.get("question_set_sha256"))[:12]

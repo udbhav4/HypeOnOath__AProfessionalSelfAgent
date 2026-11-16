@@ -128,7 +128,7 @@ OWNER_NAME = "Udbhav"            # eval D55: the bot speaks as this person
 # MMR re-ranking of the raw hits (eval D31): None = off (production default); the eval
 # sweeps lambda in {1.0, 0.7, 0.5} over the top MMR_FETCH_K hits.
 MMR_LAMBDA: float | None = None
-MMR_FETCH_K = 20
+MMR_FETCH_K = 20               # MMR re-orders the top fetch_k; > EVAL_DEPTH = a bigger pool, MMR picks EVAL_DEPTH (D112)
 # Retrieval experiment F-R4 (eval D94, D98): rewrite the retrieval query into the third person
 # ("none" | "third_person"); production default "none" until a keep decision. Never the owner's name.
 QUERY_REWRITE = "none"
@@ -136,6 +136,17 @@ QUERY_REWRITE_MODES = ("none", "third_person")
 # The owner's pronouns (owner: "he/him"): subject, object, possessive, reflexive -- never hard-coded.
 OWNER_PRONOUNS: tuple[str, str, str, str] = ("he", "him", "his", "himself")
 QUERY_REWRITE_SPACY_MODEL = "en_core_web_sm"
+# Retrieval experiment F-R5 (eval D109, D98): a BM25 keyword ranking fused with the dense ranking by
+# Reciprocal Rank Fusion ("none" | "rrf"); production default "none" until a keep decision.
+HYBRID = "none"
+HYBRID_MODES = ("none", "rrf")
+HYBRID_CANDIDATES = 50           # top C of each leg enters the fusion (the final ranking stays EVAL_DEPTH)
+HYBRID_RRF_K = 60                # RRF smoothing constant in 1 / (k + rank) (Cormack et al. 2009), not a depth
+HYBRID_BM25_WEIGHT = 1.0         # weight of the BM25 leg in RRF (dense = 1.0); a later lever, no CLI flag
+BM25_K1 = 1.5                    # term-frequency saturation (rank_bm25 BM25Okapi default)
+BM25_B = 0.75                    # document-length normalisation (library default)
+BM25_EPSILON = 0.25              # idf floor for terms in more than half the chunks: epsilon x mean idf
+BM25_PACKAGE = "rank_bm25"       # pinned 0.2.2 in the [eval] extra (OD-2)
 # Similarity-gate sweep (eval 4.2): gate_t_at_1fr = highest threshold with at most this many
 # answerable questions refused by the gate.
 GATE_MAX_FALSE_REFUSALS = 1

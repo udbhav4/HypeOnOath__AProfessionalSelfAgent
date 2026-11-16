@@ -64,7 +64,8 @@ METRICS: list[MetricDef] = [
        "Compare only with prompt_sha256 in the manifest.", **_SET),
     _m("top_k", "Context items given to the model.", "Retrieval experiment F1 (D29).", "-", **_SET),
     _m("mmr_lambda", "MMR lambda; empty = MMR off (D31).", "Retrieval experiment F3.", "1.0 = plain ranking.", **_SET),
-    _m("mmr_fetch_k", "Candidates MMR re-selects from (top fetch_k by similarity); empty = MMR off (D88).",
+    _m("mmr_fetch_k", "Candidates MMR re-selects from (top fetch_k by similarity; above 20 the search goes deeper "
+       "and MMR picks the 20-item ranking out of fetch_k, D112); empty = MMR off (D88).",
        "A lever of the MMR experiment.", "Bigger = more candidates to diversify from.", **_SET),
     _m("doc_description_in_chunks", "true = each chunk's text starts with its document's description (code: the "
        "project's description) before embedding (F-R3, V13-7); false = section path only (D88).",
@@ -77,6 +78,10 @@ METRICS: list[MetricDef] = [
        "owner's pronouns (config.OWNER_PRONOUNS) by spaCy parse + LemmInflect, never the owner's name. The prompt "
        "always gets the original question (F-R4).", "Experiment F-R4.",
        "answers.jsonl retrieval_query = the rewritten query of each question.", **_SET),
+    _m("hybrid", "Hybrid search (D109): none = dense ranking only; rrf = a BM25 keyword ranking over the index's "
+       "chunk texts fused with the dense ranking by Reciprocal Rank Fusion (top 50 of each leg, k 60); the "
+       "parameters are in the manifest; score stays the cosine similarity (D110) (F-R5).", "Experiment F-R5.",
+       "answers.jsonl ranking items carry fused / dense_rank / bm25_rank when on.", **_SET),
     _m("index_fp", "Chunk count + hash of the sorted chunk ids.", "Re-indexing changes ids.",
        "Different = not the same index.", **_SET),
     _m("privacy_fp", "Fingerprint of the private decisions (D49).", "Privacy is frozen during the eval.",
@@ -222,6 +227,12 @@ RUNS_CSV_COLUMNS = [m.csv_column for m in METRICS if m.csv_column]
 
 # Report-only definitions that are not metrics (charts, matrices) still need a glossary entry (D37).
 REPORT_TERMS = {
+    "bm25": "Okapi BM25 (F-R5, D109): a keyword score per chunk = how many of the query's words it holds, each "
+            "weighted by how rare the word is in the index (IDF), saturating with repeats (k1) and normalised by "
+            "chunk length (b). The lexical leg of hybrid search.",
+    "rrf": "Reciprocal Rank Fusion (F-R5, D109): fused score = sum over the rankings of 1 / (k + rank), k = 60; "
+           "uses ranks only, so the dense and BM25 score scales never meet. A chunk both legs find beats one "
+           "near the top of a single leg. Not used by the gate (score stays cosine, D110).",
     "behaviour_matrix": "Expected (A / N) x outcome (answered / non_answer / skipped), row-normalised, with counts; "
                         "the N row also split into N_priv (private) and N_cov (not covered).",
     "missed_no_answer_split": "Missed no-answer parts by private label x claim verdict: N_priv unsupported = invented "

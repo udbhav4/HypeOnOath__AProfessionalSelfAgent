@@ -137,10 +137,12 @@ def cmd_run(args) -> int:
                                      fetch_k=mmr.get("fetch_k", config.MMR_FETCH_K),
                                      prompt_version=manifest["prompt_version"],
                                      query_rewrite=manifest.get("query_rewrite", "none"),
+                                     hybrid=(manifest.get("hybrid") or {}).get("mode", "none"),
                                      index_dir=config.PROJECT_ROOT / index_dir if index_dir else None)
         else:
             answerer = make_answerer(args.answerer, top_k=args.k, mmr_lambda=args.mmr_lambda, fetch_k=args.fetch_k,
                                      prompt_version=args.prompt, query_rewrite=args.query_rewrite,
+                                     hybrid=args.hybrid,
                                      index_dir=Path(args.index_dir) if args.index_dir else None)
         index_ids = _index_ids(answerer)               # also opens the index: a missing one stops here
     except ValueError as exc:                          # bad lever, missing parser or index: refuse before a run
@@ -296,6 +298,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--fetch-k", type=int, default=config.MMR_FETCH_K)
     p.add_argument("--query-rewrite", choices=config.QUERY_REWRITE_MODES, default=config.QUERY_REWRITE,
                    help="rewrite the retrieval query (F-R4): third_person = 'you' -> the owner's pronouns")
+    p.add_argument("--hybrid", choices=config.HYBRID_MODES, default=config.HYBRID,
+                   help="fuse a BM25 keyword ranking with the dense ranking (F-R5): rrf = Reciprocal Rank Fusion")
     p.add_argument("--index-dir", metavar="PATH",
                    help=f"index folder to read (F-R3 variants; default: {config.CHROMA_DIR.name} = production)")
     p.add_argument("--prompt", choices=sorted(PROMPTS), default=config.PROMPT_VERSION)
