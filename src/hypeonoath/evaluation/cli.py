@@ -112,6 +112,14 @@ def _count_tokens():
     return embedder.count_tokens
 
 
+def _rerank_kwargs(rerank: dict[str, Any]) -> dict[str, Any]:
+    """Answerer kwargs of the F-R6 levers stored in a manifest (resume); manifests before F-R6: off."""
+    if rerank.get("mode", "none") == "none":
+        return {"rerank": "none"}
+    return {"rerank": rerank["mode"], "rerank_candidates": rerank.get("candidates", config.RERANK_CANDIDATES),
+            "rerank_sources": rerank.get("sources", config.RERANK_SOURCES)}
+
+
 def cmd_run(args) -> int:
     if args.resume:
         run_dir = _run_dir(args.resume)
@@ -138,13 +146,18 @@ def cmd_run(args) -> int:
                                      prompt_version=manifest["prompt_version"],
                                      query_rewrite=manifest.get("query_rewrite", "none"),
                                      hybrid=(manifest.get("hybrid") or {}).get("mode", "none"),
-                                     index_dir=config.PROJECT_ROOT / index_dir if index_dir else None)
+                                     index_dir=config.PROJECT_ROOT / index_dir if index_dir else None,
+                                     **_rerank_kwargs(manifest.get("rerank") or {}))
         else:
             answerer = make_answerer(args.answerer, top_k=args.k, mmr_lambda=args.mmr_lambda, fetch_k=args.fetch_k,
                                      prompt_version=args.prompt, query_rewrite=args.query_rewrite,
                                      hybrid=args.hybrid,
-                                     index_dir=Path(args.index_dir) if args.index_dir else None)
+                                     index_dir=Path(args.index_dir) if args.index_dir else None,
+                                     rerank=args.rerank, rerank_candidates=args.rerank_candidates,
+                                     rerank_sources=args.rerank_sources)
         index_ids = _index_ids(answerer)               # also opens the index: a missing one stops here
+        prepare = getattr(answerer, "prepare", None)   # F-R6 warm-up: load the re-ranker before question 1
+        runtime = prepare() if prepare else {}
     except ValueError as exc:                          # bad lever, missing parser or index: refuse before a run
         _err(str(exc))
         return 1
@@ -155,7 +168,14 @@ def cmd_run(args) -> int:
         if problem:
             _err(problem)
             return 1
+        rerank_settings = getattr(answerer, "rerank_settings", None)    # F-R6: same model build as the run (D26)
+        if rerank_settings is not None and (manifest.get("rerank") or {"mode": "none"}) != rerank_settings():
+            _err("cannot resume: the re-ranker settings (model revision, max_length or batch_size in config) "
+                 "changed since the run started")
+            return 1
         manifest["resumed_from"] = manifest.get("generation_status")     # 6.1: the state the resume started from
+        if runtime:                                                      # keep the first session's runtime
+            manifest.setdefault("retrieval_runtime_resumed", []).append(runtime)
         manifest["generation_status"] = "running"
         runner.write_manifest(run_dir, manifest)
     else:
@@ -165,6 +185,8 @@ def cmd_run(args) -> int:
                     "stage": stage, "answerer": answerer.name, **answerer.settings(), **current,
                     **runner.git_state(), "pinned_from": None, "resumed_from": None, "note": args.note,
                     "generation_status": "running", "judge": {"status": "not_run"}}
+        if runtime:
+            manifest["retrieval_runtime"] = runtime                       # FR6-7: warm-up, CE load, threads
         runner.write_manifest(run_dir, manifest)
 
     started = datetime.now(timezone.utc)
@@ -300,6 +322,12 @@ def build_parser() -> argparse.ArgumentParser:
                    help="rewrite the retrieval query (F-R4): third_person = 'you' -> the owner's pronouns")
     p.add_argument("--hybrid", choices=config.HYBRID_MODES, default=config.HYBRID,
                    help="fuse a BM25 keyword ranking with the dense ranking (F-R5): rrf = Reciprocal Rank Fusion")
+    p.add_argument("--rerank", choices=("none", *sorted(config.RERANK_MODELS)), default=config.RERANK,
+                   help="re-order a candidate pool with a cross-encoder (F-R6); the model alias of config.RERANK_MODELS")
+    p.add_argument("--rerank-candidates", type=int, default=config.RERANK_CANDIDATES,
+                   help=f"candidates the cross-encoder scores (>= 20; default {config.RERANK_CANDIDATES})")
+    p.add_argument("--rerank-sources", choices=config.RERANK_SOURCE_MODES, default=config.RERANK_SOURCES,
+                   help="dense top C, or dense top C + BM25 top C (plain union, no RRF)")
     p.add_argument("--index-dir", metavar="PATH",
                    help=f"index folder to read (F-R3 variants; default: {config.CHROMA_DIR.name} = production)")
     p.add_argument("--prompt", choices=sorted(PROMPTS), default=config.PROMPT_VERSION)

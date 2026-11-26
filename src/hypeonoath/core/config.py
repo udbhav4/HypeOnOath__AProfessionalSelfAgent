@@ -147,6 +147,19 @@ BM25_K1 = 1.5                    # term-frequency saturation (rank_bm25 BM25Okap
 BM25_B = 0.75                    # document-length normalisation (library default)
 BM25_EPSILON = 0.25              # idf floor for terms in more than half the chunks: epsilon x mean idf
 BM25_PACKAGE = "rank_bm25"       # pinned 0.2.2 in the [eval] extra (OD-2)
+# Retrieval experiment F-R6 (plans/fr6-reranking-design-plan-v2.md, FR6-1..8; D98): a cross-encoder re-scores
+# a candidate pool of (query, chunk text) pairs and re-orders it ("none" | an alias of RERANK_MODELS);
+# production default "none" until a keep decision. sentence-transformers (CrossEncoder) is already pinned.
+RERANK = "none"
+# alias -> (Hugging Face Hub id, pinned revision). Open for later models (FR6-1): one entry + one model test.
+RERANK_MODELS: dict[str, tuple[str, str]] = {
+    "gte": ("Alibaba-NLP/gte-reranker-modernbert-base", "f7481e6055501a30fb19d090657df9ec1f79ab2c"),
+}
+RERANK_CANDIDATES = 50           # pool size C the cross-encoder scores (FR6-5; = the D113 fetch_k plateau)
+RERANK_SOURCES = "dense"         # dense top C, or dense top C ∪ BM25 top C (plain union, no RRF; FR6-8)
+RERANK_SOURCE_MODES = ("dense", "dense_bm25")
+RERANK_MAX_LENGTH = 1024         # tokens per (query, chunk) input; longer inputs are cut and counted (FR6-6)
+RERANK_BATCH_SIZE = 16           # fixed, so scores never depend on how pairs were batched
 # Similarity-gate sweep (eval 4.2): gate_t_at_1fr = highest threshold with at most this many
 # answerable questions refused by the gate.
 GATE_MAX_FALSE_REFUSALS = 1
@@ -188,7 +201,7 @@ PRIVACY_RETIRED_ENTITIES = ("DE_KFZ", "UK_VEHICLE_REGISTRATION", "IN_VEHICLE_REG
 # --- Generation: local Ollama, Phase 1 only (ADR-4) -------------------------
 OLLAMA_URL = "http://localhost:11434"
 OLLAMA_MODEL = "llama3.1:8b"
-OLLAMA_NUM_CTX = 8192            # Ollama's default context is too small for k=8
+OLLAMA_NUM_CTX = 12288           # context p95 ~8k (k=12) + prompt + answer overflowed 8192; Llama 3.1 allows 128k
 OLLAMA_TIMEOUT_SECONDS = 600       # CPU-only laptop: ~7k-token prompt at ~31 tok/s + answer ≈ 265 s (measured 2026-10-26)
 
 # --- Pinned library versions (3A.4 Step 0) -----------------------------------

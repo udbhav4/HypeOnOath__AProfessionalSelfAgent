@@ -141,6 +141,13 @@ def experiment_tags(settings: dict[str, Any] | None) -> tuple[str, ...]:
     mode = hybrid.get("mode") if isinstance(hybrid, dict) else hybrid
     if mode not in (None, "", "none"):
         tags.append(f"hybrid-{mode}")                   # F-R5 (D109)
+    rerank = settings.get("rerank")                     # F-R6: manifest dict, or the runs.csv row's columns
+    if isinstance(rerank, dict):
+        alias, sources = rerank.get("mode"), rerank.get("sources")
+    else:
+        alias, sources = rerank, settings.get("rerank_sources")
+    if alias not in (None, "", "none"):
+        tags.append(f"rerank-{alias}" + ("-bm25" if sources == "dense_bm25" else ""))
     return tuple(tags)
 
 

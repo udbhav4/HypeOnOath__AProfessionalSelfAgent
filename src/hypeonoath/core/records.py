@@ -103,6 +103,9 @@ class RetrievedItem:
     Hybrid search (F-R5, eval D109) also sets `fused` (the RRF score that ordered the hit) and the hit's
     rank in each leg (`dense_rank` / `bm25_rank`, None = not in that leg's candidates); `score` stays the
     cosine similarity either way (D110), so the gate reads one scale.
+    Re-ranking (F-R6) sets `rerank_score` (the cross-encoder's score), `pre_rerank_rank` (1-based position in
+    the candidate list it re-ordered) and `source` (dense | bm25 | both: which candidate leg brought it in);
+    `score` stays cosine here too (FR6-2).
     """
 
     chunk: Chunk
@@ -111,6 +114,9 @@ class RetrievedItem:
     fused: float | None = None
     dense_rank: int | None = None
     bm25_rank: int | None = None
+    rerank_score: float | None = None
+    pre_rerank_rank: int | None = None
+    source: str | None = None
 
     @property
     def ordered_chunks(self) -> list[Chunk]:

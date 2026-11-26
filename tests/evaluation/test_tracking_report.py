@@ -19,7 +19,8 @@ ROOT = Path(__file__).resolve().parents[2]
 
 PLAN_COLUMNS = (
     "run_id, date, note, stage, git_sha, answerer, prompt_version, top_k, mmr_lambda, mmr_fetch_k, "
-    "doc_description_in_chunks, small_sections_merged, query_rewrite, hybrid, index_fp, privacy_fp, "
+    "doc_description_in_chunks, small_sections_merged, query_rewrite, hybrid, rerank, rerank_candidates, "
+    "rerank_sources, index_fp, privacy_fp, "
     "question_set_sha, judge_model, judge_mode, calibrated, calibration_agreement, judge_coverage, "
     "part_outcome_coverage, n, n_parts, hit@1, hit@3, hit@4, hit@5, hit@8, hit@10, hit@12, hit@15, hit@20, recall@1, "
     "recall@3, recall@4, recall@5, recall@8, recall@10, recall@12, recall@15, recall@20, mrr, in_context_hit, "
@@ -27,7 +28,8 @@ PLAN_COLUMNS = (
     "omitted, correct_no_answer, missed_no_answer, silent_skip, all_parts_ok, faithfulness, fully_faithful, "
     "embellishment, pivot_related, correctness_answered, correctness_e2e, parametric_leak, world_knowledge_claims, "
     "relevancy, persona, policy_flag, prompt_leak, private_leak_pre, p95_ttft_s, p95_total_gen_s, "
-    "mean_input_tokens, errors").split(", ")
+    "mean_input_tokens, errors, retrieve_p50_s, retrieve_p95_s, rerank_p50_s, rerank_p95_s, "
+    "rerank_truncated_pairs").split(", ")
 
 
 def manifest(stage="retrieval", run_id="r1", **extra):
@@ -570,7 +572,8 @@ def test_settings_rows_mmr_off_question_set_and_privacy_fp():
     assert "| index_fp | 3:x | 3:x |  |" in section and "| ollama_model | llama3.1:8b | llama3.1:8b |  |" in section
     labels = [line.split("|")[1].strip() for line in section.strip().splitlines()[2:]]
     assert labels == ["top_k", "MMR on", "MMR λ", "MMR fetch_k", "doc_description_in_chunks", "small_sections_merged",
-                      "query_rewrite", "hybrid", "hybrid candidates", "hybrid rrf_k", "prompt_version", "answerer",
+                      "query_rewrite", "hybrid", "hybrid candidates", "hybrid rrf_k", "rerank", "rerank candidates",
+                      "rerank sources", "rerank max_length", "prompt_version", "answerer",
                       "ollama_model", "index_fp", "question set",
                       "privacy_fp"]
 

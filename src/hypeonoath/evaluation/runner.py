@@ -62,6 +62,9 @@ def ranking_record(item: RetrievedItem, groups: dict[str, Group], corpus: Corpus
               "line_end": c.line_end, "score": round(item.score, 6), "groups": _matched(item, groups, corpus)}
     if item.fused is not None:              # F-R5 (OD-8): where a hybrid hit came from; absent otherwise
         record.update(fused=round(item.fused, 6), dense_rank=item.dense_rank, bm25_rank=item.bm25_rank)
+    if item.rerank_score is not None:       # F-R6: the CE score and where the item stood before re-ranking
+        record.update(rerank_score=round(item.rerank_score, 6), pre_rerank_rank=item.pre_rerank_rank,
+                      source=item.source, dense_rank=item.dense_rank, bm25_rank=item.bm25_rank)
     return record
 
 
@@ -204,9 +207,14 @@ def run_questions(
                 context = [item_from_record(c) for c in old["context"]]
                 record["pinned"] = True
             else:
+                started = time.perf_counter()
                 retrieved = answerer.retrieve(q.question)
+                record["retrieve_s"] = round(time.perf_counter() - started, 4)   # FR6-7: rewrite..assemble
                 if getattr(retrieved, "query", None):          # F-R4: the rewritten retrieval query (D94)
                     record["retrieval_query"] = retrieved.query
+                if getattr(retrieved, "rerank_s", None) is not None:             # F-R6: the CE call alone
+                    record["rerank_s"] = retrieved.rerank_s
+                    record["rerank_truncated"] = retrieved.rerank_truncated
                 record["ranking"] = [ranking_record(i, groups, corpus) for i in retrieved.ranking]
                 record["context"] = [context_record(i, groups, corpus) for i in retrieved.context]
                 context = retrieved.context

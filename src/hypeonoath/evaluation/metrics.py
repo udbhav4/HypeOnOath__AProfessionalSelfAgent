@@ -82,6 +82,17 @@ METRICS: list[MetricDef] = [
        "chunk texts fused with the dense ranking by Reciprocal Rank Fusion (top 50 of each leg, k 60); the "
        "parameters are in the manifest; score stays the cosine similarity (D110) (F-R5).", "Experiment F-R5.",
        "answers.jsonl ranking items carry fused / dense_rank / bm25_rank when on.", **_SET),
+    _m("rerank", "Cross-encoder re-ranking (F-R6): none = off; otherwise the model alias (config.RERANK_MODELS, "
+       "model id + pinned revision in the manifest) that scores each (retrieval query, chunk text) pair of the "
+       "candidate pool and re-orders it; score stays the cosine similarity, so the gate is unchanged (FR6-2).",
+       "Experiment F-R6.", "answers.jsonl ranking items carry rerank_score / pre_rerank_rank / source when on.",
+       **_SET),
+    _m("rerank_candidates", "Candidates the cross-encoder scores (the pool is max(20, candidates, fetch_k when "
+       "MMR is on)); with MMR on, MMR then picks 20 with relevance = CE score rescaled to the pool's cosine "
+       "range (FR6-3); empty = re-ranking off (FR6-5).", "A lever of F-R6.", "-", **_SET),
+    _m("rerank_sources", "Where the candidates come from: dense = the dense top C; dense_bm25 = dense top C plus "
+       "the BM25 top C not already in it (plain union, no RRF, FR6-8); empty = off.", "A lever of F-R6.", "-",
+       **_SET),
     _m("index_fp", "Chunk count + hash of the sorted chunk ids.", "Re-indexing changes ids.",
        "Different = not the same index.", **_SET),
     _m("privacy_fp", "Fingerprint of the private decisions (D49).", "Privacy is frozen during the eval.",
@@ -220,6 +231,25 @@ METRICS: list[MetricDef] = [
     _m("errors", "Questions whose generation failed (Ollama unreachable, HTTP error, timeout, unreadable "
        "response); after --resume only those still failed. Judge errors are not counted here (see judge_coverage).",
        "Fail-fast and comparability.", "Target 0.", direction="down", denominator="- (a count)", aggregation="count", section="operations"),
+    # --- retrieval latency (F-R6, FR6-7): both stages, model loaded before the question loop ---
+    _m("retrieve_p50_s", "Median (nearest rank) of retrieve_s = wall time of one retrieval (query rewrite + "
+       "search + re-ranking + MMR + context assembly), seconds.", "Typical wait before generation starts.",
+       "Lower is better; compare only on the same machine (manifest retrieval_runtime.torch_threads).",
+       direction="down", denominator="questions with a retrieve_s", stages=BOTH, aggregation="p50",
+       section="operations"),
+    _m("retrieve_p95_s", "95th percentile (nearest rank) of retrieve_s, seconds.", "Worst-case wait before "
+       "generation.", "Lower is better; read with retrieve_p50_s.", direction="down",
+       denominator="questions with a retrieve_s", stages=BOTH, aggregation="p95", section="operations"),
+    _m("rerank_p50_s", "Median (nearest rank) of rerank_s = wall time of the cross-encoder call alone, seconds; "
+       "empty = re-ranking off.", "The re-ranker's own cost.", "Lower is better.", direction="down",
+       denominator="questions with a rerank_s", stages=BOTH, aggregation="p50", section="operations"),
+    _m("rerank_p95_s", "95th percentile (nearest rank) of rerank_s, seconds; empty = re-ranking off.",
+       "Worst-case re-ranker cost.", "Lower is better.", direction="down",
+       denominator="questions with a rerank_s", stages=BOTH, aggregation="p95", section="operations"),
+    _m("rerank_truncated_pairs", "Sum over questions of (query, chunk) inputs longer than the re-ranker's "
+       "max_length (1,024 tokens), cut before scoring; empty = re-ranking off (FR6-6).",
+       "A cut chunk may hide its evidence from the re-ranker.", "Target 0; > 0 -> read which chunks were cut.",
+       direction="down", denominator="- (a count)", stages=BOTH, aggregation="count", section="operations"),
 ]
 
 METRICS_BY_NAME = {m.name: m for m in METRICS}
@@ -578,6 +608,14 @@ def score_run(questions: list[Question], answers_list: list[dict[str, Any]], jud
     m.update({k: v for k, v in retrieval.items() if k in m})
     gate = sweep([GateRow(q.id, series_of(q), answers[q.id].get("top1"), is_private_only(q)) for q in qs])
     m.update(gate_t_at_1fr=gate["gate_t_at_1fr"], gate_correct_refusal_at_t=gate["gate_correct_refusal_at_t"])
+    # FR6-7: retrieval latency (pinned contexts carry no retrieve_s); rerank_* only when re-ranking ran
+    retrieve_s = [answers[q.id]["retrieve_s"] for q in qs if answers[q.id].get("retrieve_s") is not None]
+    rerank_s = [answers[q.id]["rerank_s"] for q in qs if answers[q.id].get("rerank_s") is not None]
+    truncated = [answers[q.id]["rerank_truncated"] for q in qs if answers[q.id].get("rerank_truncated") is not None]
+    m.update(retrieve_p50_s=percentile(retrieve_s, 0.5), retrieve_p95_s=percentile(retrieve_s, 0.95),
+             rerank_p50_s=percentile(rerank_s, 0.5), rerank_p95_s=percentile(rerank_s, 0.95),
+             rerank_truncated_pairs=sum(truncated) if truncated else None)
+    retrieval.update(n_retrieve_s=len(retrieve_s), n_rerank_s=len(rerank_s))
 
     scores: dict[str, Any] = {"stage": stage, "metrics": m, "retrieval": retrieval, "gate": gate}
     outcomes: dict[str, dict[str, str]] = {}
