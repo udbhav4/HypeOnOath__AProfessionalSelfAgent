@@ -62,6 +62,8 @@ def _n(m: MetricDef, scores: dict[str, Any]) -> Any:
         "policy_flag": (counts, "judged_call1"), "p95_ttft_s": (counts, "ttft"), "p50_ttft_s": (counts, "ttft"),
         "p95_total_gen_s": (counts, "total_gen"), "p50_total_gen_s": (counts, "total_gen"),
         "mean_input_tokens": (counts, "input_tokens"),
+        "retrieve_p50_s": (r, "n_retrieve_s"), "retrieve_p95_s": (r, "n_retrieve_s"),            # FR6-7
+        "rerank_p50_s": (r, "n_rerank_s"), "rerank_p95_s": (r, "n_rerank_s"),
     }
     if m.name in sources:
         source, key = sources[m.name]
@@ -77,6 +79,19 @@ def _hybrid_part(field: str):
         if field == "mode":
             return hybrid.get("mode", "none")
         return hybrid.get(field) if hybrid.get("mode", "none") != "none" else None   # only meaningful when on
+    return get
+
+
+def _rerank_part(field: str):
+    """F-R6 rows: the mode always; the parameters only when re-ranking is on."""
+    def get(settings: dict[str, Any]) -> Any:
+        rerank = tracking.setting(settings, "rerank") or {}
+        mode = rerank.get("mode", "none")
+        if field == "mode":
+            return mode
+        if mode == "none":
+            return None
+        return rerank.get(field)
     return get
 
 
@@ -101,6 +116,9 @@ SETTINGS_ROWS = (("top_k", _plain("top_k")), ("MMR on", _mmr_part("enabled")), (
                  ("query_rewrite", _plain("query_rewrite")),
                  ("hybrid", _hybrid_part("mode")), ("hybrid candidates", _hybrid_part("candidates")),
                  ("hybrid rrf_k", _hybrid_part("rrf_k")),
+                 ("rerank", _rerank_part("mode")), ("rerank candidates", _rerank_part("candidates")),
+                 ("rerank sources", _rerank_part("sources")),
+                 ("rerank max_length", _rerank_part("max_length")),
                  ("prompt_version", _plain("prompt_version")), ("answerer", _plain("answerer")),
                  ("ollama_model", _plain("ollama_model")), ("index_fp", _plain("index_fp")),
                  ("question set", lambda m: (str(m.get("question_set_sha256"))[:12]

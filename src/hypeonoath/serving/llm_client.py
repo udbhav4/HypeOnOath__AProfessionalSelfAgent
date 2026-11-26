@@ -5,7 +5,8 @@ a hosted LLM in Phase 2).
 Uses Ollama's HTTP /api/chat endpoint through the standard library, so no
 extra dependency is added for one POST request. temperature=0 keeps eval
 runs as repeatable as the model allows; num_ctx is raised because Ollama's
-default context window is too small for k=8 chunks plus rules.
+default context window is too small for the retrieved chunks plus rules
+(config.OLLAMA_NUM_CTX = 12288: context p95 ~8k at k=12 overflowed 8192).
 
 generate() returns GenerationResult(text, stats): stats = Ollama's raw timing / token
 fields (durations in ns, counts) for the eval harness (eval D25); callers use .text.

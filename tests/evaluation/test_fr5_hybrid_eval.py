@@ -138,7 +138,7 @@ def test_hybrid_is_one_changed_setting_and_index_fp_untouched():
 def test_csv_column_position():
     from hypeonoath.evaluation.metrics import METRICS, RUNS_CSV_COLUMNS
     assert RUNS_CSV_COLUMNS.index("hybrid") == RUNS_CSV_COLUMNS.index("query_rewrite") + 1
-    assert len(RUNS_CSV_COLUMNS) == 73 and len(METRICS) == 78
+    assert len(RUNS_CSV_COLUMNS) == 81 and len(METRICS) == 86   # + F-R6: 3 settings, 5 latency / truncation
 
 
 def test_report_settings_rows():

@@ -260,7 +260,8 @@ def test_logged_progress_and_abort_message_hold_no_value(setup):
 
 def test_wall_s_times_the_generate_call_only(setup, monkeypatch):
     corpus, qs, run_dir = setup
-    clock = iter([10.0, 12.5, 99.0])                                       # start, after generate, (never used)
+    clock = iter([0.0, 1.0, 10.0, 12.5, 99.0])        # retrieve start / end (FR6-7), generate start / end, (unused)
     monkeypatch.setattr(runner.time, "perf_counter", lambda: next(clock))
     runner.run_questions(qs[:1], FakeAnswerer(), run_dir, "full", VALUES, corpus, warmup=False, log=lambda m: None)
     assert lines(run_dir)[0]["timings"]["wall_s"] == 2.5
+    assert lines(run_dir)[0]["retrieve_s"] == 1.0                          # retrieval is timed on its own

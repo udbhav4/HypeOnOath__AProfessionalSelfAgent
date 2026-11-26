@@ -21,6 +21,7 @@ production context from them, so the eval harness gets the raw ranking and the e
 context from ONE query. mmr() re-ranks raw hits (default off: config.MMR_LAMBDA = None).
 F-R5 (eval D109): hybrid_search() fuses the dense ranking with a BM25 keyword ranking (serving.lexical)
 by rrf(); eval only (config.HYBRID = "none"), retrieve() / search() never use it (chat unchanged, D98).
+F-R6 (fr6 plan v2): candidates() builds the pool a cross-encoder re-ranks (serving.reranker); eval only too.
 
 On start-up the index's `privacy_fp` (collection metadata) is compared with
 the fingerprint of the local privacy decisions; a mismatch only WARNS -- a
@@ -154,6 +155,43 @@ class Retriever:
                               dense_rank=dense_rank.get(cid), bm25_rank=bm25_rank.get(cid))
                 for cid, fused in rrf([dense_ids, lexical_ids], rrf_k, [1.0, bm25_weight])[:depth]]
         return hits, [vectors[h.chunk.chunk_id] for h in hits]
+
+    def candidates(self, question: str, depth: int,
+                   sources: str = config.RERANK_SOURCES) -> tuple[list[RetrievedItem], list[list[float]]]:
+        """
+        F-R6 candidate pool for the cross-encoder, with each item's stored vector (for MMR) and cosine `score`.
+        dense      = the dense top `depth` (as search_with_embeddings), source "dense".
+        dense_bm25 = that list followed by the BM25 top `depth` not already in it, in BM25 order -- a plain
+                     union, no fusion (FR6-8): the cross-encoder decides the order, not RRF. BM25-only items
+                     get their cosine from the stored vector (as hybrid_search, D110); dense_rank / bm25_rank
+                     and source (dense | bm25 | both) say where each came from.
+        """
+        if sources not in config.RERANK_SOURCE_MODES:
+            raise ValueError(f"unknown candidate sources {sources!r}; known: {list(config.RERANK_SOURCE_MODES)}")
+        if sources == "dense":
+            hits, vectors = self.search_with_embeddings(question, depth)
+            for rank, h in enumerate(hits, 1):
+                h.dense_rank, h.source = rank, "dense"
+            return hits, vectors
+
+        from hypeonoath.serving.lexical import tokenize
+
+        bm25, chunks, stored = self._lexical()
+        per_leg = min(depth, len(chunks))
+        query_vector = self.embed_query(question)                      # one embedding call for both legs
+        result = self.collection.query(query_embeddings=[query_vector], n_results=per_leg,
+                                       where=None, include=["distances"])
+        dense_ids = list(result["ids"][0])
+        lexical_ids = [cid for cid, _ in bm25.top(tokenize(question), per_leg)]
+        dense_rank = {cid: r for r, cid in enumerate(dense_ids, 1)}
+        bm25_rank = {cid: r for r, cid in enumerate(lexical_ids, 1)}
+        ordered = list(dict.fromkeys(dense_ids + lexical_ids))          # dense first, then BM25-only
+        hits = [RetrievedItem(chunks[cid], _cosine(query_vector, stored[cid]), dense_rank=dense_rank.get(cid),
+                              bm25_rank=bm25_rank.get(cid),
+                              source="both" if cid in dense_rank and cid in bm25_rank
+                              else "dense" if cid in dense_rank else "bm25")
+                for cid in ordered]
+        return hits, [stored[cid] for cid in ordered]
 
     def assemble(self, hits: list[RetrievedItem]) -> list[RetrievedItem]:
         """Production context from ranked hits: sibling parts, duplicate suppression, token budget."""

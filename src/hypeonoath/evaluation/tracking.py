@@ -17,18 +17,21 @@ from hypeonoath.evaluation.metrics import METRICS, METRICS_BY_NAME, RUNS_CSV_COL
 
 # Settings whose change makes a run a different experiment ("Changed vs baseline", D13).
 SETTING_KEYS = ("stage", "answerer", "prompt_version", "prompt_sha256", "ollama_model", "top_k", "mmr",
-                "doc_description_in_chunks", "small_sections_merged", "query_rewrite", "hybrid", "index_fp",
+                "doc_description_in_chunks", "small_sections_merged", "query_rewrite", "hybrid", "rerank", "index_fp",
                 "question_set_sha256", "privacy_fp")
 # Settings baked into the index: changing one always changes index_fp too, so index_fp is not counted as a
 # second changed setting next to them (D13 count; owner decision 2026-11-11).
 INDEX_BUILD_KEYS = ("doc_description_in_chunks", "small_sections_merged")
 # F-R5 (D109): the hybrid levers compared between runs (manifest "hybrid" dict).
 HYBRID_PARAMS = ("mode", "candidates", "rrf_k", "bm25_weight", "k1", "b", "epsilon")
+# F-R6: the re-ranking levers compared between runs (manifest "rerank" dict; one setting for D13).
+RERANK_PARAMS = ("mode", "model", "revision", "candidates", "sources", "max_length", "batch_size")
 # Value of a setting in manifests / baseline entries written before it existed: what every run did then.
 SETTING_DEFAULTS: dict[str, Any] = {"doc_description_in_chunks": False,     # D88: no index had descriptions
                                     "small_sections_merged": False,         # D95: no index merged small chunks
                                     "query_rewrite": "none",                # D94: no run rewrote the query
-                                    "hybrid": {"mode": "none"}}             # D109: no run fused BM25
+                                    "hybrid": {"mode": "none"},             # D109: no run fused BM25
+                                    "rerank": {"mode": "none"}}             # F-R6: no run re-ranked
 
 
 def setting(manifest: dict[str, Any], key: str) -> Any:
@@ -51,9 +54,17 @@ def manifest_columns(manifest: dict[str, Any]) -> dict[str, Any]:
         "small_sections_merged": setting(manifest, "small_sections_merged"),                   # D95
         "query_rewrite": setting(manifest, "query_rewrite"),                                   # D94
         "hybrid": (setting(manifest, "hybrid") or {}).get("mode", "none"),                     # D109
+        **_rerank_columns(setting(manifest, "rerank") or {}),                                  # F-R6
         "index_fp": manifest.get("index_fp"), "privacy_fp": manifest.get("privacy_fp"),
         "question_set_sha": manifest.get("question_set_sha256"),
     }
+
+
+def _rerank_columns(rerank: dict[str, Any]) -> dict[str, Any]:
+    """runs.csv columns of the F-R6 levers: mode always; the parameters only when re-ranking is on."""
+    on = rerank.get("mode", "none") != "none"
+    return {"rerank": rerank.get("mode", "none"),
+            **{f"rerank_{p}": rerank.get(p) if on else None for p in ("candidates", "sources")}}
 
 
 def _cell(value: Any) -> str:
@@ -162,6 +173,11 @@ def _comparable(settings: dict[str, Any], key: str) -> Any:
         if hybrid.get("mode", "none") == "none":
             return None
         return tuple(hybrid.get(p) for p in HYBRID_PARAMS)
+    if key == "rerank":                                   # off is one value; on = every lever
+        rerank = setting(settings, "rerank") or {}
+        if rerank.get("mode", "none") == "none":
+            return None
+        return tuple(rerank.get(p) for p in RERANK_PARAMS)
     return setting(settings, key)
 
 
